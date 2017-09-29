@@ -1,21 +1,20 @@
 {
     "name": "ArduinoOSC",
-    "description": "OSC library for Arduino (ESP, Teensy, etc.)",
     "keywords": "osc,wifi,udp,serial",
-    "authors": {
+    "description": "OSC library for Arduino (ESP, Teensy, etc.)",
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/hideakitai/ArduinoOSC.git"
+    },
+    "authors":
+    {
         "name": "Hideaki Tai",
         "url": "https://github.com/hideakitai",
         "maintainer": true
     },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/hideakitai/ArduinoOSC"
-    },
     "version": "0.0.1",
     "license": "MIT",
     "frameworks": "arduino",
-    "platforms": "*",
-    "examples": [
-        "examples/*/*.ino"
-    ]
+    "platforms": "*"
 }
