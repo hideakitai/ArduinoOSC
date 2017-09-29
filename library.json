@@ -1,6 +1,6 @@
 {
     "name": "ArduinoOSC",
-    "description": "OSC library for Arduino (ESP, Teensy, etc.)"
+    "description": "OSC library for Arduino (ESP, Teensy, etc.)",
     "keywords": "osc,wifi,udp,serial",
     "authors": [
         {
@@ -18,6 +18,6 @@
     "frameworks": "arduino",
     "platforms": "*",
     "examples": [
-        "examples/*/*.ino",
+        "examples/*/*.ino"
     ]
 }
