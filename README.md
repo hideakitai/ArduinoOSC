@@ -9,7 +9,7 @@ For the [ArdOSC]() License, See ArduinoOSC/avr/Lisence.txt
 
 ## Usage
 
-```
+``` c++
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <ArduinoOSC.h>
