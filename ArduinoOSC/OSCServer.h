@@ -26,8 +26,6 @@ public:
         OSCMessage rcvMes;
         rcvMes.setIpAddress(stream_->remoteIP());
         rcvMes.setPortNumber(stream_->remotePort());
-        Serial.println(stream_->remoteIP());
-        Serial.println(stream_->remotePort());
 
         uint8_t data[size];
         stream_->read(data, size);
