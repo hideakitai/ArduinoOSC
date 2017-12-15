@@ -68,28 +68,18 @@ void callback(OSCMessage& m)
 ```
 
 
-
 ## Notation
 
 only loopback.ino with ESP32 module can be run in example folder
 
 
-
-## Supported / Tested Application
-
-- openFrameworks
-- Cycling74 Max7
-- Processing
-- Pd
-- etc.
-
 ## Supported Communication Library
 
-- WiFiUdp (EPS)
-- EthernetUDP (Arduino)
-- Serial (not yet, see TODO)
+- WiFiUdp (ESP)
+- EthernetUDP
+- Serial
 
-## Supported Platform
+## Tested Platform
 
 - EPS32 w/ arduino-esp32
 - Teensy 3.2, 3.5, 3.6
@@ -108,12 +98,7 @@ currently, other platforms are also limited (because expansion is not applied)
 ## TODO
 
 - re-write library and support NON-AVR platform for more safety and flexible use
-
-- emulate OSC packet in Serial, with header, footer, and checker (e.g. CRC)
-
 - more examples
-
-  ​
 
 ## License
 

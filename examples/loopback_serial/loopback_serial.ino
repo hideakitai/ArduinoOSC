@@ -1,6 +1,6 @@
 #include "ArduinoOSC.h"
 
-ArduinoOSC<HardwareSerial> osc; // Arduino Uno
+ArduinoOSC<HardwareSerial> osc; // Arduino Uno, ESP
 // ArduinoOSC<usb_serial_class> osc; // teensy (via USB Serial)
 
 void setup()

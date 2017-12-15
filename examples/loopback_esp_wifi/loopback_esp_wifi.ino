@@ -4,13 +4,10 @@
 
 WiFiUDP udp;
 ArduinoOSC<WiFiUDP> osc;
-const char* ssid = "asai_test";
-const char* pwd = "rhizomatiks0725";
-// const char* ip = "192.168.1.201";
+const char* ssid = "yout_ssid";
+const char* pwd = "your_password";
 const IPAddress ip(192, 168, 1, 201);
-// const char* gateway = "192.168.1.1";
 const IPAddress gateway(192, 168, 1, 1);
-// const char* subnet = "255.255.255.0";
 const IPAddress subnet(255, 255, 255, 0);
 const char* host = "192.168.1.200";
 const int recv_port = 10000;
@@ -33,7 +30,6 @@ void setup()
     osc.begin(udp, recv_port);
     osc.addCallback("/ard/aaa", &callback);
     osc.addCallback("/ard", &callback);
-
 }
 
 void loop()
@@ -43,22 +39,6 @@ void loop()
 
 void callback(OSCMessage& m)
 {
-    // get osc data
-
-    // remote ip address
-    // IPAddress sourceIp = m.getIpAddress();
-    //get 1st argument(int32)
-    Serial.print("arg 0 : ");
-    Serial.println(m.getArgAsInt32(0));
-    //get 2nd argument(float)
-    Serial.print("arg 1 : ");
-    Serial.println(m.getArgAsFloat(1));
-    //get 3rd argument(string)
-    Serial.print("arg 2 : ");
-    Serial.println(m.getArgAsString(2));
-
-    // send osc data
-
     //create new osc message
     OSCMessage msg;
     //set destination ip address & port no
