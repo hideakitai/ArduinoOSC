@@ -51,6 +51,10 @@
     #include "ArduinoOSC/avr/OSCClient.h"
     #include "ArduinoOSC/avr/OSCServer.h"
 #elif defined (TEENSYDUINO) || defined (ESP_PLATFORM)
+    #ifdef ESP_PLATFORM
+        #include "WiFi.h"
+        #include "WiFiUDP.h"
+    #endif
     #include "ArduinoOSC/OSCcommon.h"
     #include "ArduinoOSC/OSCMessage.h"
     #include "ArduinoOSC/OSCClient.h"

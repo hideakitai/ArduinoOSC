@@ -23,10 +23,13 @@ public:
 
     void paternComp(OSCMessage& m)
     {
+        // Serial.print("match pattern :");
+        // Serial.println(patternNum);
         for (uint8_t i=0 ; i<patternNum; i++)
         {
-            if (strcmp(addr[i] , m.getOSCAddress()) == 0)
-                execFunc(i , m);
+            // Serial.println(addr[i]);
+            // Serial.println(m.getOSCAddress());
+            if (strcmp(addr[i] , m.getOSCAddress()) == 0) execFunc(i , m);
         }
     }
 

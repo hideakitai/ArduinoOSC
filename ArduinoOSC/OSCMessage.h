@@ -33,12 +33,12 @@ public:
         port_ = 0;
     }
 
-    void beginMessage(const IPAddress& ip, uint16_t port)
-    {
-        flush();
-        setIpAddress(ip);
-        setPortNumber(port);
-    }
+    // void beginMessage(const IPAddress& ip, uint16_t port)
+    // {
+    //     flush();
+    //     setIpAddress(ip);
+    //     setPortNumber(port);
+    // }
 
     void beginMessage(const char* ip, uint16_t port)
     {
@@ -47,8 +47,14 @@ public:
         setPortNumber(port);
     }
 
+    void beginMessage()
+    {
+        flush();
+    }
+
     void setIpAddress(const char* ip)
     {
+        ip_str_ = ip;
         String ip_str(ip);
         size_t start = 0;
         for (size_t i = 0; i < 3; ++i)
@@ -65,8 +71,9 @@ public:
         }
         ip_[3] = ip_str.substring(start, ip_str.length()).toInt();
     }
-    void setIpAddress(const IPAddress& ip) { ip_ = ip; }
-    void setIpAddress(uint8_t ip0, uint8_t ip1, uint8_t ip2, uint8_t ip3) { ip_ = IPAddress(ip0, ip1, ip2, ip3); }
+    // void setIpAddress(const IPAddress& ip) { ip_ = ip; }
+    // void setIpAddress(uint8_t ip0, uint8_t ip1, uint8_t ip2, uint8_t ip3) { ip_ = IPAddress(ip0, ip1, ip2, ip3); }
+    void setIpAddress(uint8_t ip0, uint8_t ip1, uint8_t ip2, uint8_t ip3) { ip_[0] = ip0; ip_[1] = ip1; ip_[2] = ip2; ip_[3] = ip3; }
     void setPortNumber(uint16_t port) { port_ = port; }
 
 
@@ -115,7 +122,8 @@ public:
         return 1;
     }
 
-    const IPAddress& getIpAddress(void) { return ip_; }
+    // const IPAddress& getIpAddress(void) { return ip_; }
+    const char* getIpAddress() { return ip_str_; }
     uint16_t getPortNumber() { return port_; }
 
     const char*  getOSCAddress(void) { return osc_addr_.c_str(); }
@@ -189,8 +197,10 @@ private:
         data1[3] = data2[0];
     }
 
-	IPAddress ip_;
-	uint16_t port_;
+    // IPAddress ip_;
+    uint8_t ip_[4];
+    uint16_t port_;
+    const char* ip_str_;
 
 	String   osc_addr_;
 	uint16_t osc_addr_len_;

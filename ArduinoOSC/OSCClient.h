@@ -3,6 +3,7 @@
 
 #include "OSCcommon.h"
 #include "OSCMessage.h"
+#include "Packetizer.h"
 
 template <typename S>
 class OSCClient
@@ -20,18 +21,7 @@ public:
 
     void setup(S& s) { stream_ = &s; }
 
-    int16_t send(OSCMessage& msg)
-    {
-        memset(sendData, 0, kMaxOSCPacketSize);
-
-        if(encode(msg, sendData) < 0) return -1;
-
-        stream_->beginPacket(msg.getIpAddress(), msg.getPortNumber());
-        stream_->write(sendData, msg.getMessageSize());
-        stream_->endPacket();
-
-        return 0;
-    }
+    int16_t send(OSCMessage& msg);
 
 
 private:
@@ -72,8 +62,56 @@ private:
     }
 
     uint8_t sendData[kMaxOSCPacketSize];
+    Packetizer::Packer packer;
     S* stream_;
 };
+
+#if defined(TEENSYDUINO)
+template <>
+int16_t OSCClient<usb_serial_class>::send(OSCMessage& msg)
+{
+    memset(sendData, 0, kMaxOSCPacketSize);
+
+    if(encode(msg, sendData) < 0) return -1;
+
+    packer.pack(sendData, msg.getMessageSize());
+    stream_->write(packer.data(), packer.size());
+    // stream_->write(sendData, msg.getMessageSize());
+
+    return 0;
+}
+
+#elif defined(ESP_PLATFORM)
+
+template <>
+int16_t OSCClient<HardwareSerial>::send(OSCMessage& msg)
+{
+    memset(sendData, 0, kMaxOSCPacketSize);
+
+    if(encode(msg, sendData) < 0) return -1;
+
+    packer.pack(sendData, msg.getMessageSize());
+    stream_->write(packer.data(), packer.size());
+    // stream_->write(sendData, msg.getMessageSize());
+
+    return 0;
+}
+
+template <>
+int16_t OSCClient<WiFiUDP>::send(OSCMessage& msg)
+{
+    memset(sendData, 0, kMaxOSCPacketSize);
+
+    if(encode(msg, sendData) < 0) return -1;
+
+    stream_->beginPacket(msg.getIpAddress(), msg.getPortNumber());
+    stream_->write(sendData, msg.getMessageSize());
+    stream_->endPacket();
+
+    return 0;
+}
+
+#endif
 
 
 #endif // ARDUINOOSC_OSCCLIENT_H
