@@ -5,7 +5,7 @@ ArduinoOSC<HardwareSerial> osc; // Arduino Uno, ESP
 
 void setup()
 {
-    osc.begin(Serial, 115200);
+    osc.begin(Serial, 9600);
     osc.addCallback("/ard/aaa", &callback0);
     osc.addCallback("/test", &callback1);
     delay(5000);
@@ -19,6 +19,7 @@ void loop()
 void callback0(OSCMessage& m)
 {
     // get & send same osc data back
+    Serial.println("callbak");
 
     //create new osc message
     OSCMessage msg;

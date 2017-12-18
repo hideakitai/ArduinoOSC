@@ -12,8 +12,6 @@ class OSCArg
     OSCArg(char tag, void *data, uint16_t size, bool packSizeCulc)
     : _typeTag(tag), _dataSize(size)
     {
-        if(_typeTag == kTagBlob) _dataSize = size + 4;
-
         if (packSizeCulc) _alignmentSize = CULC_ALIGNMENT(size);
         else              _alignmentSize = size;
 

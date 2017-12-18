@@ -2,6 +2,7 @@
 #define ARDUINOOSC_OSCSERVER_H
 
 #include "Pattern.h"
+#include "Packetizer.h"
 
 template <typename S>
 class OSCServer
@@ -18,22 +19,7 @@ public:
 
     void setup(S& stream) { stream_ = &stream; }
 
-    int16_t parse()
-    {
-        const size_t size = stream_->parsePacket();
-        if (size == 0) return 0;
-
-        OSCMessage rcvMes;
-        rcvMes.setIpAddress(stream_->remoteIP());
-        rcvMes.setPortNumber(stream_->remotePort());
-
-        uint8_t data[size];
-        stream_->read(data, size);
-
-        if (decode(rcvMes, data) < 0) return -1;
-        adrMatch_.paternComp(rcvMes);
-        return size;
-    }
+    int16_t parse();
 
     void addCallback(const char* adr , Pattern::AdrFunc func )
     {
@@ -42,10 +28,11 @@ public:
 
 private:
 
+    // TODO: wait for all packets when it is Serial, because sometimes packets are devided into some pieces...
     int16_t decode(OSCMessage& m, const uint8_t* binData)
     {
         const uint8_t *packStartPtr = binData;
-        m.setOSCAddress((char*)packStartPtr);
+        m.setOSCAddress((char*)binData);
         packStartPtr += m.getAddrAlignmentSize();
         char *tmpTag = (char*)(packStartPtr + 1);
         uint8_t argsNum = strlen(tmpTag);
@@ -81,8 +68,83 @@ private:
         return 1;
     }
 
-    S* stream_;
     Pattern adrMatch_;
+    Packetizer::Unpacker unpacker;
+    S* stream_;
 };
+
+#if defined (TEENSYDUINO)
+
+template <>
+int16_t OSCServer<usb_serial_class>::parse()
+{
+    const size_t size = stream_->available();
+    if (size == 0) return 0;
+
+    OSCMessage rcvMes;
+
+    uint8_t data[size];
+    stream_->readBytes((char*)data, size);
+
+    unpacker.feed(data, size);
+
+    if (unpacker.available())
+    {
+        if (decode(rcvMes, unpacker.data()) < 0) return -1;
+        adrMatch_.paternComp(rcvMes);
+        unpacker.pop();
+        return size;
+    }
+
+    return 0;
+}
+
+#elif defined (ESP_PLATFORM) || defined(__AVR__)
+
+template <>
+int16_t OSCServer<HardwareSerial>::parse()
+{
+    const size_t size = stream_->available();
+    if (size == 0) return 0;
+
+    OSCMessage rcvMes;
+
+    uint8_t data[size];
+    stream_->readBytes((char*)data, size);
+
+    unpacker.feed(data, size);
+
+    if (unpacker.available())
+    {
+        if (decode(rcvMes, unpacker.data()) < 0) return -1;
+        adrMatch_.paternComp(rcvMes);
+        unpacker.pop();
+        return size;
+    }
+
+    return 0;
+}
+
+#ifdef ESP_PLATFORM
+template <>
+int16_t OSCServer<WiFiUDP>::parse()
+{
+    const size_t size = stream_->parsePacket();
+    if (size == 0) return 0;
+
+    OSCMessage rcvMes;
+    // rcvMes.setIpAddress(stream_->remoteIP());
+    // rcvMes.setPortNumber(stream_->remotePort());
+
+    uint8_t data[size];
+    stream_->read(data, size);
+
+    if (decode(rcvMes, data) < 0) return -1;
+    adrMatch_.paternComp(rcvMes);
+    return size;
+}
+
+#endif
+#endif
 
 #endif // ARDUINOOSC_OSCSERVER_H

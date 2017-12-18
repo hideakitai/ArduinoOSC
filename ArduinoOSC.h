@@ -47,14 +47,10 @@
 
 #if defined (__AVR__)
     #include "Ethernet.h"
-    // #include "ArduinoOSC/avr/OSCcommon.h"
-    // #include "ArduinoOSC/avr/OSCMessage.h"
-    // #include "ArduinoOSC/avr/OSCClient.h"
-    // #include "ArduinoOSC/avr/OSCServer.h"
-    #include "ArduinoOSC/OSCcommon.h"
-    #include "ArduinoOSC/OSCMessage.h"
-    #include "ArduinoOSC/OSCClient.h"
-    #include "ArduinoOSC/OSCServer.h"
+    #include "ArduinoOSC/avr/OSCcommon.h"
+    #include "ArduinoOSC/avr/OSCMessage.h"
+    #include "ArduinoOSC/avr/OSCClient.h"
+    #include "ArduinoOSC/avr/OSCServer.h"
 #elif defined (TEENSYDUINO) || defined (ESP_PLATFORM)
     #ifdef ESP_PLATFORM
         #include "WiFi.h"

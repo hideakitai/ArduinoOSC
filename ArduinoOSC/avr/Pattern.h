@@ -25,8 +25,13 @@ public:
     {
         for (uint8_t i=0 ; i<patternNum; i++)
         {
-            if (strcmp(addr[i] , m.getOSCAddress()) == 0)
-                execFunc(i , m);
+            Serial.print("match");
+            Serial.print(i);
+            Serial.print(" ");
+            Serial.println(addr[i]);
+            Serial.println("and");
+            Serial.println(m.getOSCAddress());
+            if (strcmp(addr[i] , m.getOSCAddress()) == 0) execFunc(i , m);
         }
     }
 

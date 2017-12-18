@@ -76,7 +76,6 @@ int16_t OSCClient<usb_serial_class>::send(OSCMessage& msg)
 
     packer.pack(sendData, msg.getMessageSize());
     stream_->write(packer.data(), packer.size());
-    // stream_->write(sendData, msg.getMessageSize());
 
     return 0;
 }
@@ -92,7 +91,6 @@ int16_t OSCClient<HardwareSerial>::send(OSCMessage& msg)
 
     packer.pack(sendData, msg.getMessageSize());
     stream_->write(packer.data(), packer.size());
-    // stream_->write(sendData, msg.getMessageSize());
 
     return 0;
 }
