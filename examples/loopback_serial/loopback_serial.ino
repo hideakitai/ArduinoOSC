@@ -8,6 +8,7 @@ void setup()
     osc.begin(Serial, 115200);
     osc.addCallback("/ard/aaa", &callback0);
     osc.addCallback("/test", &callback1);
+    delay(5000);
 }
 
 void loop()

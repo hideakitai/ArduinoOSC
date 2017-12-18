@@ -81,7 +81,7 @@ int16_t OSCClient<usb_serial_class>::send(OSCMessage& msg)
     return 0;
 }
 
-#elif defined(ESP_PLATFORM)
+#elif defined(ESP_PLATFORM) || defined(__AVR__)
 
 template <>
 int16_t OSCClient<HardwareSerial>::send(OSCMessage& msg)
@@ -97,6 +97,7 @@ int16_t OSCClient<HardwareSerial>::send(OSCMessage& msg)
     return 0;
 }
 
+#ifdef ESP_PLATFORM
 template <>
 int16_t OSCClient<WiFiUDP>::send(OSCMessage& msg)
 {
@@ -111,6 +112,7 @@ int16_t OSCClient<WiFiUDP>::send(OSCMessage& msg)
     return 0;
 }
 
+#endif
 #endif
 
 

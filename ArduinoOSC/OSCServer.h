@@ -86,26 +86,24 @@ int16_t OSCServer<usb_serial_class>::parse()
     uint8_t data[size];
     stream_->readBytes((char*)data, size);
 
-        Serial.println("unpacker available!!");
-
     unpacker.feed(data, size);
 
     if (unpacker.available())
     {
         if (decode(rcvMes, unpacker.data()) < 0) return -1;
         adrMatch_.paternComp(rcvMes);
+        unpacker.pop();
         return size;
     }
 
     return 0;
 }
 
-#elif defined (ESP_PLATFORM)
+#elif defined (ESP_PLATFORM) || defined(__AVR__)
 
 template <>
 int16_t OSCServer<HardwareSerial>::parse()
 {
-
     const size_t size = stream_->available();
     if (size == 0) return 0;
 
@@ -113,18 +111,21 @@ int16_t OSCServer<HardwareSerial>::parse()
 
     uint8_t data[size];
     stream_->readBytes((char*)data, size);
+
     unpacker.feed(data, size);
 
     if (unpacker.available())
     {
         if (decode(rcvMes, unpacker.data()) < 0) return -1;
         adrMatch_.paternComp(rcvMes);
+        unpacker.pop();
         return size;
     }
 
     return 0;
 }
 
+#ifdef ESP_PLATFORM
 template <>
 int16_t OSCServer<WiFiUDP>::parse()
 {
@@ -143,6 +144,7 @@ int16_t OSCServer<WiFiUDP>::parse()
     return size;
 }
 
+#endif
 #endif
 
 #endif // ARDUINOOSC_OSCSERVER_H

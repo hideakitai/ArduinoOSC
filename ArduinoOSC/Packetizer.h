@@ -10,8 +10,13 @@ namespace Packetizer
     const uint8_t ESCAPE_MASK = 0x20;
     const uint16_t ESCAPE_MARKER = 0xFFFF;
 
+#ifdef __AVR__
+    const uint16_t SEND_BUFFER_SIZE = 64;
+    const uint16_t READ_BUFFER_SIZE = 64;
+#else
     const uint16_t SEND_BUFFER_SIZE = 128;
     const uint16_t READ_BUFFER_SIZE = 128;
+#endif
 }
 
 namespace CRC
@@ -405,9 +410,6 @@ namespace Packetizer
                     {
                         uint8_t crc8 = CRC::getCRC8((uint8_t*)r_buffer.sbuf, r_buffer.size);
                         if (crc8 == data) _readBuffer.push(r_buffer);
-                        Serial.print(crc8);
-                        Serial.print(" ");
-                        Serial.println(data);
                     }
                     reset();
                     break;

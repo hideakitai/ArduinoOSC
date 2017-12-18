@@ -46,10 +46,15 @@
 
 
 #if defined (__AVR__)
-    #include "ArduinoOSC/avr/OSCcommon.h"
-    #include "ArduinoOSC/avr/OSCMessage.h"
-    #include "ArduinoOSC/avr/OSCClient.h"
-    #include "ArduinoOSC/avr/OSCServer.h"
+    #include "Ethernet.h"
+    // #include "ArduinoOSC/avr/OSCcommon.h"
+    // #include "ArduinoOSC/avr/OSCMessage.h"
+    // #include "ArduinoOSC/avr/OSCClient.h"
+    // #include "ArduinoOSC/avr/OSCServer.h"
+    #include "ArduinoOSC/OSCcommon.h"
+    #include "ArduinoOSC/OSCMessage.h"
+    #include "ArduinoOSC/OSCClient.h"
+    #include "ArduinoOSC/OSCServer.h"
 #elif defined (TEENSYDUINO) || defined (ESP_PLATFORM)
     #ifdef ESP_PLATFORM
         #include "WiFi.h"
@@ -69,7 +74,7 @@ class ArduinoOSC : public OSCServer<S>, public OSCClient<S>
 public:
     virtual ~ArduinoOSC() {}
 
-    void begin(S& stream, uint16_t port)
+    void begin(S& stream, uint32_t port)
     {
         stream.begin(port);
         OSCServer<S>::setup(stream);
