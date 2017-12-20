@@ -1,8 +1,6 @@
 # ArduinoOSC
 OSC library for Arduino (ESP, Teensy, etc.)
 
-## This library is WIP
-
 ArduinoOSC is OSC Library for Arduino, based on the great work [ArdOSC]().
 Though [ArdOSC]() can only be used with EthernetShield, ArduinoEthernet or device with W5100, this library expands the supported streams to WiFi, Ethernet, Serial (TBD), and the others which are derived from Stream class.
 For the [ArdOSC]() License, See ArduinoOSC/avr/Lisence.txt
