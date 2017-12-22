@@ -79,4 +79,18 @@ public:
 
 };
 
+#ifdef __AVR__
+// using ArduinoOSCUDP = ArduinoOSC<EthernetUDP>;
+using ArduinoOSCSerial = ArduinoOSC<HardwareSerial>;
+#elif defined (TEENSYDUINO)
+// using ArduinoOSCUDP = ArduinoOSC<EthernetUDP>;
+using ArduinoOSCSerial = ArduinoOSC<usb_serial_class>;
+// using ArduinoOSCSerial1 = ArduinoOSC<HardwareSerial1>;
+// using ArduinoOSCSerial2 = ArduinoOSC<HardwareSerial2>;
+// using ArduinoOSCSerial3 = ArduinoOSC<HardwareSerial3>;
+#elif defined (ESP_PLATFORM)
+using ArduinoOSCWiFi = ArduinoOSC<WiFiUDP>;
+using ArduinoOSCSerial = ArduinoOSC<HardwareSerial>;
+#endif
+
 #endif // ARDUINOOSC_H

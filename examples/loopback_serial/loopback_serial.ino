@@ -1,11 +1,12 @@
 #include "ArduinoOSC.h"
 
-ArduinoOSC<HardwareSerial> osc; // Arduino Uno, ESP
+ArduinoOSCSerial osc; // Arduino Uno, ESP
+// ArduinoOSC<HardwareSerial> osc; // Arduino Uno, ESP
 // ArduinoOSC<usb_serial_class> osc; // teensy (via USB Serial)
 
 void setup()
 {
-    osc.begin(Serial, 9600);
+    osc.begin(Serial, 115200);
     osc.addCallback("/ard/aaa", &callback0);
     osc.addCallback("/test", &callback1);
     delay(5000);

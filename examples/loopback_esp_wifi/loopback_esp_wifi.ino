@@ -1,9 +1,7 @@
-#include <WiFi.h>
-#include <WiFiUdp.h>
 #include <ArduinoOSC.h>
 
 WiFiUDP udp;
-ArduinoOSC<WiFiUDP> osc;
+ArduinoOSCWiFi osc;
 const char* ssid = "yout_ssid";
 const char* pwd = "your_password";
 const IPAddress ip(192, 168, 1, 201);

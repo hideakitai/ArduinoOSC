@@ -88,12 +88,13 @@ int16_t OSCServer<usb_serial_class>::parse()
 
     unpacker.feed(data, size);
 
-    if (unpacker.available())
+    while (unpacker.available())
     {
-        if (decode(rcvMes, unpacker.data()) < 0) return -1;
-        adrMatch_.paternComp(rcvMes);
+        if (decode(rcvMes, unpacker.data()) >= 0)
+        {
+            adrMatch_.paternComp(rcvMes);
+        }
         unpacker.pop();
-        return size;
     }
 
     return 0;
@@ -114,12 +115,13 @@ int16_t OSCServer<HardwareSerial>::parse()
 
     unpacker.feed(data, size);
 
-    if (unpacker.available())
+    while (unpacker.available())
     {
-        if (decode(rcvMes, unpacker.data()) < 0) return -1;
-        adrMatch_.paternComp(rcvMes);
+        if (decode(rcvMes, unpacker.data()) >= 0)
+        {
+            adrMatch_.paternComp(rcvMes);
+        }
         unpacker.pop();
-        return size;
     }
 
     return 0;
