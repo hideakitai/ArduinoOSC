@@ -134,12 +134,12 @@ public:
     inline const T& back() const // throw(Exception)
     {
         // if(empty()) throw Exception();
-        return *(queue_ + (tail_ - 1) % size_);
+        return *(queue_ + (size_ + tail_ - 1) % size_);
     }
     inline T& back() // throw(Exception)
     {
         // if(empty()) throw Exception();
-        return *(queue_ + (tail_ - 1) % size_);
+        return *(queue_ + (size_ + tail_ - 1) % size_);
     }
 
     inline const T& operator[] (uint8_t index) const
