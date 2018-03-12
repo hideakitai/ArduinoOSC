@@ -11,13 +11,8 @@ namespace Packetizer
     const uint8_t ESCAPE_MASK = 0x20;
     const uint16_t ESCAPE_MARKER = 0xFFFF;
 
-#ifdef __AVR__
     const uint16_t SEND_BUFFER_SIZE = 128;
     const uint16_t READ_BUFFER_SIZE = 128;
-#else
-    const uint16_t SEND_BUFFER_SIZE = 128;
-    const uint16_t READ_BUFFER_SIZE = 128;
-#endif
 }
 
 namespace CRC
@@ -65,8 +60,6 @@ namespace CRC
     // }
 }
 
-#ifndef __AVR__
-
 namespace std
 {
   void __throw_bad_alloc()
@@ -80,87 +73,6 @@ namespace std
     Serial.println(e);
   }
 }
-
-#else
-
-
-template<typename T, typename size_type = uint8_t>
-class RingQueue
-{
-public:
-
-    // struct Exception : public std::exception {
-    //     Exception() {}
-    //     virtual const char *what() const noexcept {
-    //         return "RingQueue is Empty";
-    //     }
-    // };
-
-    RingQueue(size_type size)
-    : size_(size)
-    {
-        head_ = tail_ = 0;
-        queue_ = new T[size_];
-    };
-    ~RingQueue()  { delete[] queue_; };
-
-    inline size_type capacity() const { return size_; };
-    inline size_type size() const { return (tail_ - head_); };
-    inline bool empty() const { return tail_ == head_; };
-    inline void clear() { head_ = 0; tail_ = 0; };
-    inline void pop()
-    {
-        if (size() == 0) return;
-        if (size() == 1) clear();
-        else head_++;
-    };
-    inline void push(T data)
-    {
-        queue_[(tail_++) % size_] = data;
-        if      (size() > size_) head_++;
-    };
-
-    inline const T& front() const // throw(Exception)
-    {
-        // if(empty()) throw Exception();
-        return *(queue_ + head_ % size_);
-    };
-    inline T& front() // throw(Exception)
-    {
-        // if(empty()) throw Exception();
-        return *(queue_ + head_ % size_);
-    };
-
-    inline const T& back() const // throw(Exception)
-    {
-        // if(empty()) throw Exception();
-        return *(queue_ + (size_ + tail_ - 1) % size_);
-    }
-    inline T& back() // throw(Exception)
-    {
-        // if(empty()) throw Exception();
-        return *(queue_ + (size_ + tail_ - 1) % size_);
-    }
-
-    inline const T& operator[] (uint8_t index) const
-    {
-        return *(queue_ + (head_ + index) % size_);
-    }
-    inline T& operator[] (uint8_t index)
-    {
-        return *(queue_ + (head_ + index) % size_);
-    }
-
-private:
-
-    volatile size_type head_;
-    volatile size_type tail_;
-    const    size_type size_;
-    T* queue_;
-};
-
-#endif
-
 
 
 namespace Packetizer
@@ -209,11 +121,7 @@ namespace Packetizer
         {
             if (isEscape)
             {
-                #ifdef __AVR__
-                RingQueue<uint16_t> escapes(size);
-                #else
                 std::queue<uint16_t> escapes;
-                #endif
                 for (size_t i = 0; i < size; ++i)
                     if ((data[i] == START_BYTE) || (data[i] == ESCAPE_BYTE))
                         escapes.push(i);
@@ -413,11 +321,7 @@ namespace Packetizer
         uint8_t count;
 
         Checker mode;
-        #ifdef __AVR__
-        RingQueue<Buffer> _readBuffer;
-        #else
         std::queue<Buffer> _readBuffer;
-        #endif
     };
 
 }
