@@ -1,11 +1,14 @@
 # ArduinoOSC
-OSC library for Arduino (ESP, Teensy, etc.)
+
+OSC library for Arduino (ESP, Teensy, AVR, etc.)
 
 ArduinoOSC is OSC Library for Arduino, based on the great work [ArdOSC]().
 Though [ArdOSC]() can only be used with EthernetShield, ArduinoEthernet or device with W5100, this library expands the supported streams to WiFi, Ethernet, Serial (TBD), and the others which are derived from Stream class.
 For the [ArdOSC]() License, See ArduinoOSC/avr/Lisence.txt
 
 ## Usage
+
+### via ```WiFiUdp```
 
 ``` c++
 #include <WiFi.h>
@@ -14,6 +17,7 @@ For the [ArdOSC]() License, See ArduinoOSC/avr/Lisence.txt
 
 WiFiUDP udp;
 ArduinoOSC<WiFiUDP> osc;
+
 const char* ssid = "your-ssid";
 const char* pwd = "your-password";
 const char* host = "xxx.xxx.xxx.xxx";
@@ -22,7 +26,6 @@ const int send_port = 12000;
 
 void setup()
 {
-    Serial.begin(115200);
     WiFi.begin(ssid, pwd);
     osc.begin(udp, recv_port);
     osc.addCallback("/ard/aaa", &callback);
@@ -35,53 +38,69 @@ void loop()
 
 void callback(OSCMessage& m)
 {
-    // get osc data
-
-    // remote ip address
-    IPAddress sourceIp = m.getIpAddress();
-    //get 1st argument(int32)
-    Serial.print("arg 0 : ");
-    Serial.println(m.getArgAsInt32(0));
-    //get 2nd argument(float)
-    Serial.print("arg 1 : ");
-    Serial.println(m.getArgAsFloat(1));
-    //get 3rd argument(string)
-    Serial.print("arg 2 : ");
-    Serial.println(m.getArgAsString(2));
-
-    // send osc data
-
     //create new osc message
     OSCMessage msg;
-    //set destination ip address & port no
     msg.beginMessage(sourceIp, send_port);
-    //set argument
+
+    // read & set same argument
     msg.setOSCAddress("/ard/aaa");
     msg.addArgInt32(m.getArgAsInt32(0));
     msg.addArgFloat(m.getArgAsFloat(1));
     msg.addArgString(m.getArgAsString(2));
+
+    // send osc message
+    osc.send(msg);
+}
+```
+
+### via ```Serial```
+
+```c++
+#include "ArduinoOSC.h"
+ArduinoOSCSerial osc;
+
+void setup()
+{
+    osc.begin(Serial, 115200);
+    osc.addCallback("/ard/aaa", &callback);
+    delay(5000);
+}
+
+void loop()
+{
+    osc.parse();
+}
+
+void callback(OSCMessage& m)
+{
+    //create new osc message
+    OSCMessage msg;
+    msg.beginMessage();
+
+    // read & set same argument
+    msg.setOSCAddress(m.getOSCAddress());
+    msg.addArgInt32(m.getArgAsInt32(0));
+    msg.addArgFloat(m.getArgAsFloat(1));
+    msg.addArgString(m.getArgAsString(2));
+
     //send osc message
     osc.send(msg);
 }
 ```
 
-
-## Notation
-
-only loopback.ino with ESP32 module can be run in example folder
-
-
 ## Supported Communication Library
 
 - WiFiUdp (ESP)
 - EthernetUDP
-- Serial
+- Serial (Max7 example included)
+
 
 ## Tested Platform
 
 - EPS32 w/ arduino-esp32
 - Teensy 3.2, 3.5, 3.6
 - Arduino Uno
+
 
 ## Limitation for AVR Platforms
 
