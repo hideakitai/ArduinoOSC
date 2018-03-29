@@ -1,4 +1,13 @@
 #pragma once
+
+#ifdef max
+#undef max
+#endif
+#ifdef min
+#undef min
+#endif
+
+#include <algorithm>
 #include <queue>
 
 namespace Packetizer
@@ -60,19 +69,19 @@ namespace CRC
     // }
 }
 
-namespace std
-{
-  void __throw_bad_alloc()
-  {
-    Serial.println("Unable to allocate memory");
-  }
+// namespace std
+// {
+//   void __throw_bad_alloc()
+//   {
+//     Serial.println("Unable to allocate memory");
+//   }
 
-  void __throw_length_error(char const* e)
-  {
-    Serial.print("Length Error :");
-    Serial.println(e);
-  }
-}
+//   void __throw_length_error(char const* e)
+//   {
+//     Serial.print("Length Error :");
+//     Serial.println(e);
+//   }
+// }
 
 
 namespace Packetizer
