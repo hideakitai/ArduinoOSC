@@ -58,7 +58,6 @@
     #elif defined (ESP8266)
         #include "ESP8266WiFi.h"
         #include "WiFiUDP.h"
-        #define ESP_PLATFORM
     #endif
     #include "ArduinoOSC/OSCcommon.h"
     #include "ArduinoOSC/OSCMessage.h"
@@ -92,7 +91,7 @@ using ArduinoOSCSerial = ArduinoOSC<usb_serial_class>;
 // using ArduinoOSCSerial1 = ArduinoOSC<HardwareSerial1>;
 // using ArduinoOSCSerial2 = ArduinoOSC<HardwareSerial2>;
 // using ArduinoOSCSerial3 = ArduinoOSC<HardwareSerial3>;
-#elif defined (ESP_PLATFORM)
+#elif defined (ESP_PLATFORM) || defined (ESP8266)
 using ArduinoOSCWiFi = ArduinoOSC<WiFiUDP>;
 using ArduinoOSCSerial = ArduinoOSC<HardwareSerial>;
 #endif

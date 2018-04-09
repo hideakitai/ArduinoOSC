@@ -100,7 +100,7 @@ int16_t OSCServer<usb_serial_class>::parse()
     return 0;
 }
 
-#elif defined (ESP_PLATFORM) || defined(__AVR__)
+#elif defined (ESP_PLATFORM) || defined (ESP8266) || defined (__AVR__)
 
 template <>
 int16_t OSCServer<HardwareSerial>::parse()
@@ -127,7 +127,7 @@ int16_t OSCServer<HardwareSerial>::parse()
     return 0;
 }
 
-#ifdef ESP_PLATFORM
+#if defined (ESP_PLATFORM) || defined (ESP8266)
 template <>
 int16_t OSCServer<WiFiUDP>::parse()
 {
