@@ -9,7 +9,7 @@ class OSCArg
   public:
     OSCArg() {}
     OSCArg(char tag) : _typeTag(tag) {}
-    OSCArg(char tag, void *data, uint16_t size, bool packSizeCulc)
+    OSCArg(const char tag, const void *data, const uint16_t size, const bool packSizeCulc)
     : _typeTag(tag), _dataSize(size)
     {
         if (packSizeCulc) _alignmentSize = CULC_ALIGNMENT(size);
