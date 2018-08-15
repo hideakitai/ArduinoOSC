@@ -64,7 +64,6 @@ function anything(a)
 				arr = new Int32Array(buffer);
 				arr[0] = args[i];
 			}
-            else 
 			{
 				arr = new Int32Array(buffer);
 				var arr_ref = new Float32Array(buffer);
