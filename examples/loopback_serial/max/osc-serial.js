@@ -64,15 +64,16 @@ function anything(a)
 				arr = new Int32Array(buffer);
 				arr[0] = args[i];
 			}
+            else
 			{
 				arr = new Int32Array(buffer);
 				var arr_ref = new Float32Array(buffer);
 				arr_ref[0] = args[i];
 			}
-            outs.push((arr[0] & 0xFF000000) >> 24);
-            outs.push((arr[0] & 0x00FF0000) >> 16);
-            outs.push((arr[0] & 0x0000FF00) >>  8);
-            outs.push((arr[0] & 0x000000FF) >>  0);
+            outs.push((arr[0] & 0xFF000000) >>> 24);
+            outs.push((arr[0] & 0x00FF0000) >>> 16);
+            outs.push((arr[0] & 0x0000FF00) >>>  8);
+            outs.push((arr[0] & 0x000000FF) >>>  0);
         }
     }
 
