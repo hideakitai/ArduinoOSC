@@ -81,8 +81,6 @@ int16_t OSCServer<usb_serial_class>::parse()
     const size_t size = stream_->available();
     if (size == 0) return 0;
 
-    OSCMessage rcvMes;
-
     uint8_t data[size];
     stream_->readBytes((char*)data, size);
 
@@ -90,6 +88,7 @@ int16_t OSCServer<usb_serial_class>::parse()
 
     while (unpacker.available())
     {
+        OSCMessage rcvMes;
         if (decode(rcvMes, unpacker.data()) >= 0)
         {
             adrMatch_.paternComp(rcvMes);
@@ -108,8 +107,6 @@ int16_t OSCServer<HardwareSerial>::parse()
     const size_t size = stream_->available();
     if (size == 0) return 0;
 
-    OSCMessage rcvMes;
-
     uint8_t data[size];
     stream_->readBytes((char*)data, size);
 
@@ -117,6 +114,7 @@ int16_t OSCServer<HardwareSerial>::parse()
 
     while (unpacker.available())
     {
+        OSCMessage rcvMes;
         if (decode(rcvMes, unpacker.data()) >= 0)
         {
             adrMatch_.paternComp(rcvMes);
@@ -134,13 +132,13 @@ int16_t OSCServer<WiFiUDP>::parse()
     const size_t size = stream_->parsePacket();
     if (size == 0) return 0;
 
-    OSCMessage rcvMes;
     // rcvMes.setIpAddress(stream_->remoteIP());
     // rcvMes.setPortNumber(stream_->remotePort());
 
     uint8_t data[size];
     stream_->read(data, size);
 
+    OSCMessage rcvMes;
     if (decode(rcvMes, data) < 0) return -1;
     adrMatch_.paternComp(rcvMes);
     return size;
