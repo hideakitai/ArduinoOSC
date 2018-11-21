@@ -13,6 +13,7 @@ namespace Packetizer
 
     const uint16_t SEND_BUFFER_SIZE = 128;
     const uint16_t READ_BUFFER_SIZE = 128;
+    const uint16_t READ_BUFFER_QUEUE_SIZE = 3;
 }
 
 namespace CRC
@@ -307,7 +308,7 @@ namespace Packetizer
         uint8_t count;
 
         Checker mode;
-        RingQueue<Buffer> _readBuffer {READ_BUFFER_SIZE};
+        RingQueue<Buffer> _readBuffer {READ_BUFFER_QUEUE_SIZE};
     };
 
 }
