@@ -133,7 +133,7 @@ public:
     uint16_t getTypeTagAlignmentSize() { return type_tag_len_; }
 
     uint16_t getNumArgs() { return args_size_; }
-    char getArgTypeTag(int16_t index)
+    char getArgTypeTag(uint16_t index)
     {
         if(index >= args_size_) return -1;
         return args_[index].getTypeTag();
@@ -147,7 +147,7 @@ public:
     }
 
 
-    int32_t getArgAsInt32(int16_t index)
+    int32_t getArgAsInt32(uint16_t index)
     {
         if (index >= args_size_) return -1;
         FourByteValue tmpValue;
@@ -156,7 +156,7 @@ public:
         return tmpValue.i;
     }
 
-    float getArgAsFloat(int16_t index)
+    float getArgAsFloat(uint16_t index)
     {
         if (index >= args_size_) return -1;
         FourByteValue tmpValue;
@@ -165,7 +165,7 @@ public:
         return tmpValue.f;
     }
 
-    String getArgAsString(int16_t index)
+    String getArgAsString(uint16_t index)
     {
         return String((const char*)args_[index].getArgData());
     }

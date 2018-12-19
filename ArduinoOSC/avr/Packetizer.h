@@ -64,12 +64,13 @@ namespace CRC
 
 namespace Packetizer
 {
-    class Packer
+    template <uint8_t PACKET_DATA_SIZE>
+    class Packer_
     {
     public:
 
-        Packer(Checker m = Checker::CRC8) : mode(m) {}
-        ~Packer() {}
+        Packer_(Checker m = Checker::CRC8) : mode(m) {}
+        ~Packer_() {}
 
         void setCheckMode(Checker m) { mode = m; }
 
@@ -80,7 +81,7 @@ namespace Packetizer
 
         const uint8_t* pack(uint8_t* sbuf, uint8_t size, const uint8_t& index = 0)
         {
-            memset(pack_buffer, 0, READ_BUFFER_SIZE);
+            memset(pack_buffer, 0, PACKET_DATA_SIZE);
             count = 0;
 
             append((uint8_t)START_BYTE, false);
@@ -104,11 +105,11 @@ namespace Packetizer
 
     protected:
 
-        void append(const uint8_t* const data, const uint16_t& size, bool isEscape = true)
+        void append(const uint8_t* const data, const size_t& size, bool isEscape = true)
         {
             if (isEscape)
             {
-                RingQueue<uint16_t> escapes(size);
+                RingQueue<uint16_t, PACKET_DATA_SIZE> escapes;
                 for (size_t i = 0; i < size; ++i)
                     if ((data[i] == START_BYTE) || (data[i] == ESCAPE_BYTE))
                         escapes.push(i);
@@ -161,24 +162,21 @@ namespace Packetizer
 
         Checker mode;
 
-        uint8_t pack_buffer[SEND_BUFFER_SIZE];
+        uint8_t pack_buffer[PACKET_DATA_SIZE];
         size_t count;
     };
 
-}
 
-
-namespace Packetizer
-{
-    class Unpacker
+    template <uint8_t BUFFER_QUEUE_SIZE, uint8_t PACKET_DATA_SIZE>
+    class Unpacker_
     {
     public:
 
-        Unpacker(Checker m = Checker::CRC8)
+        Unpacker_(Checker m = Checker::CRC8)
         : r_buffer(), state(State::Start), b_escape(false) , sum(0), count(0), mode(m)
         {}
 
-        ~Unpacker() {}
+        ~Unpacker_() {}
 
         size_t available() { return _readBuffer.size(); }
         uint8_t index() { return _readBuffer.front().index; }
@@ -283,11 +281,12 @@ namespace Packetizer
 
     protected:
 
+        template <size_t BUFFER_SIZE>
         struct Buffer
         {
             uint8_t index;
             uint8_t size;
-            uint8_t sbuf[READ_BUFFER_SIZE];
+            uint8_t sbuf[BUFFER_SIZE];
             uint8_t count;
 
             void write(uint8_t* data, uint8_t size)
@@ -296,10 +295,10 @@ namespace Packetizer
                 count += size;
             }
 
-            void clear() { index = size = count = 0; memset(sbuf, 0, READ_BUFFER_SIZE); }
+            void clear() { index = size = count = 0; memset(sbuf, 0, BUFFER_SIZE); }
         };
 
-        Buffer r_buffer;
+        Buffer<PACKET_DATA_SIZE> r_buffer;
 
         State state;
         bool b_escape;
@@ -308,7 +307,7 @@ namespace Packetizer
         uint8_t count;
 
         Checker mode;
-        RingQueue<Buffer> _readBuffer {READ_BUFFER_QUEUE_SIZE};
+        RingQueue<Buffer<PACKET_DATA_SIZE>, BUFFER_QUEUE_SIZE> _readBuffer;
     };
-
 }
+

@@ -62,7 +62,7 @@ private:
     }
 
     uint8_t sendData[kMaxOSCPacketSize];
-    Packetizer::Packer packer;
+    Packetizer::Packer_<kMaxOSCPacketSize> packer;
     S* stream_;
 };
 

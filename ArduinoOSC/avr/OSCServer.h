@@ -69,7 +69,7 @@ private:
     }
 
     Pattern adrMatch_;
-    Packetizer::Unpacker unpacker;
+    Packetizer::Unpacker_<2, 128> unpacker;
     S* stream_;
 };
 

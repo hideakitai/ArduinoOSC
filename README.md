@@ -16,7 +16,7 @@ For the [ArdOSC]() License, See ArduinoOSC/avr/Lisence.txt
 #include <ArduinoOSC.h>
 
 WiFiUDP udp;
-ArduinoOSC<WiFiUDP> osc;
+ArduinoOSCWiFi osc;
 
 const char* ssid = "your-ssid";
 const char* pwd = "your-password";
