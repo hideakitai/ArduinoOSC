@@ -1,106 +1,62 @@
-/*
-
- ArdOSC - OSC Library for Arduino.
-
- This library works with arduino firmware0018.
-
- 2010/02/01 version 2.0 changed Project OSCClass -> ArdOSC
- 2009/03/22 version 1.0.1 add errror process。change Doc.
- 2009/03/21 version 1.0.0
-
-
- -------- Lisence -----------------------------------------------------------
-
- ArdOSC
-
- The MIT License
-
- Copyright (c) 2009 - 2010 recotana( http://recotana.com ) All right reserved
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
-
-
-
- Thanks "Open Sound Control org"  http://opensoundcontrol.org/
-
- */
-
 #ifndef ARDUINOOSC_H
 #define ARDUINOOSC_H
 
+#include "ArduinoOSC/OscServer.h"
+#include "ArduinoOSC/OscClient.h"
 
-#if defined (__AVR__)
-    #include "Ethernet.h"
-    #include "ArduinoOSC/avr/OSCcommon.h"
-    #include "ArduinoOSC/avr/OSCMessage.h"
-    #include "ArduinoOSC/avr/OSCClient.h"
-    #include "ArduinoOSC/avr/OSCServer.h"
-#elif defined (TEENSYDUINO) || defined (ESP_PLATFORM) || defined (ESP8266)
-    #ifdef ESP_PLATFORM
-        #include "WiFi.h"
-        #include "WiFiUdp.h"
-    #elif defined (ESP8266)
-        #include "ESP8266WiFi.h"
-        #include "WiFiUdp.h"
-    #endif
-    #include "ArduinoOSC/OSCcommon.h"
-    #include "ArduinoOSC/OSCMessage.h"
-    #include "ArduinoOSC/OSCClient.h"
-    #include "ArduinoOSC/OSCServer.h"
-    #ifdef TEENSYDUINO // dirty
-        namespace std
-        {
-            void __throw_bad_alloc() { Serial.println("Unable to allocate memory"); }
-            // void __throw_length_error(char const* e) { Serial.print("Length Error :"); Serial.println(e); }
-        }
-    #endif
-#else
-    #error UNSUPPORTED PLATFORM
+#ifdef TEENSYDUINO // dirty
+    namespace std
+    {
+        void __throw_bad_alloc() { _GLIBCXX_THROW_OR_ABORT(bad_alloc()); }
+        void __throw_length_error(const char* __s __attribute__((unused))) { _GLIBCXX_THROW_OR_ABORT(length_error(_(__s))); }
+        void __throw_bad_function_call() { _GLIBCXX_THROW_OR_ABORT(bad_function_call()); }
+    }
 #endif
 
-template <typename S>
-class ArduinoOSC : public OSCServer<S>, public OSCClient<S>
+namespace ArduinoOSC
 {
-public:
-    virtual ~ArduinoOSC() {}
-
-    void begin(S& stream, uint32_t port)
+    bool match(const String& pattern, const String& test, bool full = true)
     {
-        stream.begin(port);
-        OSCServer<S>::setup(stream);
-        OSCClient<S>::setup(stream);
+        if (full) return oscpkt::fullPatternMatch(pattern.c_str(), test.c_str());
+        else      return oscpkt::partialPatternMatch(pattern.c_str(), test.c_str());
     }
 
-};
+    template <typename S>
+    class ArduinoOSCUdp : public OscServerUdp<S>, public OscClientUdp<S>
+    {
+    public:
+        void begin(uint32_t port)
+        {
+            stream.begin(port);
+            this->OscServerUdp<S>::attach(stream);
+            this->OscClientUdp<S>::attach(stream);
+        }
+    private:
+        S stream;
+    };
 
-#ifdef __AVR__
-// using ArduinoOSCUDP = ArduinoOSC<EthernetUDP>;
-using ArduinoOSCSerial = ArduinoOSC<HardwareSerial>;
-#elif defined (TEENSYDUINO)
-// using ArduinoOSCUDP = ArduinoOSC<EthernetUDP>;
-using ArduinoOSCSerial = ArduinoOSC<usb_serial_class>;
-// using ArduinoOSCSerial1 = ArduinoOSC<HardwareSerial1>;
-// using ArduinoOSCSerial2 = ArduinoOSC<HardwareSerial2>;
-// using ArduinoOSCSerial3 = ArduinoOSC<HardwareSerial3>;
-#elif defined (ESP_PLATFORM) || defined (ESP8266)
-using ArduinoOSCWiFi = ArduinoOSC<WiFiUDP>;
-using ArduinoOSCSerial = ArduinoOSC<HardwareSerial>;
+    class ArduinoOSCSerial : public OscServerSerial, public OscClientSerial
+    {
+    public:
+        void attach(Stream& s)
+        {
+            stream = &s;
+            this->OscServerSerial::attach(*stream);
+            this->OscClientSerial::attach(*stream);
+        }
+    private:
+        Stream* stream;
+    };
+}
+
+#if defined (ESP_PLATFORM) || defined (ESP8266)
+using OscWiFi = ArduinoOSC::ArduinoOSCUdp<WiFiUDP>;
+#elif defined (TEENSYDUINO) || defined (__AVR__)
+using OscEthernet = ArduinoOSC::ArduinoOSCUdp<EthernetUDP>;
 #endif
+using OscSerial = ArduinoOSC::ArduinoOSCSerial;
+using OscMessage = ArduinoOSC::OscMessage;
+using OscReader = ArduinoOSC::OscReader;
+using OscWriter = ArduinoOSC::OscWriter;
 
 #endif // ARDUINOOSC_H

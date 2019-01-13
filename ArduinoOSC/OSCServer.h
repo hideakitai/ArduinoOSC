@@ -1,150 +1,114 @@
+#pragma once
 #ifndef ARDUINOOSC_OSCSERVER_H
 #define ARDUINOOSC_OSCSERVER_H
 
-#include "Pattern.h"
-#include "Packetizer.h"
+#ifdef ESP_PLATFORM
+    #include <WiFi.h>
+    #include <WiFiUdp.h>
+#elif defined (ESP8266)
+    #include <ESP8266WiFi.h>
+    #include <WiFiUdp.h>
+#elif defined (TEENSYDUINO) || defined (__AVR__)
+    #include <Ethernet.h>
+    #include <EthernetUdp.h>
+#endif
 
-template <typename S>
-class OSCServer
+#include "lib/oscpkt.hh"
+#include "lib/Packetizer.h"
+
+namespace ArduinoOSC
 {
-public:
+    using OscMessage = oscpkt::Message;
+    using OscReader = oscpkt::PacketReader;
 
-    virtual ~OSCServer() {}
-
-    bool begin(S& stream, uint16_t port)
+    template <typename S>
+    class OscServer
     {
-        setup(stream);
-        return stream_->begin(port);
-    }
+        #ifdef __AVR__
+        typedef void (*CallbackType)(OscMessage& m);
+        struct Map { String addr; CallbackType func; };
+        using CallbackMap = RingBuffer<Map, 8>;
+        #else
+        using CallbackType = std::function<void(OscMessage& m)>;
+        struct Map { String addr; CallbackType func; };
+        using CallbackMap = std::vector<Map>;
+        #endif
+    public:
+        virtual ~OscServer() {}
+        void attach(S& s) { stream = &s; }
+        void subscribe(const String& addr, CallbackType value) { callbacks.push_back({addr, value}); }
 
-    void setup(S& stream) { stream_ = &stream; }
+        virtual void parse() = 0;
+    protected:
+        OscReader reader;
+        CallbackMap callbacks;
+        S* stream;
+    };
 
-    int16_t parse();
-
-    void addCallback(const char* adr , Pattern::AdrFunc func )
+    template <typename S>
+    class OscServerUdp : public OscServer<S>
     {
-        adrMatch_.addOscAddress(adr, func);
-    }
-
-private:
-
-    // TODO: wait for all packets when it is Serial, because sometimes packets are devided into some pieces...
-    int16_t decode(OSCMessage& m, const uint8_t* binData)
-    {
-        const uint8_t *packStartPtr = binData;
-        m.setOSCAddress((char*)binData);
-        packStartPtr += m.getAddrAlignmentSize();
-        char *tmpTag = (char*)(packStartPtr + 1);
-        uint8_t argsNum = strlen(tmpTag);
-        uint16_t typeTagAlignSize = CULC_ALIGNMENT(argsNum+1);
-        packStartPtr += typeTagAlignSize;
-
-        for (uint8_t i = 0 ; i < argsNum ; ++i)
+    public:
+        virtual ~OscServerUdp() {}
+        virtual void parse()
         {
-            switch (tmpTag[i])
-            {
-                case kTagInt32:
-                {
-                    packStartPtr += m.setArgData( kTagInt32 , (void*)packStartPtr , 4 , false );
-                    break;
-                }
+            const size_t size = this->stream->parsePacket();
+            if (size == 0) return;
 
-                case kTagFloat:
+            uint8_t data[size];
+            this->stream->read(data, size);
+
+            this->reader.init(data, size);
+            if (OscMessage* msg = this->reader.decode())
+            {
+                if (msg->available())
                 {
-                    packStartPtr += m.setArgData( kTagFloat , (void*)packStartPtr , 4 , false );
-                    break;
+                    msg->ip(this->stream->S::remoteIP());
+                    msg->port((uint16_t)this->stream->S::remotePort());
+                    for (auto& c : this->callbacks) if (msg->match(c.addr)) c.func(*msg);
                 }
-                case kTagString:
+                else
                 {
-                    packStartPtr += m.setArgData( kTagString , (void*)packStartPtr , strlen((char*)packStartPtr) , true );
-                    break;
-                }
-                default:
-                {
-                    break;
+                    Serial.println("message decode error invalid");
                 }
             }
+            else
+            {
+                Serial.println("message decode error nullptr");
+            }
         }
-        return 1;
-    }
+    };
 
-    Pattern adrMatch_;
-    Packetizer::Unpacker unpacker;
-    S* stream_;
-};
-
-#if defined (TEENSYDUINO)
-
-template <>
-int16_t OSCServer<usb_serial_class>::parse()
-{
-    const size_t size = stream_->available();
-    if (size == 0) return 0;
-
-    uint8_t data[size];
-    stream_->readBytes((char*)data, size);
-
-    unpacker.feed(data, size);
-
-    while (unpacker.available())
+    class OscServerSerial : public OscServer<Stream>
     {
-        OSCMessage rcvMes;
-        if (decode(rcvMes, unpacker.data()) >= 0)
+    public:
+        virtual ~OscServerSerial() {}
+        virtual void parse()
         {
-            adrMatch_.paternComp(rcvMes);
+            const size_t size = stream->available();
+            if (size == 0) return;
+
+            uint8_t data[size];
+            stream->readBytes((char*)data, size);
+
+            unpacker.feed(data, size);
+            while (unpacker.available())
+            {
+                reader.init(unpacker.data(), unpacker.size());
+                if (OscMessage* msg = reader.decode())
+                    if (msg->available())
+                        for (auto& c : callbacks)
+                            if (msg->match(c.addr)) c.func(*msg);
+                unpacker.pop();
+            }
         }
-        unpacker.pop();
-    }
-
-    return 0;
+    private:
+        #ifdef __AVR__
+        Packetizer::Unpacker_<1, 64, 0> unpacker;
+        #else
+        Packetizer::Unpacker unpacker;
+        #endif
+    };
 }
-
-#elif defined (ESP_PLATFORM) || defined (ESP8266) || defined(__AVR__)
-
-template <>
-int16_t OSCServer<HardwareSerial>::parse()
-{
-    const size_t size = stream_->available();
-    if (size == 0) return 0;
-
-    uint8_t data[size];
-    stream_->readBytes((char*)data, size);
-
-    unpacker.feed(data, size);
-
-    while (unpacker.available())
-    {
-        OSCMessage rcvMes;
-        if (decode(rcvMes, unpacker.data()) >= 0)
-        {
-            adrMatch_.paternComp(rcvMes);
-        }
-        unpacker.pop();
-    }
-
-    return 0;
-}
-
-#if defined (ESP_PLATFORM) || defined (ESP8266)
-template <>
-int16_t OSCServer<WiFiUDP>::parse()
-{
-    const size_t size = stream_->parsePacket();
-    if (size == 0) return 0;
-
-    // rcvMes.setIpAddress(stream_->remoteIP());
-    // rcvMes.setPortNumber(stream_->remotePort());
-
-    uint8_t data[size];
-    stream_->read(data, size);
-
-    OSCMessage rcvMes;
-    if (decode(rcvMes, data) < 0) return -1;
-    adrMatch_.paternComp(rcvMes);
-    return size;
-}
-
-#endif
-#endif
 
 #endif // ARDUINOOSC_OSCSERVER_H

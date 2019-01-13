@@ -1,117 +1,119 @@
+#pragma once
 #ifndef ARDUINOOSC_OSCCLIENT_H
 #define ARDUINOOSC_OSCCLIENT_H
 
-#include "OSCcommon.h"
-#include "OSCMessage.h"
-#include "Packetizer.h"
+#ifdef ESP_PLATFORM
+    #include <WiFi.h>
+    #include <WiFiUdp.h>
+#elif defined (ESP8266)
+    #include <ESP8266WiFi.h>
+    #include <WiFiUdp.h>
+#elif defined (TEENSYDUINO) || defined (__AVR__)
+    #include <Ethernet.h>
+    #include <EthernetUdp.h>
+#endif
 
-template <typename S>
-class OSCClient
+#include "lib/oscpkt.hh"
+#include "lib/Packetizer.h"
+
+namespace ArduinoOSC
 {
+    using OscMessage = oscpkt::Message;
+    using TimeTag = oscpkt::TimeTag;
 
-public:
-
-    virtual ~OSCClient() {}
-
-    bool begin(S& stream, uint16_t port)
+    class OscWriter
     {
-        setup(stream);
-        return stream_->begin(port);
-    }
-
-    void setup(S& s) { stream_ = &s; }
-
-    int16_t send(OSCMessage& msg);
-
-
-private:
-
-    int16_t encode(OSCMessage& msg, uint8_t *binData)
-    {
-        uint8_t *packStartPtr = binData;
-
-        // OSC Address(String) -> BIN Encode
-        memcpy(binData, msg.getOSCAddress(), msg.getOSCAddrSize());
-        packStartPtr += msg.getAddrAlignmentSize();
-
-        // TypeTag(String) -> BIN Encode
-        *packStartPtr = ',';
-        for ( uint8_t i=0 ; i<msg.getNumArgs(); i++ ) packStartPtr[i+1] = msg.getArgTypeTag(i);
-        packStartPtr += msg.getTypeTagAlignmentSize();
-
-        // Auguments -> BIN Encode
-        for ( uint8_t i=0 ; i < msg.getNumArgs(); i++ )
+    public:
+        OscWriter() { pw.init(); }
+        OscWriter& init() { pw.init(); return *this; }
+        OscWriter& encode(const OscMessage &msg) { pw.encode(msg); return *this; }
+        uint32_t size() { return pw.size(); }
+        const uint8_t* data() { return (const uint8_t*)pw.data(); }
+        OscWriter& begin_bundle(TimeTag ts = TimeTag::immediate())
         {
-            switch (msg.getArgTypeTag(i))
-            {
-                case kTagInt32:
-                case kTagFloat:
-                case kTagString:
-                {
-                    memcpy(packStartPtr, msg.getArg(i).getArgData(), msg.getArgAlignmentSize(i));
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            packStartPtr += msg.getArgAlignmentSize(i);
+            pw.begin_bundle(ts);
+            return *this;
         }
-        return 1;
-    }
+        OscWriter& end_bundle()
+        {
+            pw.end_bundle();
+            return *this;
+        }
+    private:
+        oscpkt::PacketWriter pw;
+    };
 
-    uint8_t sendData[kMaxOSCPacketSize];
-    Packetizer::Packer packer;
-    S* stream_;
-};
 
-#if defined(TEENSYDUINO)
-template <>
-int16_t OSCClient<usb_serial_class>::send(OSCMessage& msg)
-{
-    memset(sendData, 0, kMaxOSCPacketSize);
+    template <typename S>
+    class OscClient
+    {
+    public:
+        virtual ~OscClient() {}
+        void attach(S& s) { stream = &s; }
+    protected:
+        OscWriter writer;
+        S* stream;
+    };
 
-    if(encode(msg, sendData) < 0) return -1;
-
-    packer.pack(sendData, msg.getMessageSize());
-    stream_->write(packer.data(), packer.size());
-
-    return 0;
-}
-
-#elif defined(ESP_PLATFORM) || defined (ESP8266) || defined(__AVR__)
-
-template <>
-int16_t OSCClient<HardwareSerial>::send(OSCMessage& msg)
-{
-    memset(sendData, 0, kMaxOSCPacketSize);
-
-    if(encode(msg, sendData) < 0) return -1;
-
-    packer.pack(sendData, msg.getMessageSize());
-    stream_->write(packer.data(), packer.size());
-
-    return 0;
-}
-
-#if defined (ESP_PLATFORM) || defined (ESP8266)
-template <>
-int16_t OSCClient<WiFiUDP>::send(OSCMessage& msg)
-{
-    memset(sendData, 0, kMaxOSCPacketSize);
-
-    if(encode(msg, sendData) < 0) return -1;
-
-    stream_->beginPacket(msg.getIpAddress(), msg.getPortNumber());
-    stream_->write(sendData, msg.getMessageSize());
-    stream_->endPacket();
-
-    return 0;
-}
-
+    template <typename S>
+    class OscClientUdp : public OscClient<S>
+    {
+    public:
+        ~OscClientUdp() {}
+#ifndef __AVR__
+        template <typename... Rest>
+        void send(const String& ip, uint16_t port, const String& addr, Rest&&... rest)
+        {
+            OscMessage msg(ip, port, addr);
+            send(msg, std::forward<Rest>(rest)...);
+        }
+        template <typename First, typename... Rest>
+        void send(OscMessage& msg, First&& first, Rest&&... rest)
+        {
+            msg.push(first);
+            send(msg, std::forward<Rest>(rest)...);
+        }
 #endif
-#endif
+        void send(OscMessage& msg)
+        {
+            this->writer.init().encode(msg);
+            this->stream->beginPacket(msg.ip().c_str(), msg.port());
+            this->stream->write(this->writer.data(), this->writer.size());
+            this->stream->endPacket();
+        }
+    };
 
+    class OscClientSerial : public OscClient<Stream>
+    {
+    public:
+        ~OscClientSerial() {}
+#ifndef __AVR__
+        template <typename... Rest>
+        void send(const String& addr, Rest&&... rest)
+        {
+            OscMessage msg(addr);
+            send(msg, std::forward<Rest>(rest)...);
+        }
+        template <typename First, typename... Rest>
+        void send(OscMessage& msg, First&& first, Rest&&... rest)
+        {
+            msg.push(first);
+            send(msg, std::forward<Rest>(rest)...);
+        }
+#endif
+        void send(OscMessage& msg)
+        {
+            this->writer.init().encode(msg);
+            this->packer.pack(this->writer.data(), this->writer.size());
+            this->stream->write(this->packer.data(), this->packer.size());
+        }
+    private:
+        #ifdef __AVR__
+        Packetizer::Packer_<64> packer;
+        #else
+        Packetizer::Packer packer;
+        #endif
+    };
+}
 
 #endif // ARDUINOOSC_OSCCLIENT_H
