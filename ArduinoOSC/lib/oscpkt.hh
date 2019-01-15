@@ -82,7 +82,7 @@ namespace oscpkt
 {
     struct ArgumentType { size_t first; size_t second; };
     using ArgumentQueue = RingBuffer<ArgumentType, 3>;
-    using Blob = RingBuffer<char, 64>;
+    using Blob = RingBuffer<char, 128>;
     class Message;
     using MessageQueue = RingBuffer<Message, 1>;
     using MessageIterator = Message*;
