@@ -1,8 +1,8 @@
 #ifndef ARDUINOOSC_H
 #define ARDUINOOSC_H
 
-#include "ArduinoOSC/OscServer.h"
-#include "ArduinoOSC/OscClient.h"
+#include "ArduinoOSC/OSCServer.h"
+#include "ArduinoOSC/OSCClient.h"
 
 #ifdef TEENSYDUINO // dirty
     namespace std
