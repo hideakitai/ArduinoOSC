@@ -1,7 +1,10 @@
 #pragma once
 
-#ifndef RINGBUFFER_H
-#define RINGBUFFER_H
+#ifndef ARX_UTIL_RINGBUFFER_H
+#define ARX_UTIL_RINGBUFFER_H
+
+namespace arx {
+namespace util {
 
 template<typename T, size_t SIZE>
 class RingBuffer
@@ -14,7 +17,8 @@ public:
     inline T* data() { return &(queue_[head_]); }
     inline bool empty() const { return tail_ == head_; };
     inline void clear() { head_ = 0; tail_ = 0; };
-    inline void pop()
+    inline void pop() { pop_front(); }
+    inline void pop_front()
     {
         if (size() == 0) return;
         if (size() == 1) clear();
@@ -119,4 +123,10 @@ private:
     volatile size_t tail_ {0};
 };
 
-#endif // RINGBUFFER_H
+} // namespace util
+} // namespace arx
+
+template<typename T, size_t SIZE>
+using RingBuffer = arx::util::RingBuffer<T, SIZE>;
+
+#endif // ARX_UTIL_RINGBUFFER_H

@@ -16,8 +16,9 @@
 #include "lib/oscpkt.hh"
 #include "lib/Packetizer.h"
 
-namespace ArduinoOSC
-{
+namespace arduino {
+namespace osc {
+
     using OscMessage = oscpkt::Message;
     using TimeTag = oscpkt::TimeTag;
 
@@ -109,11 +110,13 @@ namespace ArduinoOSC
         }
     private:
         #ifdef __AVR__
-        Packetizer::Packer_<64> packer;
+        packetizer::Encoder_<64> packer;
         #else
-        Packetizer::Packer packer;
+        packetizer::Encoder packer;
         #endif
     };
-}
+
+} // osc
+} // arduino
 
 #endif // ARDUINOOSC_OSCCLIENT_H

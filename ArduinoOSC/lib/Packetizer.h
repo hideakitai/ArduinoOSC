@@ -1,8 +1,33 @@
 #pragma once
-#ifndef PACKETIZER_IMPL_H
-#define PACKETIZER_IMPL_H
+#ifndef ARDUINO_OSC_PACKETIZER_H
+#define ARDUINO_OSC_PACKETIZER_H
 
-#ifdef __AVR__
+#ifdef TEENSYDUINO
+#ifndef TEENSYDUINO_DIRTY_STL_ERROR_SOLUTION
+#define TEENSYDUINO_DIRTY_STL_ERROR_SOLUTION
+extern "C"
+{
+    int _getpid() { return -1; }
+    int _kill(int pid, int sig) { return -1; }
+    int _write() { return -1; }
+    void *__exidx_start __attribute__((__visibility__ ("hidden")));
+    void *__exidx_end __attribute__((__visibility__ ("hidden")));
+}
+// DIRTY for TEENSYDUINO compile...
+// copied from https://github.com/gcc-mirror/
+namespace std
+{
+    void __throw_bad_alloc() { _GLIBCXX_THROW_OR_ABORT(bad_alloc()); }
+    void __throw_length_error(const char* __s __attribute__((unused))) { _GLIBCXX_THROW_OR_ABORT(length_error(_(__s))); }
+    void __throw_bad_function_call() { _GLIBCXX_THROW_OR_ABORT(bad_function_call()); }
+    // void _Rb_tree_decrement(std::_Rb_tree_node_base* a) {}
+    // void _Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&) {}
+}
+#endif // TEENSYDUINO_DIRTY_STL_ERROR_SOLUTION
+#endif // TEENSYDUINO
+
+
+#if defined(__AVR__) || defined(ARDUINO_spresense_ast)
 #include "RingBuffer.h"
 #else
 #include <vector>
@@ -11,12 +36,9 @@
 #include <functional>
 #endif // __AVR__
 
-namespace Packetizer
-{
-    static constexpr uint8_t START_BYTE  = 0x7D;
-    static constexpr uint8_t FINISH_BYTE = 0x7E;
-    static constexpr uint8_t ESCAPE_BYTE = 0x7F;
-    static constexpr uint8_t ESCAPE_MASK = 0x20;
+namespace arduino {
+namespace osc { // for ArduinoOSC
+namespace packetizer {
 
     static constexpr uint8_t INDEX_OFFSET_INDEX = 1;
     static constexpr uint8_t INDEX_OFFSET_DATA = 2;
@@ -27,7 +49,7 @@ namespace Packetizer
 
     struct endp {}; // for end of packet sign
 
-    uint8_t crc8(const uint8_t* data, size_t size)
+    static uint8_t crc8(const uint8_t* data, size_t size)
     {
         uint8_t result = 0xFF;
         for (result = 0; size != 0; --size)
@@ -48,29 +70,41 @@ namespace Packetizer
     }
 
 
-#ifdef __AVR__
-    template <uint8_t N_PACKET_DATA_SIZE>
-    class Packer_
+#if defined(__AVR__) || defined(ARDUINO_spresense_ast)
+
+    template <uint8_t N_PACKET_DATA_SIZE, uint8_t START_BYTE = 0xC1>
+    class Encoder_
     {
-        using Packer = Packer_;
+        // using Encoder = Encoder_;
         using Buffer = RingBuffer<uint8_t, N_PACKET_DATA_SIZE>;
         using EscapeBuffer = RingBuffer<uint8_t, N_PACKET_DATA_SIZE>;
-    public:
-        Packer_(uint8_t idx = 0) { init(idx); }
+
 #else
-    class Packer
+
+    template <uint8_t START_BYTE = 0xC1>
+    class Encoder_
     {
         using Buffer = std::vector<uint8_t>;
         using EscapeBuffer = std::queue<uint8_t>;
+
+#endif
+
+        static constexpr uint8_t FINISH_BYTE {START_BYTE + 1};
+        static constexpr uint8_t ESCAPE_BYTE {START_BYTE + 2};
+        static constexpr uint8_t ESCAPE_MASK {0x20};
+
+        Buffer buffer;
+
     public:
-        Packer(uint8_t idx = 0) { init(idx); }
-#endif // __AVR__
+
+        Encoder_(const uint8_t idx = 0) { init(idx); }
+
 
         // get packing info
         size_t size() const { return buffer.size(); }
         const uint8_t* data() const { return buffer.data(); }
 
-        void init(uint8_t index = 0)
+        void init(const uint8_t index = 0)
         {
             buffer.clear();
             append((uint8_t)START_BYTE, false);
@@ -84,7 +118,7 @@ namespace Packetizer
             footer();
             return e; // dummy
         }
-        Packer& operator<< (const uint8_t arg)
+        Encoder_& operator<< (const uint8_t arg)
         {
             append(arg);
             return *this;
@@ -93,7 +127,7 @@ namespace Packetizer
         // ---------- pack w/ variadic arguments ----------
 
         template <typename ...Rest>
-        void pack(uint8_t first, Rest&& ...args)
+        void pack(const uint8_t first, const Rest&& ...args)
         {
             append((uint8_t)first);
             pack(args...);
@@ -105,7 +139,7 @@ namespace Packetizer
 
         // ---------- pack w/ data pointer and size ----------
 
-        void pack(const uint8_t* const sbuf, uint8_t size, uint8_t index = 0)
+        void pack(const uint8_t* const sbuf, const uint8_t size, const uint8_t index = 0)
         {
             init(index);
             append((uint8_t*)sbuf, size);
@@ -114,7 +148,7 @@ namespace Packetizer
 
     private:
 
-        void append(const uint8_t* const data, uint8_t size, bool b_escape = true)
+        void append(const uint8_t* const data, const uint8_t size, const bool b_escape = true)
         {
             if (b_escape)
             {
@@ -143,11 +177,11 @@ namespace Packetizer
                 for (uint8_t i = 0; i < size; ++i) buffer.push_back(data[i]);
         }
 
-        void append(uint8_t data, bool b_escape = true)
+        void append(const uint8_t data, const bool b_escape = true)
         {
             if (b_escape && is_escape_byte(data))
             {
-                buffer.push_back(ESCAPE_BYTE);
+                buffer.push_back((uint8_t)ESCAPE_BYTE);
                 buffer.push_back((uint8_t)(data ^ ESCAPE_MASK));
             }
             else
@@ -160,111 +194,120 @@ namespace Packetizer
             append(FINISH_BYTE, false);
         }
 
-        bool is_escape_byte(uint8_t d) const
+        bool is_escape_byte(const uint8_t d) const
         {
             return ((d == START_BYTE) || (d == ESCAPE_BYTE) || (d == FINISH_BYTE));
         }
 
-        Buffer buffer;
     };
 
 
-#ifdef __AVR__
-    template <uint8_t N_PACKET_QUEUE_SIZE, uint8_t N_PACKET_DATA_SIZE, uint8_t N_CALLBACK_SIZE = 8>
-    class Unpacker_
+#if defined(__AVR__) || defined(ARDUINO_spresense_ast)
+
+    template <uint8_t N_PACKET_QUEUE_SIZE, uint8_t N_PACKET_DATA_SIZE, uint8_t N_CALLBACK_SIZE = 8, uint8_t START_BYTE = 0xC1>
+    class Decoder_
     {
         using Buffer = RingBuffer<uint8_t, N_PACKET_DATA_SIZE>;
-        typedef void (*CallbackType)(const uint8_t* data, uint8_t size);
-        struct Map { uint8_t key; CallbackType func; };
+        typedef void (*callback_t)(const uint8_t* data, const uint8_t size);
+        struct Map { uint8_t key; callback_t func; };
         using PacketQueue = RingBuffer<Buffer, N_PACKET_QUEUE_SIZE>;
         using CallbackMap = RingBuffer<Map, N_CALLBACK_SIZE>;
+
 #else
-    template <uint8_t N_PACKET_QUEUE_SIZE>
-    class Unpacker_
+
+    template <uint8_t N_PACKET_QUEUE_SIZE, uint8_t START_BYTE = 0xC1>
+    class Decoder_
     {
         using Buffer = std::vector<uint8_t>;
-        using CallbackType = std::function<void(const uint8_t* data, uint8_t size)>;
-        struct Map { uint8_t key; CallbackType func; };
+        using callback_t = std::function<void(const uint8_t* data, const uint8_t size)>;
+        struct Map { uint8_t key; callback_t func; };
         using PacketQueue = std::queue<Buffer>;
         using CallbackMap = std::vector<Map>;
+
 #endif // __AVR__
+
+        static constexpr uint8_t FINISH_BYTE {START_BYTE + 1};
+        static constexpr uint8_t ESCAPE_BYTE {START_BYTE + 2};
+        static constexpr uint8_t ESCAPE_MASK {0x20};
+
+        Buffer buffer;
+        PacketQueue packets;
+        CallbackMap callbacks;
+
+        bool b_parsing {false};
+        bool b_escape {false};
+
+        uint32_t err_count {0};
 
     public:
 
+        using CallbackType = callback_t;
         // TODO: std::map / unordered_map compile error for teensy in Arduino IDE...
-        void subscribe(uint8_t index, CallbackType func) { callbacks.push_back({index, func}); }
+        void subscribe(const uint8_t index, const callback_t& func) { callbacks.push_back({index, func}); }
 
         size_t available() const { return packets.size(); }
         uint8_t index() const { return packets.front()[INDEX_OFFSET_INDEX]; }
         uint8_t size() const { return packets.front().size() - N_HEADER_FOOTER_SIZE; }
-        uint8_t data(uint8_t i) const { return data()[i]; }
+        uint8_t data(const uint8_t i) const { return data()[i]; }
         const uint8_t* data() const { return packets.front().data() + INDEX_OFFSET_DATA; }
 
         void pop() { packets.pop(); }
 
-        void feed(const uint8_t* const data, size_t size)
+        void feed(const uint8_t* const data, const size_t size)
         {
             for (size_t i = 0; i < size; ++i) feed(data[i]);
         }
 
-        void feed(uint8_t d)
+        void feed(const uint8_t d)
         {
-            if (!b_processing)
+            if (d == START_BYTE)
             {
-                if (d == START_BYTE)
-                {
-                    reset();
+                reset();
+                buffer.push_back(d);
+                b_parsing = true;
+            }
+            else if (b_parsing)
+            {
+                if (d == FINISH_BYTE)
+                    decode();
+                else if (b_parsing)
                     buffer.push_back(d);
-                    b_processing = true;
-                }
             }
-            else
-            {
-                if (d == FINISH_BYTE) check_crc();
-                else                  buffer.push_back(d);
-            }
+
             // TODO: std::map / unordered_map compile error...
             // if (available() && !callbacks.empty())
             // {
             //     auto it = callbacks.find(index());
             //     if (it != callbacks.end()) { it->second(data(), size()); pop(); }
             // }
-            if (!callbacks.empty())
+
+            if (!available()) return;
+
+            for (auto& c : callbacks)
             {
-                for (auto& c : callbacks)
+                if (available() && (c.key == index()))
                 {
-                    if (available())
-                    {
-                        if (c.key == index())
-                        {
-                            c.func(data(), size());
-                            pop();
-                        }
-                        else if (available() > N_PACKET_QUEUE_SIZE)
-                        {
-                            // TODO: discard if unpacker have callbacks?
-                            // TODO: that is select callback or manual switch-case / if-else
-                            pop();
-                        }
-                    }
+                    c.func(data(), size());
+                    pop();
                 }
             }
         }
 
+        bool isParsing() const { return b_parsing; }
+
+        uint32_t errors() const { return err_count; }
+
+        void reset()
+        {
+            buffer.clear();
+            b_parsing = false;
+        }
+
     private:
 
-        void check_crc()
+        void decode()
         {
-            uint8_t crc_received = buffer.back();
-            uint8_t crc_offset_size = 1;
-            if (*(buffer.end() - INDEX_OFFSET_CRC_ESCAPE_FROM_END) == ESCAPE_BYTE) // before CRC byte can be ESCAPE_BYTE only if CRC is escaped
-            {
-                crc_received ^= ESCAPE_MASK;
-                crc_offset_size = 2;
-            }
-
-            uint8_t crc = crc8(buffer.data(), buffer.size() - crc_offset_size);
-            if (crc == crc_received)
+            if (isCrcMatched())
             {
                 for (auto it = buffer.begin(); it != buffer.end(); ++it)
                 {
@@ -276,30 +319,43 @@ namespace Packetizer
                 }
                 packets.push(buffer);
             }
+            else
+                ++err_count;
+
             reset();
+
+            if (available() > N_PACKET_QUEUE_SIZE) pop();
         }
 
-        void reset()
+        bool isCrcMatched()
         {
-            buffer.clear();
-            b_processing = false;
+            uint8_t crc_received = buffer.back();
+            uint8_t crc_offset_size = 1;
+            if (*(buffer.end() - INDEX_OFFSET_CRC_ESCAPE_FROM_END) == ESCAPE_BYTE) // before CRC byte can be ESCAPE_BYTE only if CRC is escaped
+            {
+                crc_received ^= ESCAPE_MASK;
+                crc_offset_size = 2;
+            }
+
+            uint8_t crc = crc8(buffer.data(), buffer.size() - crc_offset_size);
+            return (crc == crc_received);
         }
 
-        bool b_processing {false};
-        bool b_escape {false};
-
-        Buffer buffer;
-        PacketQueue packets;
-        CallbackMap callbacks;
     };
 
-#ifdef __AVR__
-    using Packer = Packer_<64>;
-    using Unpacker = Unpacker_<2, 64>;
+#if defined(__AVR__) || defined(ARDUINO_spresense_ast)
+    using Encoder = Encoder_<64>;
+    using Decoder = Decoder_<2, 64>;
 #else
-    using Unpacker = Unpacker_<4>;
-#endif // __AVR__
-}
+    using Encoder = Encoder_<>;
+    using Decoder = Decoder_<4>;
+#endif
+    using CallbackType = Decoder::CallbackType;
 
+} // packetizer
+} // osc // for ArduinoOSC
+} // arduino
 
-#endif // PACKETIZER_IMPL_H
+// namespace Packetizer = arduino::packetizer;
+
+#endif // ARDUINO_OSC_PACKETIZER_H

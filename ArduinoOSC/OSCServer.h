@@ -16,8 +16,9 @@
 #include "lib/oscpkt.hh"
 #include "lib/Packetizer.h"
 
-namespace ArduinoOSC
-{
+namespace arduino {
+namespace osc {
+
     using OscMessage = oscpkt::Message;
     using OscReader = oscpkt::PacketReader;
 
@@ -36,7 +37,7 @@ namespace ArduinoOSC
     public:
         virtual ~OscServer() {}
         void attach(S& s) { stream = &s; }
-        void subscribe(const String& addr, CallbackType value) { callbacks.push_back({addr, value}); }
+        void subscribe(const String& addr, const CallbackType& value) { callbacks.push_back({addr, value}); }
 
         virtual void parse() = 0;
     protected:
@@ -104,11 +105,13 @@ namespace ArduinoOSC
         }
     private:
         #ifdef __AVR__
-        Packetizer::Unpacker_<1, 64, 0> unpacker;
+        packetizer::Decoder_<1, 64, 0> unpacker;
         #else
-        Packetizer::Unpacker unpacker;
+        packetizer::Decoder unpacker;
         #endif
     };
-}
+
+} // osc
+} // arduino
 
 #endif // ARDUINOOSC_OSCSERVER_H

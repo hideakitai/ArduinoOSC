@@ -4,6 +4,8 @@
 #include "ArduinoOSC/OSCServer.h"
 #include "ArduinoOSC/OSCClient.h"
 
+namespace ArduinoOSC = arduino::osc;
+
 #ifdef TEENSYDUINO // dirty
     namespace std
     {
@@ -13,9 +15,10 @@
     }
 #endif
 
-namespace ArduinoOSC
-{
-    bool match(const String& pattern, const String& test, bool full = true)
+namespace arduino {
+namespace osc {
+
+    static bool match(const String& pattern, const String& test, bool full = true)
     {
         if (full) return oscpkt::fullPatternMatch(pattern.c_str(), test.c_str());
         else      return oscpkt::partialPatternMatch(pattern.c_str(), test.c_str());
@@ -47,7 +50,11 @@ namespace ArduinoOSC
     private:
         Stream* stream;
     };
-}
+
+} // osc
+} // arduino
+
+namespace ArduinoOSC = arduino::osc;
 
 #if defined (ESP_PLATFORM) || defined (ESP8266)
 using OscWiFi = ArduinoOSC::ArduinoOSCUdp<WiFiUDP>;

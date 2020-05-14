@@ -491,6 +491,19 @@ namespace oscpkt
     template <> inline int Message::arg<int>(uint8_t i) { return getPod<int>(i); }
     #endif
     template <> inline bool Message::arg<bool>(uint8_t i) { return getArgAsBool(i); }
+
+    // template <> inline unsigned char Message::arg<unsigned char>(uint8_t i) { return getPod<unsigned char>(i); }
+    // template <> inline unsigned short Message::arg<unsigned short>(uint8_t i) { return getPod<unsigned short>(i); }
+
+    // template <> inline char Message::arg<char>(uint8_t i) { return getPod<char>(i); }
+    // template <> inline short Message::arg<short>(uint8_t i) { return getPod<char>(i); }
+
+    template <> inline uint8_t Message::arg<uint8_t>(uint8_t i) { return (uint8_t)getPod<int32_t>(i); }
+    template <> inline uint16_t Message::arg<uint16_t>(uint8_t i) { return (uint16_t)getPod<int32_t>(i); }
+    template <> inline uint32_t Message::arg<uint32_t>(uint8_t i) { return (uint32_t)getPod<int32_t>(i); }
+    template <> inline uint64_t Message::arg<uint64_t>(uint8_t i) { return (uint64_t)getPod<int64_t>(i); }
+    template <> inline int8_t Message::arg<int8_t>(uint8_t i) { return (int8_t)getPod<int32_t>(i); }
+    template <> inline int16_t Message::arg<int16_t>(uint8_t i) { return (int16_t)getPod<int32_t>(i); }
     template <> inline int32_t Message::arg<int32_t>(uint8_t i) { return getPod<int32_t>(i); }
     template <> inline int64_t Message::arg<int64_t>(uint8_t i) { return getPod<int64_t>(i); }
     template <> inline float Message::arg<float>(uint8_t i) { return getPod<float>(i); }
