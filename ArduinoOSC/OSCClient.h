@@ -24,7 +24,10 @@ namespace osc {
 
     class OscWriter
     {
+        oscpkt::PacketWriter pw;
+
     public:
+
         OscWriter() { pw.init(); }
         OscWriter& init() { pw.init(); return *this; }
         OscWriter& encode(const OscMessage &msg) { pw.encode(msg); return *this; }
@@ -40,8 +43,6 @@ namespace osc {
             pw.end_bundle();
             return *this;
         }
-    private:
-        oscpkt::PacketWriter pw;
     };
 
 
@@ -63,7 +64,7 @@ namespace osc {
         ~OscClientUdp() {}
 #ifndef __AVR__
         template <typename... Rest>
-        void send(const String& ip, uint16_t port, const String& addr, Rest&&... rest)
+        void send(const String& ip, const uint16_t port, const String& addr, Rest&&... rest)
         {
             OscMessage msg(ip, port, addr);
             send(msg, std::forward<Rest>(rest)...);
@@ -86,6 +87,11 @@ namespace osc {
 
     class OscClientSerial : public OscClient<Stream>
     {
+#ifdef __AVR__
+        packetizer::Encoder_<64> packer;
+#else
+        packetizer::Encoder packer;
+#endif
     public:
         ~OscClientSerial() {}
 #ifndef __AVR__
@@ -108,12 +114,6 @@ namespace osc {
             this->packer.pack(this->writer.data(), this->writer.size());
             this->stream->write(this->packer.data(), this->packer.size());
         }
-    private:
-        #ifdef __AVR__
-        packetizer::Encoder_<64> packer;
-        #else
-        packetizer::Encoder packer;
-        #endif
     };
 
 } // osc

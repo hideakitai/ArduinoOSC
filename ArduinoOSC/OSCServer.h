@@ -25,25 +25,24 @@ namespace osc {
     template <typename S>
     class OscServer
     {
-        #ifdef __AVR__
+#ifdef __AVR__
         typedef void (*CallbackType)(OscMessage& m);
         struct Map { String addr; CallbackType func; };
         using CallbackMap = RingBuffer<Map, 8>;
-        #else
+#else
         using CallbackType = std::function<void(OscMessage& m)>;
         struct Map { String addr; CallbackType func; };
         using CallbackMap = std::vector<Map>;
-        #endif
-    public:
-        virtual ~OscServer() {}
-        void attach(S& s) { stream = &s; }
-        void subscribe(const String& addr, const CallbackType& value) { callbacks.push_back({addr, value}); }
-
-        virtual void parse() = 0;
+#endif
     protected:
         OscReader reader;
         CallbackMap callbacks;
         S* stream;
+    public:
+        virtual ~OscServer() {}
+        void attach(S& s) { stream = &s; }
+        void subscribe(const String& addr, const CallbackType& value) { callbacks.push_back({addr, value}); }
+        virtual void parse() = 0;
     };
 
     template <typename S>
@@ -82,6 +81,11 @@ namespace osc {
 
     class OscServerSerial : public OscServer<Stream>
     {
+#ifdef __AVR__
+        packetizer::Decoder_<1, 64, 0> unpacker;
+#else
+        packetizer::Decoder unpacker;
+#endif
     public:
         virtual ~OscServerSerial() {}
         virtual void parse()
@@ -103,12 +107,6 @@ namespace osc {
                 unpacker.pop();
             }
         }
-    private:
-        #ifdef __AVR__
-        packetizer::Decoder_<1, 64, 0> unpacker;
-        #else
-        packetizer::Decoder unpacker;
-        #endif
     };
 
 } // osc
