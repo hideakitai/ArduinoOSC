@@ -1,11 +1,8 @@
 #include <ArduinoOSC.h>
 
-// WiFi stuff
-const char* ssid = "your-ssid";
-const char* pwd = "your-password";
-const IPAddress ip(192, 168, 1, 201);
-const IPAddress gateway(192, 168, 1, 1);
-const IPAddress subnet(255, 255, 0, 0);
+// Ethernet stuff
+const IPAddress ip (192, 168, 1, 201);
+uint8_t mac[] = {0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45};
 
 // for ArduinoOSC
 const char* host = "192.168.2.20";
@@ -34,27 +31,24 @@ void setup()
     Serial.begin(115200);
     delay(2000);
 
-    // WiFi stuff
-    WiFi.begin(ssid, pwd);
-    WiFi.config(ip, gateway, subnet);
-    while (WiFi.status() != WL_CONNECTED) { Serial.print("."); delay(500); }
-    Serial.print("WiFi connected, IP = "); Serial.println(WiFi.localIP());
+    // Ethernet stuff
+    Ethernet.begin(mac, ip);
 
 
     // publish osc messages (default publish rate = 30 [Hz])
 
-    OscWiFi.publish(host, publish_port, "/publish/value", i, f, s)
+    OscEther.publish(host, publish_port, "/publish/value", i, f, s)
         ->setFrameRate(60.f);
 
-    OscWiFi.publish(host, publish_port, "/publish/func", &millis, &micros)
+    OscEther.publish(host, publish_port, "/publish/func", &millis, &micros)
         ->setIntervalMsec(500.f);
 
 
     // subscribe osc messages
 
-    OscWiFi.subscribe(bind_port, "/bind/values", i, f, s);
+    OscEther.subscribe(bind_port, "/bind/values", i, f, s);
 
-    OscWiFi.subscribe(bind_port, "/lambda/bind/args",
+    OscEther.subscribe(bind_port, "/lambda/bind/args",
         [&](int& i, float& f, String& s)
         {
             Serial.print("/lambda/bind/args ");
@@ -64,7 +58,7 @@ void setup()
         }
     );
 
-    OscWiFi.subscribe(recv_port, "/lambda/msg",
+    OscEther.subscribe(recv_port, "/lambda/msg",
         [](OscMessage& m)
         {
             Serial.print(m.remoteIP()); Serial.print(" ");
@@ -77,7 +71,7 @@ void setup()
         }
     );
 
-    OscWiFi.subscribe(recv_port, "/wildcard/*/test", [](OscMessage& m)
+    OscEther.subscribe(recv_port, "/wildcard/*/test", [](OscMessage& m)
     {
         Serial.print(m.remoteIP()); Serial.print(" ");
         Serial.print(m.remotePort()); Serial.print(" ");
@@ -86,7 +80,7 @@ void setup()
         Serial.print(m.arg<int>(0)); Serial.println();
     });
 
-    OscWiFi.subscribe(recv_port, "/need/reply", []()
+    OscEther.subscribe(recv_port, "/need/reply", []()
     {
         Serial.println("/need/reply");
 
@@ -94,18 +88,18 @@ void setup()
         float f = (float)micros() / 1000.f;
         String s = "hello";
 
-        OscWiFi.send(host, send_port, "/reply", i, f, s);
+        OscEther.send(host, send_port, "/reply", i, f, s);
     });
 
-    OscWiFi.subscribe(recv_port, "/callback", onOscReceived);
+    OscEther.subscribe(recv_port, "/callback", onOscReceived);
 
 }
 
 void loop()
 {
-    OscWiFi.update(); // should be called to receive + send osc
+    OscEther.update(); // should be called to receive + send osc
 
     // or do that separately
-    // OscWiFi.parse(); // to receive osc
-    // OscWiFi.post(); // to publish osc
+    // OscEther.parse(); // to receive osc
+    // OscEther.post(); // to publish osc
 }
