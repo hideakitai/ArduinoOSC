@@ -134,6 +134,22 @@ namespace server {
             }
         };
 
+        // callback with const Message&
+        template <typename R>
+        class Function<R, const Message&> : public Base
+        {
+            using Func = std::function<R(const Message&)>;
+            Func func;
+        public:
+            Function(Func func) : func(func) {};
+            virtual ~Function() {}
+            virtual void decodeFrom(Message& m, size_t offset = 0) override
+            {
+                func(m);
+                (void)offset;
+            }
+        };
+
     } // namespace element
 
 
