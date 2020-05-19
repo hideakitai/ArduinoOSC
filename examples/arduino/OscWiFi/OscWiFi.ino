@@ -18,7 +18,7 @@ int i;
 float f;
 String s;
 
-void onOscReceived(OscMessage& m)
+void onOscReceived(const OscMessage& m)
 {
     Serial.print(m.remoteIP()); Serial.print(" ");
     Serial.print(m.remotePort()); Serial.print(" ");
@@ -55,7 +55,7 @@ void setup()
     OscWiFi.subscribe(bind_port, "/bind/values", i, f, s);
 
     OscWiFi.subscribe(bind_port, "/lambda/bind/args",
-        [&](int& i, float& f, String& s)
+        [&](const int& i, const float& f, const String& s)
         {
             Serial.print("/lambda/bind/args ");
             Serial.print(i); Serial.print(" ");
@@ -65,7 +65,7 @@ void setup()
     );
 
     OscWiFi.subscribe(recv_port, "/lambda/msg",
-        [](OscMessage& m)
+        [](const OscMessage& m)
         {
             Serial.print(m.remoteIP()); Serial.print(" ");
             Serial.print(m.remotePort()); Serial.print(" ");
@@ -77,7 +77,7 @@ void setup()
         }
     );
 
-    OscWiFi.subscribe(recv_port, "/wildcard/*/test", [](OscMessage& m)
+    OscWiFi.subscribe(recv_port, "/wildcard/*/test", [](const OscMessage& m)
     {
         Serial.print(m.remoteIP()); Serial.print(" ");
         Serial.print(m.remotePort()); Serial.print(" ");
