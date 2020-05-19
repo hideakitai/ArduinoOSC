@@ -8,6 +8,11 @@
  || defined(ARDUINO_ARCH_SAMD)\
  || defined(ARDUINO_spresense_ast)
     #define ARX_TYPE_TRAITS_DISABLED
+    #if defined(ARDUINO_ARCH_MEGAAVR)\
+    || defined(ARDUINO_ARCH_SAMD)\
+    || defined(ARDUINO_spresense_ast)
+        #define ARX_TYPE_TRAITS_NEW_DISABLED
+    #endif
 #endif
 
 #include <stddef.h>

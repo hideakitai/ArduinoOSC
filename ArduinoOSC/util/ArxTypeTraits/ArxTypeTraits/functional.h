@@ -4,7 +4,12 @@
 #define ARX_TYPE_TRAITS_FUNCTIONAL_H
 
 #include <Arduino.h>
-#include <new.h>
+
+#ifdef ARX_TYPE_TRAITS_NEW_DISABLED
+    void* operator new (const size_t size, void* ptr) { (void)size; return ptr; }
+#else
+    #include <new.h>
+#endif
 
 #ifdef ARX_TYPE_TRAITS_DISABLED
 

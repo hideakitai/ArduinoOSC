@@ -71,6 +71,7 @@ Others are automatically enabled/disabled depending on compiler.
 - `std::integer_sequence`
 - `std::index_sequence`
 - `std::make_index_sequence`
+- `std::index_sequence_for`
 
 
 ### C++17 (defined only for boards before C++17)
