@@ -92,7 +92,7 @@ namespace message {
                 memcpy(s.getBytes(storage.size()), const_cast<Storage&>(storage).begin(), storage.size());
         }
 
-        inline bool available() const
+        bool available() const
         {
 #ifndef ARDUINO_AVR_UNO // TODO: dirty...
             return valid;
@@ -116,28 +116,28 @@ namespace message {
 
         // TODO: reference, move....
         template <typename T>
-        inline Message& push(const T& t);
-        inline Message& push(const char* c) { return pushString(String(c)); }
+        Message& push(const T& t);
+        Message& push(const char* c) { return pushString(String(c)); }
 
-        inline Message& pushBool(const bool b)
+        Message& pushBool(const bool b)
         {
             type_tags += (char)(b ? TYPE_TAG_TRUE : TYPE_TAG_FALSE);
             arguments.push_back(make_pair(storage.size(), storage.size()));
             return *this;
         }
-        inline Message& pushInt32(const int32_t i) { return pushPod(TYPE_TAG_INT32, i); }
-        inline Message& pushInt64(const int64_t h) { return pushPod(TYPE_TAG_INT64, h); }
-        inline Message& pushFloat(const float f) { return pushPod(TYPE_TAG_FLOAT, f); }
-        inline Message& pushDouble(const double d) { return pushPod(TYPE_TAG_DOUBLE, d); }
-        inline Message& pushString(const String &s)
+        Message& pushInt32(const int32_t i) { return pushPod(TYPE_TAG_INT32, i); }
+        Message& pushInt64(const int64_t h) { return pushPod(TYPE_TAG_INT64, h); }
+        Message& pushFloat(const float f) { return pushPod(TYPE_TAG_FLOAT, f); }
+        Message& pushDouble(const double d) { return pushPod(TYPE_TAG_DOUBLE, d); }
+        Message& pushString(const String &s)
         {
             type_tags += (char)TYPE_TAG_STRING;
             arguments.push_back(make_pair(storage.size(), s.length() + 1));
             strcpy(storage.getBytes(s.length() + 1), s.c_str());
             return *this;
         }
-        inline Message& pushBlob(const Blob& b) { return pushBlob(b.data(), b.size()); }
-        inline Message& pushBlob(const void *ptr, const size_t num_bytes)
+        Message& pushBlob(const Blob& b) { return pushBlob(b.data(), b.size()); }
+        Message& pushBlob(const void *ptr, const size_t num_bytes)
         {
             type_tags += (char)TYPE_TAG_BLOB;
             arguments.push_back(make_pair(storage.size(), num_bytes + 4));
@@ -152,15 +152,15 @@ namespace message {
         ////////////////////////////////////////////
 
         template <typename T>
-        inline T arg(const uint8_t i) const;
+        T arg(const uint8_t i) const;
 
-        inline int32_t getArgAsInt32(const size_t i) const { return getPod<int32_t>(i); }
-        inline int64_t getArgAsInt64(const size_t i) const { return getPod<int64_t>(i); }
-        inline float getArgAsFloat(const size_t i) const { return getPod<float>(i); }
-        inline double getArgAsDouble(const size_t i) const { return getPod<double>(i); }
-        inline String getArgAsString(const size_t i) const { return String(argBeg(i)); }
-        inline Blob getArgAsBlob(const size_t i) const { Blob b; b.assign(argBeg(i) + 4, argEnd(i)); return b; }
-        inline bool getArgAsBool(const size_t i) const
+        int32_t getArgAsInt32(const size_t i) const { return getPod<int32_t>(i); }
+        int64_t getArgAsInt64(const size_t i) const { return getPod<int64_t>(i); }
+        float getArgAsFloat(const size_t i) const { return getPod<float>(i); }
+        double getArgAsDouble(const size_t i) const { return getPod<double>(i); }
+        String getArgAsString(const size_t i) const { return String(argBeg(i)); }
+        Blob getArgAsBlob(const size_t i) const { Blob b; b.assign(argBeg(i) + 4, argEnd(i)); return b; }
+        bool getArgAsBool(const size_t i) const
         {
             if      (getTypeTag(i) == TYPE_TAG_TRUE)  return true;
             else if (getTypeTag(i) == TYPE_TAG_FALSE) return false;
@@ -172,13 +172,13 @@ namespace message {
         // ---------- argument type checkers ---------- //
         //////////////////////////////////////////////////
 
-        inline bool isBool(const size_t i) const { return getTypeTag(i) == TYPE_TAG_TRUE || getTypeTag(i) == TYPE_TAG_FALSE; }
-        inline bool isInt32(const size_t i) const { return getTypeTag(i) == TYPE_TAG_INT32; }
-        inline bool isInt64(const size_t i) const { return getTypeTag(i) == TYPE_TAG_INT64; }
-        inline bool isFloat(const size_t i) const { return getTypeTag(i) == TYPE_TAG_FLOAT; }
-        inline bool isDouble(const size_t i) const { return getTypeTag(i) == TYPE_TAG_DOUBLE; }
-        inline bool isStr(const size_t i) const { return getTypeTag(i) == TYPE_TAG_STRING; }
-        inline bool isBlob(const size_t i) const { return getTypeTag(i) == TYPE_TAG_BLOB; }
+        bool isBool(const size_t i) const { return getTypeTag(i) == TYPE_TAG_TRUE || getTypeTag(i) == TYPE_TAG_FALSE; }
+        bool isInt32(const size_t i) const { return getTypeTag(i) == TYPE_TAG_INT32; }
+        bool isInt64(const size_t i) const { return getTypeTag(i) == TYPE_TAG_INT64; }
+        bool isFloat(const size_t i) const { return getTypeTag(i) == TYPE_TAG_FLOAT; }
+        bool isDouble(const size_t i) const { return getTypeTag(i) == TYPE_TAG_DOUBLE; }
+        bool isStr(const size_t i) const { return getTypeTag(i) == TYPE_TAG_STRING; }
+        bool isBlob(const size_t i) const { return getTypeTag(i) == TYPE_TAG_BLOB; }
 
         const String& typeTags() const { return type_tags; }
         int getTypeTag(const size_t i) const { return type_tags[i]; }
@@ -342,39 +342,39 @@ namespace message {
     };
 
 
-    template <> inline bool Message::arg<bool>(const uint8_t i) const { return getArgAsBool(i); }
-    template <> inline char Message::arg<char>(const uint8_t i) const { return (char)getPod<int32_t>(i); }
-    template <> inline signed char Message::arg<signed char>(const uint8_t i) const { return (signed char)getPod<int32_t>(i); }
-    template <> inline unsigned char Message::arg<unsigned char>(const uint8_t i) const { return (unsigned char)getPod<int32_t>(i); }
-    template <> inline short Message::arg<short>(const uint8_t i) const { return (short)getPod<int32_t>(i); }
-    template <> inline unsigned short Message::arg<unsigned short>(const uint8_t i) const { return (unsigned short)getPod<int32_t>(i); }
-    template <> inline int Message::arg<int>(const uint8_t i) const { return (int)getPod<int32_t>(i); }
-    template <> inline unsigned Message::arg<unsigned>(const uint8_t i) const { return (unsigned)getPod<int32_t>(i); }
-    template <> inline long Message::arg<long>(const uint8_t i) const { return (long)getPod<int32_t>(i); }
-    template <> inline unsigned long Message::arg<unsigned long>(const uint8_t i) const { return (unsigned long)getPod<int32_t>(i); }
-    template <> inline long long Message::arg<long long>(const uint8_t i) const { return (long long)getPod<int64_t>(i); }
-    template <> inline unsigned long long Message::arg<unsigned long long>(const uint8_t i) const { return (unsigned long long)getPod<int64_t>(i); }
-    template <> inline float Message::arg<float>(const uint8_t i) const { return getPod<float>(i); }
-    template <> inline double Message::arg<double>(const uint8_t i) const { return getPod<double>(i); }
-    template <> inline String Message::arg<String>(const uint8_t i) const { return getArgAsString(i); }
-    template <> inline Blob Message::arg<Blob>(const uint8_t i) const { return getArgAsBlob(i); }
+    template <> bool Message::arg<bool>(const uint8_t i) const { return getArgAsBool(i); }
+    template <> char Message::arg<char>(const uint8_t i) const { return (char)getPod<int32_t>(i); }
+    template <> signed char Message::arg<signed char>(const uint8_t i) const { return (signed char)getPod<int32_t>(i); }
+    template <> unsigned char Message::arg<unsigned char>(const uint8_t i) const { return (unsigned char)getPod<int32_t>(i); }
+    template <> short Message::arg<short>(const uint8_t i) const { return (short)getPod<int32_t>(i); }
+    template <> unsigned short Message::arg<unsigned short>(const uint8_t i) const { return (unsigned short)getPod<int32_t>(i); }
+    template <> int Message::arg<int>(const uint8_t i) const { return (int)getPod<int32_t>(i); }
+    template <> unsigned Message::arg<unsigned>(const uint8_t i) const { return (unsigned)getPod<int32_t>(i); }
+    template <> long Message::arg<long>(const uint8_t i) const { return (long)getPod<int32_t>(i); }
+    template <> unsigned long Message::arg<unsigned long>(const uint8_t i) const { return (unsigned long)getPod<int32_t>(i); }
+    template <> long long Message::arg<long long>(const uint8_t i) const { return (long long)getPod<int64_t>(i); }
+    template <> unsigned long long Message::arg<unsigned long long>(const uint8_t i) const { return (unsigned long long)getPod<int64_t>(i); }
+    template <> float Message::arg<float>(const uint8_t i) const { return getPod<float>(i); }
+    template <> double Message::arg<double>(const uint8_t i) const { return getPod<double>(i); }
+    template <> String Message::arg<String>(const uint8_t i) const { return getArgAsString(i); }
+    template <> Blob Message::arg<Blob>(const uint8_t i) const { return getArgAsBlob(i); }
 
-    template <> inline Message& Message::push<bool>(const bool& t) { return pushBool(t); }
-    template <> inline Message& Message::push<char>(const char& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<signed char>(const signed char& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<unsigned char>(const unsigned char& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<short>(const short& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<unsigned short>(const unsigned short& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<int>(const int& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<unsigned>(const unsigned& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<long>(const long& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<unsigned long>(const unsigned long& t) { return pushInt32(t); }
-    template <> inline Message& Message::push<long long>(const long long& t) { return pushInt64(t); }
-    template <> inline Message& Message::push<unsigned long long>(const unsigned long long& t) { return pushInt64(t); }
-    template <> inline Message& Message::push<float>(const float& t) { return pushFloat(t); }
-    template <> inline Message& Message::push<double>(const double& t) { return pushDouble(t); }
-    template <> inline Message& Message::push<String>(const String& t) { return pushString(t); }
-    template <> inline Message& Message::push<Blob>(const Blob& t) { return pushBlob(t); }
+    template <> Message& Message::push<bool>(const bool& t) { return pushBool(t); }
+    template <> Message& Message::push<char>(const char& t) { return pushInt32(t); }
+    template <> Message& Message::push<signed char>(const signed char& t) { return pushInt32(t); }
+    template <> Message& Message::push<unsigned char>(const unsigned char& t) { return pushInt32(t); }
+    template <> Message& Message::push<short>(const short& t) { return pushInt32(t); }
+    template <> Message& Message::push<unsigned short>(const unsigned short& t) { return pushInt32(t); }
+    template <> Message& Message::push<int>(const int& t) { return pushInt32(t); }
+    template <> Message& Message::push<unsigned>(const unsigned& t) { return pushInt32(t); }
+    template <> Message& Message::push<long>(const long& t) { return pushInt32(t); }
+    template <> Message& Message::push<unsigned long>(const unsigned long& t) { return pushInt32(t); }
+    template <> Message& Message::push<long long>(const long long& t) { return pushInt64(t); }
+    template <> Message& Message::push<unsigned long long>(const unsigned long long& t) { return pushInt64(t); }
+    template <> Message& Message::push<float>(const float& t) { return pushFloat(t); }
+    template <> Message& Message::push<double>(const double& t) { return pushDouble(t); }
+    template <> Message& Message::push<String>(const String& t) { return pushString(t); }
+    template <> Message& Message::push<Blob>(const Blob& t) { return pushBlob(t); }
 
 } // namespace message
 } // namespace osc
