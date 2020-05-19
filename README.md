@@ -1,237 +1,198 @@
 # ArduinoOSC
 
-OSC library for Arduino (ESP, Teensy, AVR, etc.)
-
-ArduinoOSC is OSC Library for Arduino. OSC packet parsing is based on the [oscpkt](http://gruntthepeon.free.fr/oscpkt/html/) and optimized for Arduino.
-
-## NOTE : BREAKING API CHANGES (v0.2.0 or later)
-
-Almost all APIs has been changed in `v0.2.0` and got much simpler.
-Please check below if you use previous versions.
+OSC subscriber / publisher for Arduino
 
 
-## Supported Platform
+#### NOTE : BREAKING API CHANGES (v0.3.x or later)
 
-This library is tested for following platforms and interfaces.
-
-- ESP32 (WiFi, Serial)
-- ESP8266 (WiFi, Serial)
-- Teensy 3.x (Ethernet, Serial, Serial1, 2, 3...)
-- Arduino Mega (Ethernet, Serial, Serial1, 2, 3)
-- Arduino Uno (Ethernet, Serial)
+- almost all apis has have changed and got much simpler
+- dropped support for `OscSerial` (recommend to use [MsgPacketizer](https://github.com/hideakitai/MsgPacketizer) for much smaller packet size)
 
 
 ## Feature
 
-- simpler usage than ever
-    - callback registration with lambda
+- simple usage
+    - flexible callback registration with lambda
+    - directly binding osc packet to values
     - osc packet sending in one-line
+    - publishing osc packet in one-line
+- support basic OSC types based on [oscpkt](http://gruntthepeon.free.fr/oscpkt/html/)
+    - TF (`bool`: true, false)
+    - i (`int32_t`)
+    - h (`int64_t`)
+    - f (`float`)
+    - d (`double`)
+    - s (`string`)
+    - b (`bundle`)
 - support pattern-matching (wildcards)
-- support basic OSC types
-	- TF (bool: true, false)
-	- i (int32_t)
-	- h (int64_t)
-	- f (float)
-	- d (double)
-	- s (string)
-	- b (bundle)
 - does NOT support timestamp values.
+
 
 ## Usage
 
-Please see examples for detals.
+Following examples use `OscWiFi`.
+To use with `Ethernet`, please change `OscWiFi` to `OscEther`.
 
-### WiFi
+### One-Line Subscriber / Publisher
 
 ```C++
 #include <ArduinoOSC.h>
-OscWiFi osc;
+
+int i; float f; String s;
 
 void setup()
 {
+    // WiFi stuff
     WiFi.begin(ssid, pwd);
     WiFi.config(ip, gateway, subnet);
-    osc.begin(recv_port);
-    
-    // add callbacks...
-    osc.subscribe("/lambda", [](OscMessage& m)
+
+    // subscribe osc packet and directly bind to variable
+    OscWiFi.subscribe(bind_port, "/bind/values", i, f, s);
+
+    // publish osc packet in 30 times/sec (default)
+    OscWiFi.publish(host, publish_port, "/publish/value", i, f, s);
+    // function can also be published
+    OscWiFi.publish(host, publish_port, "/publish/func", &millis, &micros)
+        ->setFrameRate(1); // and publish it once per second
+}
+
+void loop()
+{
+    OscWiFi.update(); // should be called to subscribe + publish osc
+}
+```
+
+### Bind OSC to Lambda Arguments and One-Line Send
+
+``` C++
+void setup()
+{
+    // WiFi stuff
+    // ...
+
+    OscWiFi.subscribe(bind_port, "/lambda/bind/args",
+        [&](int& i, float& f, String& s)
+        {
+            Serial.print("/lambda/bind/args ");
+            Serial.print(i); Serial.print(" ");
+            Serial.print(f); Serial.print(" ");
+            Serial.print(s); Serial.println();
+
+            // One-Line Send Back
+            OscWiFi.send(host, send_port, "/reply", i, f, s);
+        }
+    );
+}
+
+void loop()
+{
+    OscWiFi.update(); // should be called
+}
+```
+
+### Other Way to Subscribe
+
+``` C++
+// OscMessage as lambda argument
+OscWiFi.subscribe(recv_port, "/lambda/msg",
+    [](const OscMessage& m)
     {
-        // do something with osc message
-        Serial.print(m.arg<int>(0));    Serial.print(" ");
-        Serial.print(m.arg<float>(1));  Serial.print(" ");
+        Serial.print(m.remoteIP()); Serial.print(" ");
+        Serial.print(m.remotePort()); Serial.print(" ");
+        Serial.print(m.size()); Serial.print(" ");
+        Serial.print(m.address()); Serial.print(" ");
+        Serial.print(m.arg<int>(0)); Serial.print(" ");
+        Serial.print(m.arg<float>(1)); Serial.print(" ");
         Serial.print(m.arg<String>(2)); Serial.println();
-    });
-}
+    }
+);
 
-void loop()
+// wildcard address pattern matching
+OscWiFi.subscribe(recv_port, "/wildcard/*/test",
+    [](const OscMessage& m)
+    {
+        Serial.print(m.remoteIP()); Serial.print(" ");
+        Serial.print(m.remotePort()); Serial.print(" ");
+        Serial.print(m.size()); Serial.print(" ");
+        Serial.print(m.address()); Serial.print(" ");
+        Serial.print(m.arg<int>(0)); Serial.println();
+    }
+);
+
+// no arguments
+OscWiFi.subscribe(recv_port, "/need/reply", []()
 {
-    osc.parse(); // should be called
-    osc.send(host, send_port, "/send", 1, 2.2F, 3.3, "string"); // send osc packet in one line
-}
-```
-
-### Ethernet
-
-```C++
-#include <ArduinoOSC.h>
-OscSerial osc;
-
-void setup()
-{
-    Ethernet.begin(mac, ip);
-    osc.begin(recv_port);	
-    
-    // add callbacks...
-}
-
-void loop()
-{
-    osc.parse(); // should be called
-    osc.send(host, send_port, "/send", 1, 2.2F, 3.3, "string");
-}
-```
-
-### Serial
-
-```C++
-#include <ArduinoOSC.h>
-
-void setup()
-{
-    Serial.begin(115200);
-    osc.attach(Serial);
-	
-	// add callbacks...
-}
-
-void loop()
-{
-    osc.parse(); // should be called
-    osc.send("/send", 1, 2.2F, 3.3, "string");
-}
-```
-
-
-### Subscribe Callbacks / Publish OSC (TBD)
-
-```C++
-// TODO: TBD
-// osc.subscribe("/int32", i);
-// osc.subscribe("/float", f);
-// osc.subscribe("/string", s);
-// osc.subscribe("/blob", b);
-
-osc.subscribe("/callback", onOscReceived); // old style (v0.1.x)
-
-osc.subscribe("/lambda", [](OscMessage& m)
-{
-    Serial.print("lambda : ");
-    Serial.print(m.ip()); Serial.print(" ");
-    Serial.print(m.port()); Serial.print(" ");
-    Serial.print(m.size()); Serial.print(" ");
-    Serial.print(m.address()); Serial.print(" ");
-    Serial.print(m.arg<int>(0)); Serial.print(" ");
-    Serial.print(m.arg<float>(1)); Serial.print(" ");
-    Serial.print(m.arg<String>(2)); Serial.println();
-});
-osc.subscribe("/wildcard/*/test", [](OscMessage& m)
-{
-    Serial.print("wildcard : ");
-    Serial.print(m.ip()); Serial.print(" ");
-    Serial.print(m.port()); Serial.print(" ");
-    Serial.print(m.size()); Serial.print(" ");
-    Serial.print(m.address()); Serial.print(" ");
-    Serial.print(m.arg<int>(0)); Serial.println();
-
-});
-osc.subscribe("/need/reply", [](OscMessage& m)
-{
-    Serial.println("/need/reply");
-
-    int i = 12;
-    float f = 34.56F;
-    double d = 78.987;
-    String s = "hello";
-    bool b = true;
-
-    osc.send(host, send_port, "/send", i, f, d, s, b);
+    OscWiFi.send(host, send_port, "/reply", i, f, s);
 });
 
-// TODO: TBD
-// osc.publish(host, send_port, "/value", value);
-// osc.publish(host, send_port, "/millis", &millis);
+// pre-defined callback
+OscWiFi.subscribe(recv_port, "/callback", onOscReceived);
 ```
 
 
-## Limitation for AVR Boards (Uno, Mega, etc.)
+## Supported Platform
 
-- max number of arguments is 3
-- max packet data size is 64 byte
-- max number of callbacks is 8
-- osc packet is not queued (only latest packet can be held inside)
-- bundle is not supported
-- limited API (see below and `examples/UnoMegaAvr/*`)
+This library currently supports following platforms and interfaces.
+Please feel free to send PR or request for more board support!
 
-### Read API Limitation
+#### WiFi
 
-`m.arg<type>(index)` cannot be used in AVR. 
-Please use old APIs.
+- ESP32
+- ESP8266
 
-```C++
-m.getArgAsInt32(0);
-m.getArgAsFloat(1);
-m.getArgAsString(2);
+#### Ethernet
+
+- ESP8266
+- Teensy 3.x, 4.x
+- AVR (Arduino Uno, Mega, ...)
+- megaAVR (Arduino Uno WiFi Rev2, ...)
+- SAMD (Arduino MKR series, ...)
+- SPRESENSE
+
+
+## Limitation and Options for NO-STL Boards
+
+STL is used to handle packet data by default, but for following boards/architectures, [ArxContainer](https://github.com/hideakitai/ArxContainer) is used to store the packet data because STL can not be used for such boards.
+The storage size of such boards for packets, queue of packets, max packet binary size, callbacks are limited.
+
+- AVR
+- megaAVR
+- SAMD
+- SPRESENSE
+
+
+### Memory Management (only for NO-STL Boards)
+
+As mentioned above, for such boards like Arduino Uno, the storage sizes are limited.
+And of course you can manage them by defining following macros.
+But these default values are optimized for such boards, please be careful not to excess your boards storage/memory.
+
+``` C++
+#define ARDUINOOSC_MAX_ARGUMENT_SIZE 8
+#define ARDUINOOSC_MAX_BLOB_BYTE_SIZE 64
+#define ARDUINOOSC_MAX_MSG_QUEUE_SIZE 1
+#define ARDUINOOSC_MAX_PUBLISH_DESTINATION 4
+#define ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT 4
+#define ARDUINOOSC_MAX_SUBSCRIBE_PORTS 2
 ```
 
-### Send API Limitation
+### Enable Bundle for NO-STL Boards
 
-In sending osc, one-line feature is not available in AVR.
-Please create `OscMessage` and `send(msg)` after that.
+OSC bundle option is disabled for such boards.
+If you want to use that, please use this macro and handle packets manually.
+`ArduinoOSC` does not use bundle by default.
 
-```C++
-OscMessage msg(host, send_port, "/send"); // WiFi, Ethernet
-OscMessage msg("/send");                  // Serial
-msg.push(i).push(f).push(s);
-osc.send(msg);
+``` C++
+#define ARDUINOOSC_ENABLE_BUNDLE
+#define ARDUINOOSC_MAX_MSG_BUNDLE_SIZE 32
 ```
 
+## Embedded Libraries
 
-## TBD
-
-- one-line subscriber for single variable
-
-```C++
-// directly changes variable 'i' if message with "/int32" comes
-int32_t i;
-osc.subscribe("/int32", i);
-```
-
-- one-line publisher for single variable
-
-```C++
-// send "value" automatically
-float value;
-osc.publish(host, send_port, "/value", value);
-```
-
-- one-line publisher for function which returns single value
-
-```C++
-// send the result of "millis()" automatically
-osc.publish(host, send_port, "/millis", &millis);
-```
-
-- automatically detect the type of arguments (without template arguments)
-
-```C++
-int32_t i = m.arg<int32_t>(0);
-float   f = m.arg<float>(1);
-String  s = m.arg<String>(2);
-// becomes
-int32_t i = m.arg(0);
-float   f = m.arg(1);
-String  s = m.arg(2);
-```
+- [ArxTypeTraits v0.1.8](https://github.com/hideakitai/ArxTypeTraits)
+- [ArxContainer v0.3.5](https://github.com/hideakitai/ArxContainer)
+- [ArxSmartPtr v0.1.1](https://github.com/hideakitai/ArxSmartPtr)
+- [TeensyDirtySTLErrorSolution v0.1.0](https://github.com/hideakitai/TeensyDirtySTLErrorSolution)
 
 
 ## License
