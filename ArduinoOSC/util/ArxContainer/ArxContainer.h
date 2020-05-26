@@ -497,7 +497,7 @@ namespace arx {
 
         iterator erase(const iterator it)
         {
-            iterator i = find(it->first);
+            iterator i = (iterator)find(it->first);
             if (i != this->end())
             {
                 return this->erase(i);
