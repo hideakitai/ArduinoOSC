@@ -189,7 +189,7 @@ If you want to use that, please use this macro and handle packets manually.
 
 ## Embedded Libraries
 
-- [ArxTypeTraits v0.1.8](https://github.com/hideakitai/ArxTypeTraits)
+- [ArxTypeTraits v0.1.9](https://github.com/hideakitai/ArxTypeTraits)
 - [ArxContainer v0.3.6](https://github.com/hideakitai/ArxContainer)
 - [ArxSmartPtr v0.1.1](https://github.com/hideakitai/ArxSmartPtr)
 - [TeensyDirtySTLErrorSolution v0.1.0](https://github.com/hideakitai/TeensyDirtySTLErrorSolution)
