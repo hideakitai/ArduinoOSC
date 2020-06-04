@@ -403,6 +403,7 @@ namespace std {
 
 
 #if __cplusplus < 201402L // C++11
+#ifndef OF_VERSION_MAJOR
 
 namespace std {
 
@@ -460,12 +461,15 @@ namespace std {
 
 } // namespace std
 
+#endif // OF_VERSION_MAJOR
 #endif // C++11
 
 
 #if __cplusplus < 201703L // C++14
 
 namespace std {
+
+#ifndef OF_VERSION_MAJOR
 
     template <class... Ts>
     struct Tester { using type = void; };
@@ -489,6 +493,7 @@ namespace std {
     template <typename T>
     struct negation : std::integral_constant<bool, !T::value> {};
 
+#endif // OF_VERSION_MAJOR
 
     // https://qiita.com/_EnumHack/items/92e6e135174f1f781dbb
     // without decltype(auto)
