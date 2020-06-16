@@ -16,7 +16,8 @@
  || defined(ARDUINO_AVR_UNO_WIFI_REV2)\
  || defined(ARDUINO_SAMD_MKRWIFI1010)\
  || defined(ARDUINO_SAMD_MKRVIDOR4000)\
- || defined(ARDUINO_SAMD_MKR1000)
+ || defined(ARDUINO_SAMD_MKR1000)\
+ || defined(ARDUINO_SAMD_NANO_33_IOT)
     #define ARDUINOOSC_ENABLE_WIFI
 #endif
 
@@ -41,7 +42,8 @@
         #include <WiFiUdp.h>
     #elif defined (ARDUINO_AVR_UNO_WIFI_REV2)\
         || defined(ARDUINO_SAMD_MKRWIFI1010)\
-        || defined(ARDUINO_SAMD_MKRVIDOR4000)
+        || defined(ARDUINO_SAMD_MKRVIDOR4000)\
+        || defined(ARDUINO_SAMD_NANO_33_IOT)
         #include <SPI.h>
         #include <WiFiNINA.h>
         #include <WiFiUdp.h>

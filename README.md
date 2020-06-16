@@ -143,6 +143,7 @@ Please feel free to send PR or request for more board support!
 - Arduino MKR VIDOR 4000
 - Arduino MKR WiFi 1010
 - Arduino MKR WiFi 1000
+- Arduino Nano 33 IoT
 
 #### Ethernet
 
