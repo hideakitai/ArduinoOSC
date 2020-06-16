@@ -12,7 +12,8 @@
 #endif
 
 #if defined(ESP_PLATFORM)\
- || defined(ESP8266)
+ || defined(ESP8266)\
+ || defined(ARDUINO_ARCH_MEGAAVR)
     #define ARDUINOOSC_ENABLE_WIFI
 #endif
 
@@ -34,6 +35,9 @@
         #include <WiFiUdp.h>
     #elif defined (ESP8266)
         #include <ESP8266WiFi.h>
+        #include <WiFiUdp.h>
+    #elif defined (ARDUINO_ARCH_MEGAAVR)
+        #include <WiFiNINA.h>
         #include <WiFiUdp.h>
     #endif
 #endif // ARDUINOOSC_ENABLE_WIFI
