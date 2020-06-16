@@ -323,9 +323,6 @@ namespace message {
             )
                 return 0;
 
-            if (!isZeroPaddingCorrect(p + sz))
-                return 0;
-
             return sz;
         }
 
