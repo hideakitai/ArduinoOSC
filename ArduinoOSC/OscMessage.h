@@ -215,9 +215,7 @@ namespace message {
             const char* const address_beg = storage.begin();
             const char* const address_end = (const char*)memchr(address_beg, 0, storage.end() - address_beg);
 
-            // TODO: fix bug for AVR boards in which memory layout is not correct.
-            // if bool dummy; is added in this class, building from raw data fails because of ceil4 return not correct pointer address
-            if (!address_end || !isZeroPaddingCorrect(address_end + 1) || address_beg[0] != '/')
+            if (!address_end || address_beg[0] != '/')
             {
                 return false;
             }
@@ -228,9 +226,9 @@ namespace message {
                 while (p != address_end) { address_str += *p++; };
             }
 
-            const char* const type_tags_beg = ceil4(address_end + 1);
+            const char* const type_tags_beg = ceil4(address_end + 1 - address_beg) + address_beg;
             const char* type_tags_end = (const char*)memchr(type_tags_beg, 0, storage.end()-type_tags_beg);
-            if (!type_tags_end || !isZeroPaddingCorrect(type_tags_end + 1) || type_tags_beg[0] != ',')
+            if (!type_tags_end || type_tags_beg[0] != ',')
             {
                 return false;
             }
@@ -241,7 +239,7 @@ namespace message {
                 while (p != type_tags_end) type_tags += *p++;
             }
 
-            const char* arg = ceil4(type_tags_end + 1);
+            const char* arg = ceil4(type_tags_end + 1 - address_beg) + address_beg;
             size_t iarg = 0;
             while (iarg < type_tags.length())
             {
