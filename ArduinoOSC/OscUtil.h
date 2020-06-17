@@ -13,13 +13,6 @@ namespace osc {
     template <typename T>
     inline T ceil4(const T& p) { return (T)((size_t(p) + 3) & (~size_t(3))); }
 
-    inline bool isZeroPaddingCorrect(const char* p)
-    {
-        const char* q = ceil4(p);
-        for (;p < q; ++p) if (*p != 0) return false;
-        return true;
-    }
-
     template <typename T>
     union PodBytes
     {
