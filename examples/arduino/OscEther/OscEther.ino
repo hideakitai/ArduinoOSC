@@ -1,11 +1,14 @@
 #include <ArduinoOSC.h>
 
 // Ethernet stuff
-const IPAddress ip (192, 168, 1, 201);
 uint8_t mac[] = {0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45};
+const IPAddress ip (192, 168, 1, 201);
+const IPAddress dns (192, 168, 1, 1);
+const IPAddress gateway (192, 168, 1, 1);
+const IPAddress subnet (255, 255, 255, 0);
 
 // for ArduinoOSC
-const char* host = "192.168.2.20";
+const char* host = "192.168.1.200";
 const int recv_port = 54321;
 const int bind_port = 54345;
 const int send_port = 55555;
