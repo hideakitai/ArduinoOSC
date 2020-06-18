@@ -34,6 +34,10 @@ void setup()
     // Ethernet stuff
     Ethernet.begin(mac, ip);
 
+    // Ethernet with useful options
+    // Ethernet.begin(mac, ip, dns, gateway, subnet); // full
+    // Ethernet.setRetransmissionCount(4); // default: 8[times]
+    // Ethernet.setRetransmissionTimeout(50); // default: 200[ms]
 
     // publish osc messages (default publish rate = 30 [Hz])
 
