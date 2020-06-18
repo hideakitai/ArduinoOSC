@@ -55,8 +55,13 @@
 #endif // ARDUINOOSC_ENABLE_WIFI
 
 #ifdef ARDUINOOSC_ENABLE_ETHER
-    #include <Ethernet.h>
-    #include <EthernetUdp.h>
+    #if defined (ARDUINO_TEENSY41) &&  defined (ARDUINOOSC_USE_T41_NATIVEETHERNET)
+        #include <NativeEthernet.h>
+        #include <NativeEthernetUdp.h>
+    #else
+        #include <Ethernet.h>
+        #include <EthernetUdp.h>
+    #endif
     #include "ArduinoOSC/util/TeensyDirtySTLErrorSolution/TeensyDirtySTLErrorSolution.h"
 #endif // ARDUINOOSC_ENABLE_ETHER
 

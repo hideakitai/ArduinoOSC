@@ -1,3 +1,4 @@
+// #define ARDUINOOSC_USE_T41_NATIVEETHERNET
 #include <ArduinoOSC.h>
 
 // Ethernet stuff
