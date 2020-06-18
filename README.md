@@ -139,6 +139,11 @@ Please feel free to send PR or request for more board support!
 
 - ESP32
 - ESP8266
+- Arduino Uno WiFi Rev2
+- Arduino MKR VIDOR 4000
+- Arduino MKR WiFi 1010
+- Arduino MKR WiFi 1000
+- Arduino Nano 33 IoT
 
 #### Ethernet
 
