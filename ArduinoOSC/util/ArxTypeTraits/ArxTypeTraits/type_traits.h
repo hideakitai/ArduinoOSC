@@ -40,45 +40,45 @@ namespace std {
         static constexpr T max() { return T(); }
         static constexpr T min() { return T(); }
     };
-    template <> bool numeric_limits<bool>::max() { return true; }
-    template <> char numeric_limits<char>::max() { return CHAR_MAX; }
-    template <> signed char numeric_limits<signed char>::max() { return SCHAR_MAX; }
-    template <> unsigned char numeric_limits<unsigned char>::max() { return UCHAR_MAX; }
-    template <> wchar_t numeric_limits<wchar_t>::max() { return WCHAR_MAX; }
-    // template <> char8_t numeric_limits<char8_t>::max() { return UCHAR_MAX; }
-    template <> char16_t numeric_limits<char16_t>::max() { return UINT_LEAST16_MAX; }
-    template <> char32_t numeric_limits<char32_t>::max() { return UINT_LEAST32_MAX; }
-    template <> short numeric_limits<short>::max() { return SHRT_MAX; }
-    template <> unsigned short numeric_limits<unsigned short>::max() { return USHRT_MAX; }
-    template <> int numeric_limits<int>::max() { return INT_MAX; }
-    template <> unsigned int numeric_limits<unsigned int>::max() { return UINT_MAX; }
-    template <> long numeric_limits<long>::max() { return LONG_MAX; }
-    template <> unsigned long numeric_limits<unsigned long>::max() { return ULONG_MAX; }
-    // template <> long long numeric_limits<long long>::max() { return LLONG_MAX; }
-    // template <> unsigned long long numeric_limits<unsigned long long>::max() { return ULLONG_MAX; }
-    template <> float numeric_limits<float>::max() { return FLT_MAX; }
-    template <> double numeric_limits<double>::max() { return DBL_MAX; }
-    template <> long double numeric_limits<long double>::max() { return LDBL_MAX; }
+    template <> constexpr bool numeric_limits<bool>::max() { return true; }
+    template <> constexpr char numeric_limits<char>::max() { return CHAR_MAX; }
+    template <> constexpr signed char numeric_limits<signed char>::max() { return SCHAR_MAX; }
+    template <> constexpr unsigned char numeric_limits<unsigned char>::max() { return UCHAR_MAX; }
+    template <> constexpr wchar_t numeric_limits<wchar_t>::max() { return WCHAR_MAX; }
+    // template <> constexpr char8_t numeric_limits<char8_t>::max() { return UCHAR_MAX; }
+    template <> constexpr char16_t numeric_limits<char16_t>::max() { return UINT_LEAST16_MAX; }
+    template <> constexpr char32_t numeric_limits<char32_t>::max() { return UINT_LEAST32_MAX; }
+    template <> constexpr short numeric_limits<short>::max() { return SHRT_MAX; }
+    template <> constexpr unsigned short numeric_limits<unsigned short>::max() { return USHRT_MAX; }
+    template <> constexpr int numeric_limits<int>::max() { return INT_MAX; }
+    template <> constexpr unsigned int numeric_limits<unsigned int>::max() { return UINT_MAX; }
+    template <> constexpr long numeric_limits<long>::max() { return LONG_MAX; }
+    template <> constexpr unsigned long numeric_limits<unsigned long>::max() { return ULONG_MAX; }
+    // template <> constexpr long long numeric_limits<long long>::max() { return LLONG_MAX; }
+    // template <> constexpr unsigned long long numeric_limits<unsigned long long>::max() { return ULLONG_MAX; }
+    template <> constexpr float numeric_limits<float>::max() { return FLT_MAX; }
+    template <> constexpr double numeric_limits<double>::max() { return DBL_MAX; }
+    template <> constexpr long double numeric_limits<long double>::max() { return LDBL_MAX; }
 
-    template <> bool numeric_limits<bool>::min() { return false; }
-    template <> char numeric_limits<char>::min() { return CHAR_MIN; }
-    template <> signed char numeric_limits<signed char>::min() { return SCHAR_MIN; }
-    template <> unsigned char numeric_limits<unsigned char>::min() { return 0; }
-    template <> wchar_t numeric_limits<wchar_t>::min() { return WCHAR_MIN; }
-    // template <> char8_t numeric_limits<char8_t>::min() { return 0; }
-    template <> char16_t numeric_limits<char16_t>::min() { return 0; }
-    template <> char32_t numeric_limits<char32_t>::min() { return 0; }
-    template <> short numeric_limits<short>::min() { return SHRT_MIN; }
-    template <> unsigned short numeric_limits<unsigned short>::min() { return 0; }
-    template <> int numeric_limits<int>::min() { return INT_MIN; }
-    template <> unsigned int numeric_limits<unsigned int>::min() { return 0; }
-    template <> long numeric_limits<long>::min() { return LONG_MIN; }
-    template <> unsigned long numeric_limits<unsigned long>::min() { return 0; }
-    // template <> long long numeric_limits<long long>::min() { return LLONG_MIN; }
-    // template <> unsigned long long numeric_limits<unsigned long long>::min() { return 0; }
-    template <> float numeric_limits<float>::min() { return FLT_MIN; }
-    template <> double numeric_limits<double>::min() { return DBL_MIN; }
-    template <> long double numeric_limits<long double>::min() { return LDBL_MIN; }
+    template <> constexpr bool numeric_limits<bool>::min() { return false; }
+    template <> constexpr char numeric_limits<char>::min() { return CHAR_MIN; }
+    template <> constexpr signed char numeric_limits<signed char>::min() { return SCHAR_MIN; }
+    template <> constexpr unsigned char numeric_limits<unsigned char>::min() { return 0; }
+    template <> constexpr wchar_t numeric_limits<wchar_t>::min() { return WCHAR_MIN; }
+    // template <> constexpr char8_t numeric_limits<char8_t>::min() { return 0; }
+    template <> constexpr char16_t numeric_limits<char16_t>::min() { return 0; }
+    template <> constexpr char32_t numeric_limits<char32_t>::min() { return 0; }
+    template <> constexpr short numeric_limits<short>::min() { return SHRT_MIN; }
+    template <> constexpr unsigned short numeric_limits<unsigned short>::min() { return 0; }
+    template <> constexpr int numeric_limits<int>::min() { return INT_MIN; }
+    template <> constexpr unsigned int numeric_limits<unsigned int>::min() { return 0; }
+    template <> constexpr long numeric_limits<long>::min() { return LONG_MIN; }
+    template <> constexpr unsigned long numeric_limits<unsigned long>::min() { return 0; }
+    // template <> constexpr long long numeric_limits<long long>::min() { return LLONG_MIN; }
+    // template <> constexpr unsigned long long numeric_limits<unsigned long long>::min() { return 0; }
+    template <> constexpr float numeric_limits<float>::min() { return FLT_MIN; }
+    template <> constexpr double numeric_limits<double>::min() { return DBL_MIN; }
+    template <> constexpr long double numeric_limits<long double>::min() { return LDBL_MIN; }
 
 
     // integral_constant
