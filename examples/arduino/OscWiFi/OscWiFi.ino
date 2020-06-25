@@ -5,10 +5,10 @@ const char* ssid = "your-ssid";
 const char* pwd = "your-password";
 const IPAddress ip(192, 168, 1, 201);
 const IPAddress gateway(192, 168, 1, 1);
-const IPAddress subnet(255, 255, 0, 0);
+const IPAddress subnet(255, 255, 255, 0);
 
 // for ArduinoOSC
-const char* host = "192.168.2.20";
+const char* host = "192.168.1.200";
 const int recv_port = 54321;
 const int bind_port = 54345;
 const int send_port = 55555;
