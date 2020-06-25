@@ -34,7 +34,10 @@ void setup()
     Serial.begin(115200);
     delay(2000);
 
-    // WiFi stuff
+    // WiFi stuff (no timeout setting for WiFi)
+    WiFi.disconnect(true, true); // disable wifi, erase ap info
+    delay(1000);
+    WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, pwd);
     WiFi.config(ip, gateway, subnet);
     while (WiFi.status() != WL_CONNECTED) { Serial.print("."); delay(500); }
