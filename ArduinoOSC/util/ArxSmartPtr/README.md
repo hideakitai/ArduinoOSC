@@ -30,6 +30,7 @@ Please use C++ Standard Template Library for other boards.
 
 - AVR (Uno, Nano, Mega, etc.)
 - MEGAAVR (Uno WiFi, Nano Ecery, etc.)
+- SAM (Due)
 - SAMD (Zero, MKR, M0, etc.)
 - SPRESENSE
 
@@ -65,6 +66,7 @@ Please see example for more information.
 - [Packetizer](https://github.com/hideakitai/Packetizer)
 - [MsgPacketizer](https://github.com/hideakitai/MsgPacketizer)
 - [ArduinoOSC](https://github.com/hideakitai/ArduinoOSC)
+- [Tween](https://github.com/hideakitai/Tween)
 
 
 ## Roadmap

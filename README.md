@@ -151,6 +151,7 @@ Please feel free to send PR or request for more board support!
 - Teensy 3.x, 4.x
 - AVR (Arduino Uno, Mega, ...)
 - megaAVR (Arduino Uno WiFi Rev2, ...)
+- SAM (Arduino Due)
 - SAMD (Arduino MKR series, ...)
 - SPRESENSE
 
@@ -162,6 +163,7 @@ The storage size of such boards for packets, queue of packets, max packet binary
 
 - AVR
 - megaAVR
+- SAM
 - SAMD
 - SPRESENSE
 
@@ -194,9 +196,9 @@ If you want to use that, please use this macro and handle packets manually.
 
 ## Embedded Libraries
 
-- [ArxTypeTraits v0.1.11](https://github.com/hideakitai/ArxTypeTraits)
-- [ArxContainer v0.3.6](https://github.com/hideakitai/ArxContainer)
-- [ArxSmartPtr v0.1.1](https://github.com/hideakitai/ArxSmartPtr)
+- [ArxTypeTraits v0.1.12](https://github.com/hideakitai/ArxTypeTraits)
+- [ArxContainer v0.3.7](https://github.com/hideakitai/ArxContainer)
+- [ArxSmartPtr v0.1.2](https://github.com/hideakitai/ArxSmartPtr)
 - [TeensyDirtySTLErrorSolution v0.1.0](https://github.com/hideakitai/TeensyDirtySTLErrorSolution)
 
 

@@ -259,14 +259,26 @@ namespace std {
         struct can_apply<Z, void_t<Z<Ts...>>, Ts...> : true_type{};
 
         template<class From, class To>
-        using try_convert = decltype(To{declval<From>()} );
+        using try_convert = decltype(To{declval<From>()});
     }
     template<template<class...>class Z, class...Ts>
     using can_apply = details::can_apply<Z, void, Ts...>;
+
     template<class From, class To>
-    struct is_convertible : can_apply <details::try_convert, From, To> {};
+    struct is_convertible
+    : std::conditional <
+        can_apply <details::try_convert, From, To>::value
+        , true_type
+        , typename std::conditional <
+            std::is_arithmetic<From>::value && std::is_arithmetic<To>::value,
+            true_type,
+            false_type
+        >::type
+    >::type
+    {};
+
     template<>
-    struct is_convertible<void,void> : true_type{};
+    struct is_convertible<void, void> : true_type{};
 
 
     // primary template

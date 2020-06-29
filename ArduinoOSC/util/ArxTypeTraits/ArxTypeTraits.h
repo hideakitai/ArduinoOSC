@@ -5,6 +5,7 @@
 
 #if defined(ARDUINO_ARCH_AVR)\
  || defined(ARDUINO_ARCH_MEGAAVR)\
+ || defined(ARDUINO_ARCH_SAM)\
  || defined(ARDUINO_ARCH_SAMD)\
  || defined(ARDUINO_spresense_ast)
     #define ARX_TYPE_TRAITS_DISABLED
