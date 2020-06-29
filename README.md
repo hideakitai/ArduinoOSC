@@ -151,6 +151,7 @@ Please feel free to send PR or request for more board support!
 - Teensy 3.x, 4.x
 - AVR (Arduino Uno, Mega, ...)
 - megaAVR (Arduino Uno WiFi Rev2, ...)
+- SAM (Arduino Due)
 - SAMD (Arduino MKR series, ...)
 - SPRESENSE
 
@@ -162,6 +163,7 @@ The storage size of such boards for packets, queue of packets, max packet binary
 
 - AVR
 - megaAVR
+- SAM
 - SAMD
 - SPRESENSE
 
