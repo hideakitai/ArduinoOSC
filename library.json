@@ -2,18 +2,16 @@
     "name": "ArduinoOSC",
     "keywords": "osc,wifi,ethernet,udp",
     "description": "OSC subscriber / publisher for Arduino",
-    "repository":
-    {
+    "repository": {
         "type": "git",
         "url": "https://github.com/hideakitai/ArduinoOSC.git"
     },
-    "authors":
-    {
+    "authors": {
         "name": "Hideaki Tai",
         "url": "https://github.com/hideakitai",
         "maintainer": true
     },
-    "version": "0.3.5",
+    "version": "0.3.6",
     "license": "MIT",
     "frameworks": "arduino",
     "platforms": "*"
