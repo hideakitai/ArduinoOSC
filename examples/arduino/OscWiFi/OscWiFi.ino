@@ -35,9 +35,11 @@ void setup()
     delay(2000);
 
     // WiFi stuff (no timeout setting for WiFi)
+#ifdef ESP_PLATFORM
     WiFi.disconnect(true, true); // disable wifi, erase ap info
     delay(1000);
     WiFi.mode(WIFI_STA);
+#endif
     WiFi.begin(ssid, pwd);
     WiFi.config(ip, gateway, subnet);
     while (WiFi.status() != WL_CONNECTED) { Serial.print("."); delay(500); }
