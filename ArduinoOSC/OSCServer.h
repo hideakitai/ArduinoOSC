@@ -3,15 +3,9 @@
 #define ARDUINOOSC_OSCSERVER_H
 
 #include "util/ArxTypeTraits/ArxTypeTraits.h"
-
-#ifdef ARDUINOOSC_DISABLE_STL
-    #include "util/ArxTypeTraits/ArxTypeTraits.h"
-    #include "util/ArxSmartPtr/ArxSmartPtr.h"
-    #include "util/ArxContainer/ArxContainer.h"
-#else
-    #include <memory>
-    #include <vector>
-    #include <map>
+#include "util/ArxSmartPtr/ArxSmartPtr.h"
+#include "util/ArxContainer/ArxContainer.h"
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
     #include <cassert>
 #endif
 
@@ -23,11 +17,6 @@ namespace arduino {
 namespace osc {
 namespace server {
 
-#ifdef ARDUINOOSC_DISABLE_STL
-    using namespace arx;
-#else
-    using namespace std;
-#endif
     using namespace message;
 
     namespace element

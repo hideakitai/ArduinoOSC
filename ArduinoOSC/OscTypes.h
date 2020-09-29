@@ -5,87 +5,9 @@
 
 #include <Arduino.h>
 #include "util/ArxTypeTraits/ArxTypeTraits.h"
+#include "util/ArxContainer/ArxContainer.h"
 
-#ifdef ARDUINOOSC_DISABLE_STL
-
-    #include "util/ArxContainer/ArxContainer.h"
-
-    namespace arduino {
-    namespace osc {
-
-        #ifndef ARDUINOOSC_MAX_ARGUMENT_SIZE
-        #define ARDUINOOSC_MAX_ARGUMENT_SIZE 8
-        #endif
-        #ifndef ARDUINOOSC_MAX_BLOB_BYTE_SIZE
-        #define ARDUINOOSC_MAX_BLOB_BYTE_SIZE 64
-        #endif
-        #ifndef ARDUINOOSC_MAX_MSG_QUEUE_SIZE
-        #define ARDUINOOSC_MAX_MSG_QUEUE_SIZE 1
-        #endif
-        #ifndef ARDUINOOSC_MAX_PUBLISH_DESTINATION
-        #define ARDUINOOSC_MAX_PUBLISH_DESTINATION 4
-        #endif
-        #ifndef ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT
-        #define ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT 4
-        #endif
-        #ifndef ARDUINOOSC_MAX_SUBSCRIBE_PORTS
-        #define ARDUINOOSC_MAX_SUBSCRIBE_PORTS 2
-        #endif
-        #ifndef ARDUINOOSC_MAX_MSG_BUNDLE_SIZE
-        #define ARDUINOOSC_MAX_MSG_BUNDLE_SIZE 32
-        #endif
-
-        namespace message
-        {
-            using ArgumentType = arx::pair<size_t, size_t>;
-            using ArgumentQueue = arx::vector<ArgumentType, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
-            class Message;
-            using MessageQueue = arx::vector<Message, ARDUINOOSC_MAX_MSG_QUEUE_SIZE>;
-            using MessageIterator = Message*;
-        }
-#ifndef ARDUINOOSC_DISABLE_BUNDLE
-        using BundleData = arx::vector<uint32_t, ARDUINOOSC_MAX_MSG_BUNDLE_SIZE>;
-#endif
-        using Blob = arx::vector<char, ARDUINOOSC_MAX_BLOB_BYTE_SIZE>;
-
-        namespace client
-        {
-            namespace element
-            {
-                class Base;
-                using Ref = arx::shared_ptr<Base>;
-                using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
-            }
-            class Destination;
-            using ElementRef = element::Ref;
-            using ElementTupleRef = element::TupleRef;
-            using AddressMap = arx::map<Destination, ElementRef, ARDUINOOSC_MAX_PUBLISH_DESTINATION>;
-        }
-
-        namespace server
-        {
-            namespace element
-            {
-                class Base;
-                using Ref = arx::shared_ptr<Base>;
-                using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
-                using dummy_vector_t = arx::vector<size_t, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
-            }
-            using ElementRef = element::Ref;
-            using ElementTupleRef = element::TupleRef;
-            using CallbackMap = arx::map<String, ElementRef, ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT>;
-            template <typename S> class Server;
-            template <typename S> using ServerRef = arx::shared_ptr<Server<S>>;
-            template <typename S> using ServerMap = arx::map<uint16_t, ServerRef<S>, ARDUINOOSC_MAX_SUBSCRIBE_PORTS>;
-        }
-
-    } // namespace osc
-    } // namespac arduino
-
-#else
-
-    #include <vector>
-    #include <map>
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
 
     namespace arduino {
     namespace osc {
@@ -135,7 +57,81 @@
     } // namespace osc
     } // namespac arduino
 
-#endif // ARDUINOOSC_DISABLE_STL
+#else
+
+    namespace arduino {
+    namespace osc {
+
+        #ifndef ARDUINOOSC_MAX_ARGUMENT_SIZE
+        #define ARDUINOOSC_MAX_ARGUMENT_SIZE 8
+        #endif
+        #ifndef ARDUINOOSC_MAX_BLOB_BYTE_SIZE
+        #define ARDUINOOSC_MAX_BLOB_BYTE_SIZE 64
+        #endif
+        #ifndef ARDUINOOSC_MAX_MSG_QUEUE_SIZE
+        #define ARDUINOOSC_MAX_MSG_QUEUE_SIZE 1
+        #endif
+        #ifndef ARDUINOOSC_MAX_PUBLISH_DESTINATION
+        #define ARDUINOOSC_MAX_PUBLISH_DESTINATION 4
+        #endif
+        #ifndef ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT
+        #define ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT 4
+        #endif
+        #ifndef ARDUINOOSC_MAX_SUBSCRIBE_PORTS
+        #define ARDUINOOSC_MAX_SUBSCRIBE_PORTS 2
+        #endif
+        #ifndef ARDUINOOSC_MAX_MSG_BUNDLE_SIZE
+        #define ARDUINOOSC_MAX_MSG_BUNDLE_SIZE 32
+        #endif
+
+        namespace message
+        {
+            using ArgumentType = arx::pair<size_t, size_t>;
+            using ArgumentQueue = arx::vector<ArgumentType, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
+            class Message;
+            using MessageQueue = arx::vector<Message, ARDUINOOSC_MAX_MSG_QUEUE_SIZE>;
+            using MessageIterator = Message*;
+        }
+#ifndef ARDUINOOSC_DISABLE_BUNDLE
+        using BundleData = arx::vector<uint32_t, ARDUINOOSC_MAX_MSG_BUNDLE_SIZE>;
+#endif
+        using Blob = arx::vector<char, ARDUINOOSC_MAX_BLOB_BYTE_SIZE>;
+
+        namespace client
+        {
+            namespace element
+            {
+                class Base;
+                using Ref = std::shared_ptr<Base>;
+                using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
+            }
+            class Destination;
+            using ElementRef = element::Ref;
+            using ElementTupleRef = element::TupleRef;
+            using AddressMap = arx::map<Destination, ElementRef, ARDUINOOSC_MAX_PUBLISH_DESTINATION>;
+        }
+
+        namespace server
+        {
+            namespace element
+            {
+                class Base;
+                using Ref = std::shared_ptr<Base>;
+                using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
+                using dummy_vector_t = arx::vector<size_t, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
+            }
+            using ElementRef = element::Ref;
+            using ElementTupleRef = element::TupleRef;
+            using CallbackMap = arx::map<String, ElementRef, ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT>;
+            template <typename S> class Server;
+            template <typename S> using ServerRef = std::shared_ptr<Server<S>>;
+            template <typename S> using ServerMap = arx::map<uint16_t, ServerRef<S>, ARDUINOOSC_MAX_SUBSCRIBE_PORTS>;
+        }
+
+    } // namespace osc
+    } // namespac arduino
+
+#endif
 
 
 #include "OscUtil.h"
@@ -173,7 +169,7 @@ namespace osc {
 
         char* getBytes(const size_t sz)
         {
-#ifndef ARDUINOOSC_DISABLE_STL
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
             assert((data.size() & 3) == 0);
             if (data.size() + sz > data.capacity()) { data.reserve((data.size() + sz) * 2); }
 #else

@@ -11,10 +11,10 @@ namespace arduino {
 namespace osc {
 namespace message {
 
-#ifdef ARDUINOOSC_DISABLE_STL
-    using namespace arx;
-#else
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
     using namespace std;
+#else
+    using namespace arx;
 #endif
 
     class Message
@@ -277,7 +277,7 @@ namespace message {
         size_t getArgSize(const int type, const char* const p) const
         {
             size_t sz = 0;
-#ifndef ARDUINOOSC_DISABLE_STL
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
             assert(p >= storage.begin() && p <= storage.end());
 #endif
             switch (type)

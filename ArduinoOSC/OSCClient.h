@@ -3,15 +3,9 @@
 #define ARDUINOOSC_OSCCLIENT_H
 
 #include "util/ArxTypeTraits/ArxTypeTraits.h"
-
-#ifdef ARDUINOOSC_DISABLE_STL
-    #include "util/ArxTypeTraits/ArxTypeTraits.h"
-    #include "util/ArxSmartPtr/ArxSmartPtr.h"
-    #include "util/ArxContainer/ArxContainer.h"
-#else
-    #include <memory>
-    #include <vector>
-    #include <map>
+#include "util/ArxSmartPtr/ArxSmartPtr.h"
+#include "util/ArxContainer/ArxContainer.h"
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
     #include <cassert>
 #endif
 

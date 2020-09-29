@@ -1,11 +1,13 @@
 #ifndef ARDUINOOSC_H
 #define ARDUINOOSC_H
 
-#if defined(ARDUINO_ARCH_AVR)\
- || defined(ARDUINO_ARCH_MEGAAVR)\
- || defined(ARDUINO_ARCH_SAMD)\
- || defined(ARDUINO_spresense_ast)
-    #define ARDUINOOSC_DISABLE_STL
+#include "ArduinoOSC/util/ArxTypeTraits/ArxTypeTraits.h"
+#include "ArduinoOSC/util/ArxSmartPtr/ArxSmartPtr.h"
+#include "ArduinoOSC/util/ArxContainer/ArxContainer.h"
+
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
+    // all features are available
+#else
     #ifndef ARDUINOOSC_ENABLE_BUNDLE
         #define ARDUINOOSC_DISABLE_BUNDLE
     #endif
@@ -21,15 +23,13 @@
     #define ARDUINOOSC_ENABLE_WIFI
 #endif
 
-#if defined(TEENSYDUINO)\
- || defined(ESP8266)\
- || defined(ARDUINOOSC_DISABLE_STL)
+#if defined(ESP8266)\
+ || !defined(ARDUINOOSC_ENABLE_WIFI)
     #define ARDUINOOSC_ENABLE_ETHER
 #endif
 
 #if !defined (ARDUINOOSC_ENABLE_WIFI)\
- && !defined (ARDUINOOSC_ENABLE_ETHER)\
- && !defined (ARDUINOOSC_DISABLE_STL)
+ && !defined (ARDUINOOSC_ENABLE_ETHER)
     #error THIS PLATFORM HAS NO WIFI OR ETHERNET OR NOT SUPPORTED ARCHITECTURE. PLEASE LET ME KNOW!
 #endif
 
