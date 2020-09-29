@@ -3,23 +3,38 @@
 #ifndef ARX_TYPE_TRAITS_FUNCTIONAL_H
 #define ARX_TYPE_TRAITS_FUNCTIONAL_H
 
-#include <Arduino.h>
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
 
-#ifdef ARX_TYPE_TRAITS_NEW_DISABLED
-    void* operator new (const size_t size, void* ptr) { (void)size; return ptr; }
+#include <functional>
+
+#else // Do not have libstdc++11
+
+// If we have a <new> header, include it and assume it has placement new
+// (for AVR this has always been true, MEGAAVR does not have placement
+// new now, but will probably get it before <new> is added).
+// This also handles the case where ArduinoSTL is used, which defines an
+// inline placement new which would conflict with the below definition.
+#if ARX_SYSTEM_HAS_INCLUDE(<new>)
+#include <new>
 #else
-    #include <new.h>
+// When there is no <new> header, there might be a <new.h> header, but
+// not all Arduino platform (versions) define a placement new operator
+// in there.
+// However, it is hard to detect whether it is or is not defined, but
+// the versions that do define it, do not define it inline in the
+// header, so we can just define it inline here without conflicts.
+// Note that there is no need to include anything to declare the
+// non-placement new operators, since those are implicit.
+inline void* operator new (const size_t size, void* ptr) noexcept { (void)size; return ptr; }
 #endif
 
-#ifdef ARX_TYPE_TRAITS_DISABLED
-
-namespace std {
+namespace arx { namespace arx_std {
 
     // reference:
     // stack overflow https://stackoverflow.com/questions/32074410/stdfunction-bind-like-type-erasure-without-standard-c-library
 
     template<class Signature>
-    struct function;
+    class function;
 
     template<class R, class... Args>
     class function<R(Args...)>
@@ -143,7 +158,8 @@ namespace std {
         return static_cast<bool>(f);
     }
 
-} // namespace std
+} } // namespace arx::std
 
-#endif // ARX_TYPE_TRAITS_DISABLED
+#endif // Do not have libstdc++11
+
 #endif // ARX_TYPE_TRAITS_FUNCTIONAL_H

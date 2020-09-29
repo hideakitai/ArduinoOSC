@@ -3,17 +3,13 @@
 C++ type_traits for Arduino which cannot use it as default
 
 
-## Supported Boards
+## Features
 
-C++11 class templates of this library is currently enabled only if you use following architecture to avoid conflict with standard `type_traits`.
-
-- AVR (Uno, Nano, Mega, etc.)
-- MEGAAVR (Uno WiFi, Nano Ecery, etc.)
-- SAM (Due)
-- SAMD (Zero, MKR, M0, etc.)
-- SPRESENSE
-
-Others are automatically enabled/disabled depending on compiler.
+- automatically use standard library first if the boards can
+- if standard library is not enough (e.g. only C++11 is available), add missing parts listed below
+- works almost all Arduino platforms (Let me know if you have errors)
+- compatible with [ArduinoSTL](https://github.com/mike-matera/ArduinoSTL) or other [uClibc++](https://www.uclibc.org/) libraries (include them before `ArxTypeTraits`)
+  - thx @matthijskooijman
 
 
 ## Supported Class Templates
@@ -106,6 +102,12 @@ Others are automatically enabled/disabled depending on compiler.
 - [PollingTimer](https://github.com/hideakitai/PollingTimer)
 - [Tween](https://github.com/hideakitai/Tween)
 - [ArxStringUtils](https://github.com/hideakitai/ArxStringUtils)
+
+
+## Contributors
+
+- [Matthijs Kooijman](https://github.com/matthijskooijman)
+
 
 ## License
 
