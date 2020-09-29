@@ -3,9 +3,10 @@
 // Ethernet stuff
 uint8_t mac[] = {0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45};
 const IPAddress ip (192, 168, 1, 201);
-const IPAddress dns (192, 168, 1, 1);
-const IPAddress gateway (192, 168, 1, 1);
-const IPAddress subnet (255, 255, 255, 0);
+// Ethernet with useful options
+// const IPAddress dns (192, 168, 1, 1);
+// const IPAddress gateway (192, 168, 1, 1);
+// const IPAddress subnet (255, 255, 255, 0);
 
 // for ArduinoOSC
 const char* host = "192.168.1.200";
