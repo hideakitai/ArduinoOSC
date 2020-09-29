@@ -7,8 +7,8 @@
 
 // imported and simplified from https://github.com/boostorg/smart_ptr
 
-namespace arx
-{
+namespace arx { namespace arx_std {
+
     namespace detail
     {
         class sp_counted_base
@@ -150,7 +150,7 @@ namespace arx
 
     } // namespace detail
 
-} // namespace arx
+}} // namespace arx::arx_std
 
 
 

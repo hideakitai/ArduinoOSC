@@ -5,9 +5,9 @@ C++ smart pointer-like classes for Arduino which can't use standard smart pointe
 
 ## Note
 
-`ArxSmartPtr` is C++ smart pointer-__like__ classes for Arduino.
-All of the functions is not supported currently.
-Almost all functions are imported and simplified based on [Boost.SmartPtr](https://github.com/boostorg/smart_ptr).
+- `ArxSmartPtr` is C++ smart pointer-__like__ classes for Arduino.
+- Most of the functions are imported and simplified based on [Boost.SmartPtr](https://github.com/boostorg/smart_ptr).
+- Automatically use standard library first if the boards can use them
 
 
 ## Supported SmartPtr
@@ -19,20 +19,16 @@ Almost all functions are imported and simplified based on [Boost.SmartPtr](https
 
 - Custom Deleter cannot be used
 - Custom Allocater cannot be used
-- `make_shared` is just an alias for constructor
-- namespace `arx` is used instead of `std`
+- `std::make_shared` is just an alias for constructor
 
 
 ## Supported Boards
 
 This library is currently enabled only if you use following architecture.
-Please use C++ Standard Template Library for other boards.
 
 - AVR (Uno, Nano, Mega, etc.)
 - MEGAAVR (Uno WiFi, Nano Ecery, etc.)
 - SAM (Due)
-- SAMD (Zero, MKR, M0, etc.)
-- SPRESENSE
 
 
 ## Usage
@@ -42,11 +38,11 @@ Please see example for more information.
 ``` C++
 {
     Serial.println("start");
-    arx::shared_ptr<Base> t1(new Base(4));
-    arx::shared_ptr<Base> t2;
+    std::shared_ptr<Base> t1(new Base(4));
+    std::shared_ptr<Base> t2;
     {
-        arx::shared_ptr<Base> t3(new Base(5));
-        arx::shared_ptr<Base> t4(new Base(6));
+        std::shared_ptr<Base> t3(new Base(5));
+        std::shared_ptr<Base> t4(new Base(6));
         t2 = t3;
     }
     Serial.println("end");
