@@ -7,7 +7,7 @@
 
 // imported and simplified from https://github.com/boostorg/smart_ptr
 
-namespace arx { namespace arx_std {
+namespace arx { namespace stdx {
 
     namespace detail
     {
@@ -150,7 +150,7 @@ namespace arx { namespace arx_std {
 
     } // namespace detail
 
-}} // namespace arx::arx_std
+}} // namespace arx::stdx
 
 
 

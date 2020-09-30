@@ -63,6 +63,8 @@ Please see example for more information.
 - [MsgPacketizer](https://github.com/hideakitai/MsgPacketizer)
 - [ArduinoOSC](https://github.com/hideakitai/ArduinoOSC)
 - [Tween](https://github.com/hideakitai/Tween)
+- [SceneManager](https://github.com/hideakitai/SceneManager)
+- [TaskManager](https://github.com/hideakitai/TaskManager)
 
 
 ## Roadmap

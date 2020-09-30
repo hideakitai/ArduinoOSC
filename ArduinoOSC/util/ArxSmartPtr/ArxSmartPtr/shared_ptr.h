@@ -8,7 +8,7 @@
 
 // imported and simplified from https://github.com/boostorg/smart_ptr
 
-namespace arx { namespace arx_std
+namespace arx { namespace stdx
 {
     template<class T> class shared_ptr;
 
@@ -370,6 +370,6 @@ namespace arx { namespace arx_std
         return shared_ptr<T>(new T(sp::detail::forward<Args>(args)...));
     }
 
-}} // namespace arx::arx_std
+}} // namespace arx::stdx
 
 #endif // ARX_SMART_PTR_SHARED_PTR_H
