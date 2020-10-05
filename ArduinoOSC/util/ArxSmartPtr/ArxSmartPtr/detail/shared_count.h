@@ -3,7 +3,9 @@
 #ifndef ARX_SMART_PTR_DETAIL_SHARED_COUNT_H
 #define ARX_SMART_PTR_DETAIL_SHARED_COUNT_H
 
-#include <Arduino.h>
+#ifdef ARDUINO
+    #include <Arduino.h>
+#endif
 
 // imported and simplified from https://github.com/boostorg/smart_ptr
 
