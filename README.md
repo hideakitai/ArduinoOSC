@@ -148,12 +148,7 @@ Please feel free to send PR or request for more board support!
 #### Ethernet
 
 - ESP8266
-- Teensy 3.x, 4.x
-- AVR (Arduino Uno, Mega, ...)
-- megaAVR (Arduino Uno WiFi Rev2, ...)
-- SAM (Arduino Due)
-- SAMD (Arduino MKR series, ...)
-- SPRESENSE
+- Almost all platforms without WiFi
 
 
 ## Limitation and Options for NO-STL Boards
