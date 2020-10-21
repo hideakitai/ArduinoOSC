@@ -4,6 +4,7 @@
 #define ARDUINOOSC_OSCDECODER_H
 
 #include <Arduino.h>
+#include "util/DebugLog/DebugLog.h"
 #include "OscTypes.h"
 #include "OscMessage.h"
 

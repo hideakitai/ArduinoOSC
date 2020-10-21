@@ -1,9 +1,14 @@
 #ifndef ARDUINOOSC_H
 #define ARDUINOOSC_H
 
+#ifndef ARDUINOOSC_ENABLE_DEBUG_LOG
+#define NDEBUG // disable conversion warning
+#endif
+
 #include "ArduinoOSC/util/ArxTypeTraits/ArxTypeTraits.h"
 #include "ArduinoOSC/util/ArxSmartPtr/ArxSmartPtr.h"
 #include "ArduinoOSC/util/ArxContainer/ArxContainer.h"
+#include "ArduinoOSC/util/DebugLog/DebugLog.h"
 
 #if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
     // all features are available

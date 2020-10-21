@@ -191,11 +191,23 @@ If you want to use that, please use this macro and handle packets manually.
 #define ARDUINOOSC_MAX_MSG_BUNDLE_SIZE 32
 ```
 
+
+### Enable Debug Logger
+
+You can see the debug log when you insert following line before include `ArduinoOSC`.
+
+``` C++
+#define ARDUINOOSC_ENABLE_DEBUG_LOG
+#include <ArduinoOSC.h>
+```
+
+
 ## Embedded Libraries
 
 - [ArxTypeTraits v0.2.1](https://github.com/hideakitai/ArxTypeTraits)
 - [ArxContainer v0.3.10](https://github.com/hideakitai/ArxContainer)
 - [ArxSmartPtr v0.2.1](https://github.com/hideakitai/ArxSmartPtr)
+- [DebugLog v0.3.1](https://github.com/hideakitai/DebugLog)
 - [TeensyDirtySTLErrorSolution v0.1.0](https://github.com/hideakitai/TeensyDirtySTLErrorSolution)
 
 

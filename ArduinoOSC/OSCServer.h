@@ -5,6 +5,7 @@
 #include "util/ArxTypeTraits/ArxTypeTraits.h"
 #include "util/ArxSmartPtr/ArxSmartPtr.h"
 #include "util/ArxContainer/ArxContainer.h"
+#include "util/DebugLog/DebugLog.h"
 #if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
     #include <cassert>
 #endif
