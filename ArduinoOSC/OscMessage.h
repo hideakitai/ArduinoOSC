@@ -25,9 +25,7 @@ namespace message {
         String type_tags;
         Storage storage;
         ArgumentQueue arguments;
-#ifndef ARDUINO_AVR_UNO // TODO: dirty...
         bool valid = false;
-#endif
 
         String remote_ip;
         uint16_t remote_port;
@@ -45,11 +43,7 @@ namespace message {
         }
         Message(const void *ptr, const size_t sz, const TimeTag tt = TimeTag::immediate())
         {
-#ifndef ARDUINO_AVR_UNO // TODO: dirty...
             valid = buildFromRawData(ptr, sz);
-#else
-            buildFromRawData(ptr, sz);
-#endif
             time_tag = tt;
         }
         Message(const String& ip, const uint16_t port, const String& addr)
@@ -95,11 +89,7 @@ namespace message {
 
         bool available() const
         {
-#ifndef ARDUINO_AVR_UNO // TODO: dirty...
             return valid;
-#else
-            return true;
-#endif
         }
 
         void clear()
@@ -216,29 +206,37 @@ namespace message {
             const char* const address_beg = storage.begin();
             const char* const address_end = (const char*)memchr(address_beg, 0, storage.end() - address_beg);
 
-            if (!address_end || address_beg[0] != '/')
+            if (!address_end)
             {
+                LOG_ERROR(F("storage size is too small"));
                 return false;
             }
-            else
+            if (address_beg[0] != '/')
             {
-                address_str = String("");
-                const char* p = address_beg;
-                while (p != address_end) { address_str += *p++; };
+                LOG_ERROR(F("first letter of packet must be / but it was"), address_beg[0]);
+                return false;
             }
 
+            address_str = String("");
+            const char* p = address_beg;
+            while (p != address_end) { address_str += *p++; };
+
             const char* const type_tags_beg = ceil4(address_end + 1 - address_beg) + address_beg;
-            const char* type_tags_end = (const char*)memchr(type_tags_beg, 0, storage.end()-type_tags_beg);
-            if (!type_tags_end || type_tags_beg[0] != ',')
+            const char* type_tags_end = (const char*)memchr(type_tags_beg, 0, storage.end() - type_tags_beg);
+            if (!type_tags_end)
             {
+                LOG_ERROR(F("storage size is too small"));
                 return false;
             }
-            else
+            if (type_tags_beg[0] != ',')
             {
-                type_tags = String("");
-                const char* p = type_tags_beg + 1; // we do not copy the initial ','
-                while (p != type_tags_end) type_tags += *p++;
+                LOG_ERROR(F("first letter of type tag must be \',\' but it was"), type_tags_beg[0]);
+                return false;
             }
+
+            type_tags = String("");
+            p = type_tags_beg + 1; // we do not copy the initial ','
+            while (p != type_tags_end) type_tags += *p++;
 
             const char* arg = ceil4(type_tags_end + 1 - address_beg) + address_beg;
             size_t iarg = 0;
@@ -246,11 +244,15 @@ namespace message {
             {
                 size_t len = getArgSize(type_tags[iarg], arg);
                 arguments.push_back(make_pair((size_t)(arg - storage.begin()), len));
-                arg += ceil4(len); ++iarg;
+                arg += ceil4(len);
+                ++iarg;
             }
 
-            if (iarg < type_tags.length() || arg != storage.end())
+            if (arg != storage.end())
             {
+                LOG_ERROR(F("address mismatch: estimated end and storage end are"),
+                    (int)arg, "and", (int)storage.end(),
+                    F("-> this may be caused by the shorten of storage size"));
                 return false;
             }
 
@@ -259,13 +261,21 @@ namespace message {
 
         const char* argBeg(const size_t idx) const
         {
-            if (idx >= arguments.size()) return 0;
+            if (idx >= arguments.size())
+            {
+                LOG_ERROR(F("index overrun"), idx, F("must be <"), arguments.size());
+                return 0;
+            }
             return storage.begin() + arguments[idx].first;
         }
 
         const char *argEnd(const size_t idx) const
         {
-            if (idx >= arguments.size()) return 0;
+            if (idx >= arguments.size())
+            {
+                LOG_ERROR(F("index overrun"), idx, F("must be <"), arguments.size());
+                return 0;
+            }
             return storage.begin() + arguments[idx].first + arguments[idx].second;
         }
 
@@ -277,10 +287,13 @@ namespace message {
 
         size_t getArgSize(const int type, const char* const p) const
         {
+            if ((p < storage.begin()) || (p >= storage.end()))
+            {
+                LOG_ERROR(F("storage pointer is out of range"));
+                return 0;
+            }
+
             size_t sz = 0;
-#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
-            assert(p >= storage.begin() && p <= storage.end());
-#endif
             switch (type)
             {
                 case TYPE_TAG_TRUE:
@@ -309,7 +322,6 @@ namespace message {
                 }
                 case TYPE_TAG_BLOB:
                 {
-                    if (p == storage.end()) return 0;
                     sz = 4 + bytes2pod<uint32_t>(p);
                     break;
                 }
@@ -320,9 +332,11 @@ namespace message {
                 }
             }
             if ((p + sz > storage.end()) || // string or blob too large
-                (p+sz < p)                  // or even blob so large that it did overflow
-            )
+                (p + sz < p)                // or even blob so large that it did overflow
+            ) {
+                LOG_ERROR(F("string or blob size is too large"));
                 return 0;
+            }
 
             return sz;
         }

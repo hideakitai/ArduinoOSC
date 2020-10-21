@@ -37,21 +37,35 @@ namespace message {
                     return true;
                 }
             }
+            LOG_ERROR(F("parse message failed"));
             return false;
         }
 
         Message* decode()
         {
-            if (!messages.empty() && (it_messages != messages.end()))
-                return &*it_messages++;
-            return nullptr;
+            if (messages.empty())
+            {
+                LOG_ERROR(F("message is empty"));
+                return nullptr;
+            }
+            if (it_messages == messages.end())
+            {
+                LOG_ERROR(F("no more message to decode"));
+                return nullptr;
+            }
+
+            return &*it_messages++;
         }
 
     private:
 
         bool parse(const char *beg, const char *end, const TimeTag& time_tag)
         {
-            if (beg == end) return false;
+            if (beg >= end)
+            {
+                LOG_ERROR(F("data ptr should be begin > end but it was:"), beg, ">=", end);
+                return false;
+            }
 
             if (*beg == '#')
             {
@@ -63,17 +77,20 @@ namespace message {
                     {
                         uint32_t sz = bytes2pod<uint32_t>(pos);
                         pos += 4;
-                        if ((sz & 3) != 0 || pos + sz > end || pos+sz < pos)
-                            return false;
-                        else
+                        if ((sz & 3) != 0 || pos + sz > end || pos + sz < pos)
                         {
-                            parse(pos, pos + sz, tt);
-                            pos += sz;
+                            LOG_ERROR(F("bundle data structure was corrupted"));
+                            return false;
                         }
+                        parse(pos, pos + sz, tt);
+                        pos += sz;
                     } while (pos != end);
                 }
                 else
+                {
+                    LOG_ERROR(F("bundle header was corrupted"));
                     return false;
+                }
             }
             else
                 messages.push_back(Message(beg, end - beg, time_tag));

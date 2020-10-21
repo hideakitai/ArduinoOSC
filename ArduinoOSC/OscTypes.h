@@ -166,15 +166,24 @@ namespace osc {
     {
         Blob data;
 
+        // reserve() makes no sense on arx::vector because capacity is fixed
         Storage() { data.reserve(200); }
 
         char* getBytes(const size_t sz)
         {
+            if ((data.size() & 3) != 0)
+            {
+                LOG_ERROR(F("storage size must be 4x bytes but it is"), data.size());
+                return nullptr;
+            }
 #if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
-            assert((data.size() & 3) == 0);
             if (data.size() + sz > data.capacity()) { data.reserve((data.size() + sz) * 2); }
 #else
-            if (data.size() + sz > data.capacity()) { return nullptr; }
+            if (data.size() + sz > data.capacity())
+            {
+                LOG_ERROR(F("storage size overflow:"), data.size() + sz, F("must be <="), data.capacity());
+                return nullptr;
+            }
 #endif
             size_t sz4 = ceil4(sz);
             size_t pos = data.size();
@@ -187,7 +196,7 @@ namespace osc {
         const char* end() const { return begin() ? (begin() + size()) : nullptr; }
         size_t size() const { return data.size(); }
         void assign(const char *beg, const char *end) { data.assign(beg, end); }
-        void clear() { data.resize(0); }
+        void clear() { data.clear(); }
     };
 
 } // namespace osc

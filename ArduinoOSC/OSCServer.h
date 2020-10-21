@@ -199,10 +199,18 @@ namespace server {
         Decoder decoder;
         CallbackMap callbacks;
         S stream;
+        OscMessage* msg_ptr {nullptr};
 
     public:
 
-        Server(const uint16_t port)
+        explicit Server(const uint16_t port)
+        {
+            this->begin(port);
+        }
+
+        Server() {}
+
+        void begin(const uint16_t port)
         {
             stream.begin(port);
         }
@@ -214,10 +222,10 @@ namespace server {
             callbacks.insert({addr, ref});
         }
 
-        void parse()
+        bool parse()
         {
             const size_t size = stream.parsePacket();
-            if (size == 0) return;
+            if (size == 0) return false;
 
             uint8_t data[size];
             stream.read(data, size);
@@ -232,17 +240,17 @@ namespace server {
                     for (auto& c : this->callbacks)
                         if (msg->match(c.first))
                             c.second->decodeFrom(*msg);
-                }
-                else
-                {
-                    Serial.println("message decode error invalid");
+
+                    msg_ptr = msg;
+                    return true;
                 }
             }
-            else
-            {
-                Serial.println("message decode error nullptr");
-            }
+            LOG_ERROR(F("osc message parsing failed"));
+            msg_ptr = nullptr;
+            return false;
         }
+
+        const OscMessage* message() const { return msg_ptr; }
     };
 
 

@@ -155,11 +155,13 @@ namespace ArduinoOSC = arduino::osc;
 #ifdef ARDUINOOSC_ENABLE_WIFI
     using OscWiFiManager = ArduinoOSC::Manager<WiFiUDP>;
     #define OscWiFi OscWiFiManager::getInstance()
+    using OscWiFiServer = OscServer<WiFiUDP>;
 #endif // ARDUINOOSC_ENABLE_WIFI
 
 #ifdef ARDUINOOSC_ENABLE_ETHER
     using OscEtherManager = ArduinoOSC::Manager<EthernetUDP>;
     #define OscEther OscEtherManager::getInstance()
+    using OscEtherServer = OscServer<EthernetUDP>;
 #endif // ARDUINOOSC_ENABLE_ETHER
 
 
