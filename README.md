@@ -160,6 +160,53 @@ The storage size of such boards for packets, queue of packets, max packet binary
 - megaAVR
 
 
+### Usage Recommendation for Arduino Uno (and other boards with tiny memory size)
+
+For the boards which has tiny memory size (e.g. Arduino Uno), I reccomend not to use publisher and subscriber.
+Though you can use them on such boards, such rich functions requires more memory.
+The reccomended way is to use `send` and `parse` manually.
+The example is shown in `examples/arduino/OscEtherUno`, so please consider to use it.
+
+``` C++
+#include <ArduinoOSC.h>
+
+// required to use manual packet parsing
+OscEtherServer server;
+
+void setup()
+{
+    Ethernet.begin(mac, ip);
+    server.begin(recv_port); // need to begin with receive port
+}
+
+void loop()
+{
+    // manual sending instead of publishers
+    static uint32_t prev_func_ms = millis();
+    if (millis() > prev_func_ms + 500)
+    {
+        OscEther.send(host, publish_port, "/publish/func", millis(), micros());
+        prev_func_ms = millis();
+    }
+
+    // manual parsing instead of subscribers
+    if (server.parse())
+    {
+        const OscMessage* msg = server.message();
+
+        if (msg->address() == "/need/reply")
+        {
+            Serial.println("/need/reply");
+            int i = millis();
+            float f = (float)micros() / 1000.f;
+            String s = F("hello");
+            OscEther.send(host, send_port, "/reply", i, f, s);
+        }
+    }
+}
+```
+
+
 ### Memory Management (only for NO-STL Boards)
 
 As mentioned above, for such boards like Arduino Uno, the storage sizes are limited.
