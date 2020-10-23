@@ -66,8 +66,12 @@ namespace server {
             virtual ~Tuple() {}
             virtual void decodeFrom(Message& m, const size_t offset = 0) override
             {
-                decode_from_msg(m, t);
                 (void)offset;
+                if (m.size() == t.size()) {
+                    decode_from_msg(m, t);
+                } else {
+                    LOG_ERROR("arg size mismatch: msg", m.size(), "/ subscribe", t.size());
+                }
             }
         };
 
@@ -101,10 +105,14 @@ namespace server {
             virtual ~Function() {}
             virtual void decodeFrom(Message& m, size_t offset = 0) override
             {
-                std::tuple<std::remove_cvref_t<Ts>...> t;
-                detail::read_to_tuple(m, t);
-                std::apply(func, t);
-                (void)offset;
+                if (m.size() == sizeof...(Ts)) {
+                    std::tuple<std::remove_cvref_t<Ts>...> t;
+                    detail::read_to_tuple(m, t);
+                    std::apply(func, t);
+                    (void)offset;
+                } else {
+                    LOG_ERROR("arg size mismatch: msg", m.size(), "/ func", sizeof...(Ts));
+                }
             }
         };
 
