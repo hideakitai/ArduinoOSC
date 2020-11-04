@@ -6,7 +6,7 @@
 #include <Arduino.h>
 #include "util/ArxTypeTraits/ArxTypeTraits.h"
 #include "util/ArxContainer/ArxContainer.h"
-#include "DebugLog.h"
+#include "util/DebugLog/DebugLog.h"
 
 #if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
 
