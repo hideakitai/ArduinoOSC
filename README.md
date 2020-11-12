@@ -253,6 +253,11 @@ You can see the debug log when you insert following line before include `Arduino
 - [TeensyDirtySTLErrorSolution v0.1.0](https://github.com/hideakitai/TeensyDirtySTLErrorSolution)
 
 
+## Special Thanks
+
+- [ofxPubSubOsc](https://github.com/2bbb/ofxPubSubOsc)
+
+
 ## License
 
 MIT
