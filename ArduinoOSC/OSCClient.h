@@ -144,7 +144,7 @@ namespace client {
         }
         inline bool operator< (const Destination& rhs) const
         {
-            return (ip != rhs.ip) ? (ip < rhs.ip) : (port != rhs.port) ? (port < rhs.port) : (addr.length() < rhs.addr.length());
+            return (ip != rhs.ip) ? (ip < rhs.ip) : (port != rhs.port) ? (port < rhs.port) : (addr < rhs.addr);
         }
         inline bool operator== (const Destination& rhs) const
         {
