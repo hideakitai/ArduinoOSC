@@ -109,7 +109,15 @@ namespace osc {
 
         void parse()
         {
+#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
+            if (WiFi.status() == WL_CONNECTED) {
+                OscServerManager<S>::getInstance().parse();
+            } else {
+                LOG_ERROR(F("WiFi is not connected. Please connected to WiFi"));
+            }
+#else
             OscServerManager<S>::getInstance().parse();
+#endif
         }
 
 
@@ -123,12 +131,28 @@ namespace osc {
         template <typename... Ts>
         void send(const String& ip, const uint16_t port, const String& addr, Ts&&... ts)
         {
+#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
+            if (WiFi.status() == WL_CONNECTED) {
+                OscClientManager<S>::getInstance().send(ip, port, addr, std::forward<Ts>(ts)...);
+            } else {
+                LOG_ERROR(F("WiFi is not connected. Please connected to WiFi"));
+            }
+#else
             OscClientManager<S>::getInstance().send(ip, port, addr, std::forward<Ts>(ts)...);
+#endif
         }
 
         void post()
         {
+#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
+            if (WiFi.status() == WL_CONNECTED) {
+                OscClientManager<S>::getInstance().post();
+            } else {
+                LOG_ERROR(F("WiFi is not connected. Please connected to WiFi"));
+            }
+#else
             OscClientManager<S>::getInstance().post();
+#endif
         }
 
         template <typename... Ts>
