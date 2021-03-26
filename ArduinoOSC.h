@@ -29,6 +29,7 @@
 #endif
 
 #if defined(ESP8266)\
+ || defined(ESP_PLATFORM)\
  || !defined(ARDUINOOSC_ENABLE_WIFI)
     #define ARDUINOOSC_ENABLE_ETHER
 #endif
