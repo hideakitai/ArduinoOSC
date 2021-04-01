@@ -2,7 +2,7 @@
 
 // Ethernet stuff
 uint8_t mac[] = {0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45};
-const IPAddress ip (192, 168, 1, 201);
+const IPAddress ip(192, 168, 1, 201);
 // Ethernet with useful options
 // const IPAddress dns (192, 168, 1, 1);
 // const IPAddress gateway (192, 168, 1, 1);
@@ -19,19 +19,24 @@ int i;
 float f;
 String s;
 
-void onOscReceived(OscMessage& m)
-{
-    Serial.print(m.remoteIP()); Serial.print(" ");
-    Serial.print(m.remotePort()); Serial.print(" ");
-    Serial.print(m.size()); Serial.print(" ");
-    Serial.print(m.address()); Serial.print(" ");
-    Serial.print(m.arg<int>(0)); Serial.print(" ");
-    Serial.print(m.arg<float>(1)); Serial.print(" ");
-    Serial.print(m.arg<String>(2)); Serial.println();
+void onOscReceived(OscMessage& m) {
+    Serial.print(m.remoteIP());
+    Serial.print(" ");
+    Serial.print(m.remotePort());
+    Serial.print(" ");
+    Serial.print(m.size());
+    Serial.print(" ");
+    Serial.print(m.address());
+    Serial.print(" ");
+    Serial.print(m.arg<int>(0));
+    Serial.print(" ");
+    Serial.print(m.arg<float>(1));
+    Serial.print(" ");
+    Serial.print(m.arg<String>(2));
+    Serial.println();
 }
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
     delay(2000);
 
@@ -51,45 +56,53 @@ void setup()
     OscEther.publish(host, publish_port, "/publish/func", &millis, &micros)
         ->setIntervalMsec(500.f);
 
-
     // subscribe osc messages
 
     OscEther.subscribe(bind_port, "/bind/values", i, f, s);
 
     OscEther.subscribe(bind_port, "/lambda/bind/args",
-        [&](int& i, float& f, String& s)
-        {
+        [&](int& i, float& f, String& s) {
             Serial.print("/lambda/bind/args ");
-            Serial.print(i); Serial.print(" ");
-            Serial.print(f); Serial.print(" ");
-            Serial.print(s); Serial.println();
-        }
-    );
+            Serial.print(i);
+            Serial.print(" ");
+            Serial.print(f);
+            Serial.print(" ");
+            Serial.print(s);
+            Serial.println();
+        });
 
     OscEther.subscribe(recv_port, "/lambda/msg",
-        [](OscMessage& m)
-        {
-            Serial.print(m.remoteIP()); Serial.print(" ");
-            Serial.print(m.remotePort()); Serial.print(" ");
-            Serial.print(m.size()); Serial.print(" ");
-            Serial.print(m.address()); Serial.print(" ");
-            Serial.print(m.arg<int>(0)); Serial.print(" ");
-            Serial.print(m.arg<float>(1)); Serial.print(" ");
-            Serial.print(m.arg<String>(2)); Serial.println();
-        }
-    );
+        [](OscMessage& m) {
+            Serial.print(m.remoteIP());
+            Serial.print(" ");
+            Serial.print(m.remotePort());
+            Serial.print(" ");
+            Serial.print(m.size());
+            Serial.print(" ");
+            Serial.print(m.address());
+            Serial.print(" ");
+            Serial.print(m.arg<int>(0));
+            Serial.print(" ");
+            Serial.print(m.arg<float>(1));
+            Serial.print(" ");
+            Serial.print(m.arg<String>(2));
+            Serial.println();
+        });
 
-    OscEther.subscribe(recv_port, "/wildcard/*/test", [](OscMessage& m)
-    {
-        Serial.print(m.remoteIP()); Serial.print(" ");
-        Serial.print(m.remotePort()); Serial.print(" ");
-        Serial.print(m.size()); Serial.print(" ");
-        Serial.print(m.address()); Serial.print(" ");
-        Serial.print(m.arg<int>(0)); Serial.println();
+    OscEther.subscribe(recv_port, "/wildcard/*/test", [](OscMessage& m) {
+        Serial.print(m.remoteIP());
+        Serial.print(" ");
+        Serial.print(m.remotePort());
+        Serial.print(" ");
+        Serial.print(m.size());
+        Serial.print(" ");
+        Serial.print(m.address());
+        Serial.print(" ");
+        Serial.print(m.arg<int>(0));
+        Serial.println();
     });
 
-    OscEther.subscribe(recv_port, "/need/reply", []()
-    {
+    OscEther.subscribe(recv_port, "/need/reply", []() {
         Serial.println("/need/reply");
 
         int i = millis();
@@ -100,12 +113,10 @@ void setup()
     });
 
     OscEther.subscribe(recv_port, "/callback", onOscReceived);
-
 }
 
-void loop()
-{
-    OscEther.update(); // should be called to receive + send osc
+void loop() {
+    OscEther.update();  // should be called to receive + send osc
 
     // or do that separately
     // OscEther.parse(); // to receive osc

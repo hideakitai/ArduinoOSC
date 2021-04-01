@@ -18,33 +18,41 @@ int i;
 float f;
 String s;
 
-void onOscReceived(const OscMessage& m)
-{
-    Serial.print(m.remoteIP()); Serial.print(" ");
-    Serial.print(m.remotePort()); Serial.print(" ");
-    Serial.print(m.size()); Serial.print(" ");
-    Serial.print(m.address()); Serial.print(" ");
-    Serial.print(m.arg<int>(0)); Serial.print(" ");
-    Serial.print(m.arg<float>(1)); Serial.print(" ");
-    Serial.print(m.arg<String>(2)); Serial.println();
+void onOscReceived(const OscMessage& m) {
+    Serial.print(m.remoteIP());
+    Serial.print(" ");
+    Serial.print(m.remotePort());
+    Serial.print(" ");
+    Serial.print(m.size());
+    Serial.print(" ");
+    Serial.print(m.address());
+    Serial.print(" ");
+    Serial.print(m.arg<int>(0));
+    Serial.print(" ");
+    Serial.print(m.arg<float>(1));
+    Serial.print(" ");
+    Serial.print(m.arg<String>(2));
+    Serial.println();
 }
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
     delay(2000);
 
     // WiFi stuff (no timeout setting for WiFi)
 #ifdef ESP_PLATFORM
-    WiFi.disconnect(true, true); // disable wifi, erase ap info
+    WiFi.disconnect(true, true);  // disable wifi, erase ap info
     delay(1000);
     WiFi.mode(WIFI_STA);
 #endif
     WiFi.begin(ssid, pwd);
     WiFi.config(ip, gateway, subnet);
-    while (WiFi.status() != WL_CONNECTED) { Serial.print("."); delay(500); }
-    Serial.print("WiFi connected, IP = "); Serial.println(WiFi.localIP());
-
+    while (WiFi.status() != WL_CONNECTED) {
+        Serial.print(".");
+        delay(500);
+    }
+    Serial.print("WiFi connected, IP = ");
+    Serial.println(WiFi.localIP());
 
     // publish osc messages (default publish rate = 30 [Hz])
 
@@ -54,45 +62,53 @@ void setup()
     OscWiFi.publish(host, publish_port, "/publish/func", &millis, &micros)
         ->setIntervalMsec(500.f);
 
-
     // subscribe osc messages
 
     OscWiFi.subscribe(bind_port, "/bind/values", i, f, s);
 
     OscWiFi.subscribe(bind_port, "/lambda/bind/args",
-        [&](const int& i, const float& f, const String& s)
-        {
+        [&](const int& i, const float& f, const String& s) {
             Serial.print("/lambda/bind/args ");
-            Serial.print(i); Serial.print(" ");
-            Serial.print(f); Serial.print(" ");
-            Serial.print(s); Serial.println();
-        }
-    );
+            Serial.print(i);
+            Serial.print(" ");
+            Serial.print(f);
+            Serial.print(" ");
+            Serial.print(s);
+            Serial.println();
+        });
 
     OscWiFi.subscribe(recv_port, "/lambda/msg",
-        [](const OscMessage& m)
-        {
-            Serial.print(m.remoteIP()); Serial.print(" ");
-            Serial.print(m.remotePort()); Serial.print(" ");
-            Serial.print(m.size()); Serial.print(" ");
-            Serial.print(m.address()); Serial.print(" ");
-            Serial.print(m.arg<int>(0)); Serial.print(" ");
-            Serial.print(m.arg<float>(1)); Serial.print(" ");
-            Serial.print(m.arg<String>(2)); Serial.println();
-        }
-    );
+        [](const OscMessage& m) {
+            Serial.print(m.remoteIP());
+            Serial.print(" ");
+            Serial.print(m.remotePort());
+            Serial.print(" ");
+            Serial.print(m.size());
+            Serial.print(" ");
+            Serial.print(m.address());
+            Serial.print(" ");
+            Serial.print(m.arg<int>(0));
+            Serial.print(" ");
+            Serial.print(m.arg<float>(1));
+            Serial.print(" ");
+            Serial.print(m.arg<String>(2));
+            Serial.println();
+        });
 
-    OscWiFi.subscribe(recv_port, "/wildcard/*/test", [](const OscMessage& m)
-    {
-        Serial.print(m.remoteIP()); Serial.print(" ");
-        Serial.print(m.remotePort()); Serial.print(" ");
-        Serial.print(m.size()); Serial.print(" ");
-        Serial.print(m.address()); Serial.print(" ");
-        Serial.print(m.arg<int>(0)); Serial.println();
+    OscWiFi.subscribe(recv_port, "/wildcard/*/test", [](const OscMessage& m) {
+        Serial.print(m.remoteIP());
+        Serial.print(" ");
+        Serial.print(m.remotePort());
+        Serial.print(" ");
+        Serial.print(m.size());
+        Serial.print(" ");
+        Serial.print(m.address());
+        Serial.print(" ");
+        Serial.print(m.arg<int>(0));
+        Serial.println();
     });
 
-    OscWiFi.subscribe(recv_port, "/need/reply", []()
-    {
+    OscWiFi.subscribe(recv_port, "/need/reply", []() {
         Serial.println("/need/reply");
 
         int i = millis();
@@ -103,12 +119,10 @@ void setup()
     });
 
     OscWiFi.subscribe(recv_port, "/callback", onOscReceived);
-
 }
 
-void loop()
-{
-    OscWiFi.update(); // should be called to receive + send osc
+void loop() {
+    OscWiFi.update();  // should be called to receive + send osc
 
     // or do that separately
     // OscWiFi.parse(); // to receive osc

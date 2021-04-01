@@ -40,8 +40,7 @@ To use with `Ethernet`, please change `OscWiFi` to `OscEther`.
 
 int i; float f; String s;
 
-void setup()
-{
+void setup() {
     // WiFi stuff
     WiFi.begin(ssid, pwd);
     WiFi.config(ip, gateway, subnet);
@@ -56,8 +55,7 @@ void setup()
         ->setFrameRate(1); // and publish it once per second
 }
 
-void loop()
-{
+void loop() {
     OscWiFi.update(); // should be called to subscribe + publish osc
 }
 ```
@@ -65,14 +63,12 @@ void loop()
 ### Bind OSC to Lambda Arguments and One-Line Send
 
 ``` C++
-void setup()
-{
+void setup() {
     // WiFi stuff
     // ...
 
     OscWiFi.subscribe(bind_port, "/lambda/bind/args",
-        [&](int& i, float& f, String& s)
-        {
+        [&](int& i, float& f, String& s) {
             Serial.print("/lambda/bind/args ");
             Serial.print(i); Serial.print(" ");
             Serial.print(f); Serial.print(" ");
@@ -84,8 +80,7 @@ void setup()
     );
 }
 
-void loop()
-{
+void loop() {
     OscWiFi.update(); // should be called
 }
 ```
@@ -95,8 +90,7 @@ void loop()
 ``` C++
 // OscMessage as lambda argument
 OscWiFi.subscribe(recv_port, "/lambda/msg",
-    [](const OscMessage& m)
-    {
+    [](const OscMessage& m) {
         Serial.print(m.remoteIP()); Serial.print(" ");
         Serial.print(m.remotePort()); Serial.print(" ");
         Serial.print(m.size()); Serial.print(" ");
@@ -109,8 +103,7 @@ OscWiFi.subscribe(recv_port, "/lambda/msg",
 
 // wildcard address pattern matching
 OscWiFi.subscribe(recv_port, "/wildcard/*/test",
-    [](const OscMessage& m)
-    {
+    [](const OscMessage& m) {
         Serial.print(m.remoteIP()); Serial.print(" ");
         Serial.print(m.remotePort()); Serial.print(" ");
         Serial.print(m.size()); Serial.print(" ");
@@ -120,8 +113,7 @@ OscWiFi.subscribe(recv_port, "/wildcard/*/test",
 );
 
 // no arguments
-OscWiFi.subscribe(recv_port, "/need/reply", []()
-{
+OscWiFi.subscribe(recv_port, "/need/reply", []() {
     OscWiFi.send(host, send_port, "/reply", i, f, s);
 });
 
@@ -173,29 +165,24 @@ The example is shown in `examples/arduino/OscEtherUno`, so please consider to us
 // required to use manual packet parsing
 OscEtherServer server;
 
-void setup()
-{
+void setup() {
     Ethernet.begin(mac, ip);
     server.begin(recv_port); // need to begin with receive port
 }
 
-void loop()
-{
+void loop() {
     // manual sending instead of publishers
     static uint32_t prev_func_ms = millis();
-    if (millis() > prev_func_ms + 500)
-    {
+    if (millis() > prev_func_ms + 500) {
         OscEther.send(host, publish_port, "/publish/func", millis(), micros());
         prev_func_ms = millis();
     }
 
     // manual parsing instead of subscribers
-    if (server.parse())
-    {
+    if (server.parse()) {
         const OscMessage* msg = server.message();
 
-        if (msg->address() == "/need/reply")
-        {
+        if (msg->address() == "/need/reply") {
             Serial.println("/need/reply");
             int i = millis();
             float f = (float)micros() / 1000.f;

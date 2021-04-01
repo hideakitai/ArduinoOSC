@@ -10,101 +10,80 @@
 
 namespace arduino {
 namespace osc {
-namespace message {
+    namespace message {
 
-    class Decoder
-    {
-        MessageQueue messages;
-        MessageIterator it_messages;
+        class Decoder {
+            MessageQueue messages;
+            MessageIterator it_messages;
 
-    public:
+        public:
+            Decoder() {}
 
-        Decoder() { }
+            Decoder(const void* ptr, const size_t sz) {
+                init(ptr, sz);
+            }
 
-        Decoder(const void *ptr, const size_t sz)
-        {
-            init(ptr, sz);
-        }
-
-        bool init(const void *ptr, const size_t sz)
-        {
-            messages.clear();
-            if ((sz % 4) == 0)
-            {
-                if (parse((const char*)ptr, (const char *)ptr + sz, TimeTag::immediate()))
-                {
-                    it_messages = messages.begin();
-                    return true;
+            bool init(const void* ptr, const size_t sz) {
+                messages.clear();
+                if ((sz % 4) == 0) {
+                    if (parse((const char*)ptr, (const char*)ptr + sz, TimeTag::immediate())) {
+                        it_messages = messages.begin();
+                        return true;
+                    }
                 }
-            }
-            LOG_ERROR(F("parse message failed"));
-            return false;
-        }
-
-        Message* decode()
-        {
-            if (messages.empty())
-            {
-                LOG_ERROR(F("message is empty"));
-                return nullptr;
-            }
-            if (it_messages == messages.end())
-            {
-                LOG_ERROR(F("no more message to decode"));
-                return nullptr;
-            }
-
-            return &*it_messages++;
-        }
-
-    private:
-
-        bool parse(const char *beg, const char *end, const TimeTag& time_tag)
-        {
-            if (beg >= end)
-            {
-                LOG_ERROR(F("data ptr should be begin > end but it was:"), beg, ">=", end);
+                LOG_ERROR(F("parse message failed"));
                 return false;
             }
 
-            if (*beg == '#')
-            {
-                if ((end - beg >= 20) && (memcmp(beg, "#bundle\0", 8) == 0))
-                {
-                    TimeTag tt(bytes2pod<uint64_t>(beg + 8));
-                    const char *pos = beg + 16;
-                    do
-                    {
-                        uint32_t sz = bytes2pod<uint32_t>(pos);
-                        pos += 4;
-                        if ((sz & 3) != 0 || pos + sz > end || pos + sz < pos)
-                        {
-                            LOG_ERROR(F("bundle data structure was corrupted"));
-                            return false;
-                        }
-                        parse(pos, pos + sz, tt);
-                        pos += sz;
-                    } while (pos != end);
+            Message* decode() {
+                if (messages.empty()) {
+                    LOG_ERROR(F("message is empty"));
+                    return nullptr;
                 }
-                else
-                {
-                    LOG_ERROR(F("bundle header was corrupted"));
+                if (it_messages == messages.end()) {
+                    LOG_ERROR(F("no more message to decode"));
+                    return nullptr;
+                }
+
+                return &*it_messages++;
+            }
+
+        private:
+            bool parse(const char* beg, const char* end, const TimeTag& time_tag) {
+                if (beg >= end) {
+                    LOG_ERROR(F("data ptr should be begin > end but it was:"), beg, ">=", end);
                     return false;
                 }
+
+                if (*beg == '#') {
+                    if ((end - beg >= 20) && (memcmp(beg, "#bundle\0", 8) == 0)) {
+                        TimeTag tt(bytes2pod<uint64_t>(beg + 8));
+                        const char* pos = beg + 16;
+                        do {
+                            uint32_t sz = bytes2pod<uint32_t>(pos);
+                            pos += 4;
+                            if ((sz & 3) != 0 || pos + sz > end || pos + sz < pos) {
+                                LOG_ERROR(F("bundle data structure was corrupted"));
+                                return false;
+                            }
+                            parse(pos, pos + sz, tt);
+                            pos += sz;
+                        } while (pos != end);
+                    } else {
+                        LOG_ERROR(F("bundle header was corrupted"));
+                        return false;
+                    }
+                } else
+                    messages.push_back(Message(beg, end - beg, time_tag));
+
+                return true;
             }
-            else
-                messages.push_back(Message(beg, end - beg, time_tag));
+        };
 
-            return true;
-        }
-    };
-
-} // namespace message
-} // namespace osc
-} // namespac arduino
-
+    }  // namespace message
+}  // namespace osc
+}  // namespace arduino
 
 using OscDecoder = arduino::osc::message::Decoder;
 
-
-#endif // ARDUINOOSC_OSCDECODER_H
+#endif  // ARDUINOOSC_OSCDECODER_H

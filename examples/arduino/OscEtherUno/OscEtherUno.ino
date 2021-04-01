@@ -17,7 +17,7 @@
 
 // Ethernet stuff
 uint8_t mac[] = {0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45};
-const IPAddress ip (192, 168, 1, 201);
+const IPAddress ip(192, 168, 1, 201);
 // Ethernet with useful options
 // const IPAddress dns (192, 168, 1, 1);
 // const IPAddress gateway (192, 168, 1, 1);
@@ -37,8 +37,7 @@ String s;
 // required to use manual packet parsing
 OscEtherServer server;
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
     delay(2000);
 
@@ -54,13 +53,11 @@ void setup()
     Serial.println("start");
 }
 
-void loop()
-{
+void loop() {
     // manual sending instead of publishers
 
     static uint32_t prev_value_ms = millis();
-    if (millis() > prev_value_ms + 16)
-    {
+    if (millis() > prev_value_ms + 16) {
         i = millis();
         f = 1000000.f / (float)(micros() - prev_value_ms * 1000);
         s = String("testing");
@@ -69,54 +66,63 @@ void loop()
     }
 
     static uint32_t prev_func_ms = millis();
-    if (millis() > prev_func_ms + 500)
-    {
+    if (millis() > prev_func_ms + 500) {
         OscEther.send(host, publish_port, F("/publish/func"), millis(), micros());
         prev_func_ms = millis();
     }
 
-
     // manual parsing instead of subscribers
 
-    if (server.parse())
-    {
+    if (server.parse()) {
         const OscMessage* msg = server.message();
 
-        if (msg->address() == F("/lambda/msg"))
-        {
-                Serial.print(msg->remoteIP()); Serial.print(" ");
-                Serial.print(msg->remotePort()); Serial.print(" ");
-                Serial.print(msg->size()); Serial.print(" ");
-                Serial.print(msg->address()); Serial.print(" ");
-                Serial.print(msg->arg<int>(0)); Serial.print(" ");
-                Serial.print(msg->arg<float>(1)); Serial.print(" ");
-                Serial.print(msg->arg<String>(2)); Serial.println();
-        }
-        else if (msg->address() == F("/wildcard/*/test"))
-        {
-            Serial.print(msg->remoteIP()); Serial.print(" ");
-            Serial.print(msg->remotePort()); Serial.print(" ");
-            Serial.print(msg->size()); Serial.print(" ");
-            Serial.print(msg->address()); Serial.print(" ");
-            Serial.print(msg->arg<int>(0)); Serial.println();
-        }
-        else if (msg->address() == F("/need/reply"))
-        {
+        if (msg->address() == F("/lambda/msg")) {
+            Serial.print(msg->remoteIP());
+            Serial.print(" ");
+            Serial.print(msg->remotePort());
+            Serial.print(" ");
+            Serial.print(msg->size());
+            Serial.print(" ");
+            Serial.print(msg->address());
+            Serial.print(" ");
+            Serial.print(msg->arg<int>(0));
+            Serial.print(" ");
+            Serial.print(msg->arg<float>(1));
+            Serial.print(" ");
+            Serial.print(msg->arg<String>(2));
+            Serial.println();
+        } else if (msg->address() == F("/wildcard/*/test")) {
+            Serial.print(msg->remoteIP());
+            Serial.print(" ");
+            Serial.print(msg->remotePort());
+            Serial.print(" ");
+            Serial.print(msg->size());
+            Serial.print(" ");
+            Serial.print(msg->address());
+            Serial.print(" ");
+            Serial.print(msg->arg<int>(0));
+            Serial.println();
+        } else if (msg->address() == F("/need/reply")) {
             Serial.println(F("/need/reply"));
             int i = millis();
             float f = (float)micros() / 1000.f;
             String s = F("hello");
             OscEther.send(host, send_port, F("/reply"), i, f, s);
-        }
-        else if (msg->address() == F("/callback"))
-        {
-            Serial.print(msg->remoteIP()); Serial.print(" ");
-            Serial.print(msg->remotePort()); Serial.print(" ");
-            Serial.print(msg->size()); Serial.print(" ");
-            Serial.print(msg->address()); Serial.print(" ");
-            Serial.print(msg->arg<int>(0)); Serial.print(" ");
-            Serial.print(msg->arg<float>(1)); Serial.print(" ");
-            Serial.print(msg->arg<String>(2)); Serial.println();
+        } else if (msg->address() == F("/callback")) {
+            Serial.print(msg->remoteIP());
+            Serial.print(" ");
+            Serial.print(msg->remotePort());
+            Serial.print(" ");
+            Serial.print(msg->size());
+            Serial.print(" ");
+            Serial.print(msg->address());
+            Serial.print(" ");
+            Serial.print(msg->arg<int>(0));
+            Serial.print(" ");
+            Serial.print(msg->arg<float>(1));
+            Serial.print(" ");
+            Serial.print(msg->arg<String>(2));
+            Serial.println();
         }
     }
 }

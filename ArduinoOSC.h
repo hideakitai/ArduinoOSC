@@ -2,7 +2,7 @@
 #define ARDUINOOSC_H
 
 #ifndef ARDUINOOSC_ENABLE_DEBUG_LOG
-#define NDEBUG // disable conversion warning
+#define NDEBUG  // disable conversion warning
 #endif
 
 #include "ArduinoOSC/util/ArxTypeTraits/ArxTypeTraits.h"
@@ -10,94 +10,75 @@
 #include "ArduinoOSC/util/ArxContainer/ArxContainer.h"
 #include "ArduinoOSC/util/DebugLog/DebugLog.h"
 
-#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L // Have libstdc++11
-    // all features are available
+#if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L  // Have libstdc++11
+// all features are available
 #else
-    #ifndef ARDUINOOSC_ENABLE_BUNDLE
-        #define ARDUINOOSC_DISABLE_BUNDLE
-    #endif
+#ifndef ARDUINOOSC_ENABLE_BUNDLE
+#define ARDUINOOSC_DISABLE_BUNDLE
+#endif
 #endif
 
-#if defined(ESP_PLATFORM)\
- || defined(ESP8266)\
- || defined(ARDUINO_AVR_UNO_WIFI_REV2)\
- || defined(ARDUINO_SAMD_MKRWIFI1010)\
- || defined(ARDUINO_SAMD_MKRVIDOR4000)\
- || defined(ARDUINO_SAMD_MKR1000)\
- || defined(ARDUINO_SAMD_NANO_33_IOT)
-    #define ARDUINOOSC_ENABLE_WIFI
+#if defined(ESP_PLATFORM) || defined(ESP8266) || defined(ARDUINO_AVR_UNO_WIFI_REV2) || defined(ARDUINO_SAMD_MKRWIFI1010) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_NANO_33_IOT)
+#define ARDUINOOSC_ENABLE_WIFI
 #endif
 
-#if defined(ESP8266)\
- || defined(ESP_PLATFORM)\
- || !defined(ARDUINOOSC_ENABLE_WIFI)
-    #define ARDUINOOSC_ENABLE_ETHER
+#if defined(ESP8266) || defined(ESP_PLATFORM) || !defined(ARDUINOOSC_ENABLE_WIFI)
+#define ARDUINOOSC_ENABLE_ETHER
 #endif
 
-#if !defined (ARDUINOOSC_ENABLE_WIFI)\
- && !defined (ARDUINOOSC_ENABLE_ETHER)
-    #error THIS PLATFORM HAS NO WIFI OR ETHERNET OR NOT SUPPORTED ARCHITECTURE. PLEASE LET ME KNOW!
+#if !defined(ARDUINOOSC_ENABLE_WIFI) && !defined(ARDUINOOSC_ENABLE_ETHER)
+#error THIS PLATFORM HAS NO WIFI OR ETHERNET OR NOT SUPPORTED ARCHITECTURE. PLEASE LET ME KNOW!
 #endif
 
 #ifdef ARDUINOOSC_ENABLE_WIFI
-    #ifdef ESP_PLATFORM
-        #include <WiFi.h>
-        #include <WiFiUdp.h>
-    #elif defined (ESP8266)
-        #include <ESP8266WiFi.h>
-        #include <WiFiUdp.h>
-    #elif defined (ARDUINO_AVR_UNO_WIFI_REV2)\
-        || defined(ARDUINO_SAMD_MKRWIFI1010)\
-        || defined(ARDUINO_SAMD_MKRVIDOR4000)\
-        || defined(ARDUINO_SAMD_NANO_33_IOT)
-        #include <SPI.h>
-        #include <WiFiNINA.h>
-        #include <WiFiUdp.h>
-    #elif defined (ARDUINO_SAMD_MKR1000)
-        #include <SPI.h>
-        #include <WiFi101.h>
-        #include <WiFiUdp.h>
-    #endif
-#endif // ARDUINOOSC_ENABLE_WIFI
+#ifdef ESP_PLATFORM
+#include <WiFi.h>
+#include <WiFiUdp.h>
+#elif defined(ESP8266)
+#include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
+#elif defined(ARDUINO_AVR_UNO_WIFI_REV2) || defined(ARDUINO_SAMD_MKRWIFI1010) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(ARDUINO_SAMD_NANO_33_IOT)
+#include <SPI.h>
+#include <WiFiNINA.h>
+#include <WiFiUdp.h>
+#elif defined(ARDUINO_SAMD_MKR1000)
+#include <SPI.h>
+#include <WiFi101.h>
+#include <WiFiUdp.h>
+#endif
+#endif  // ARDUINOOSC_ENABLE_WIFI
 
 #ifdef ARDUINOOSC_ENABLE_ETHER
-    #include <Ethernet.h>
-    #include <EthernetUdp.h>
-    #include "ArduinoOSC/util/TeensyDirtySTLErrorSolution/TeensyDirtySTLErrorSolution.h"
-#endif // ARDUINOOSC_ENABLE_ETHER
-
+#include <Ethernet.h>
+#include <EthernetUdp.h>
+#include "ArduinoOSC/util/TeensyDirtySTLErrorSolution/TeensyDirtySTLErrorSolution.h"
+#endif  // ARDUINOOSC_ENABLE_ETHER
 
 #include "ArduinoOSC/OSCServer.h"
 #include "ArduinoOSC/OSCClient.h"
-
 
 namespace arduino {
 namespace osc {
 
     template <typename S>
-    struct Manager
-    {
+    struct Manager {
         // server
 
-        static Manager<S>& getInstance()
-        {
+        static Manager<S>& getInstance() {
             static Manager<S> m;
             return m;
         }
 
-        const OscServerMap<S>& getServerMap() const
-        {
+        const OscServerMap<S>& getServerMap() const {
             return OscServerManager<S>::getInstance().getServerMap();
         }
 
-        OscServer<S>& getServer(const uint16_t port)
-        {
+        OscServer<S>& getServer(const uint16_t port) {
             return OscServerManager<S>::getInstance().getServer(port);
         }
 
         template <typename... Ts>
-        void subscribe(const uint16_t port, const String& addr, Ts&&... ts)
-        {
+        void subscribe(const uint16_t port, const String& addr, Ts&&... ts) {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
             if (WiFi.getMode() != WIFI_OFF)
                 OscServerManager<S>::getInstance().getServer(port).subscribe(addr, std::forward<Ts>(ts)...);
@@ -108,8 +89,7 @@ namespace osc {
 #endif
         }
 
-        void parse()
-        {
+        void parse() {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
             if (WiFi.status() == WL_CONNECTED) {
                 OscServerManager<S>::getInstance().parse();
@@ -121,17 +101,14 @@ namespace osc {
 #endif
         }
 
-
         // client
 
-        OscClient<S>& getClient()
-        {
+        OscClient<S>& getClient() {
             return OscClientManager<S>::getInstance().getClient();
         }
 
         template <typename... Ts>
-        void send(const String& ip, const uint16_t port, const String& addr, Ts&&... ts)
-        {
+        void send(const String& ip, const uint16_t port, const String& addr, Ts&&... ts) {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
             if (WiFi.status() == WL_CONNECTED) {
                 OscClientManager<S>::getInstance().send(ip, port, addr, std::forward<Ts>(ts)...);
@@ -143,8 +120,7 @@ namespace osc {
 #endif
         }
 
-        void post()
-        {
+        void post() {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
             if (WiFi.status() == WL_CONNECTED) {
                 OscClientManager<S>::getInstance().post();
@@ -157,8 +133,7 @@ namespace osc {
         }
 
         template <typename... Ts>
-        OscPublishElementRef publish(const String& ip, const uint16_t port, const String& addr, Ts&&... ts)
-        {
+        OscPublishElementRef publish(const String& ip, const uint16_t port, const String& addr, Ts&&... ts) {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
             if (WiFi.getMode() != WIFI_OFF)
                 return OscClientManager<S>::getInstance().publish(ip, port, addr, std::forward<Ts>(ts)...);
@@ -171,39 +146,33 @@ namespace osc {
 #endif
         }
 
-        OscPublishElementRef getPublishElementRef(const String& ip, const uint16_t port, const String& addr)
-        {
+        OscPublishElementRef getPublishElementRef(const String& ip, const uint16_t port, const String& addr) {
             return OscClientManager<S>::getInstance().getPublishElementRef(ip, port, addr);
         }
 
-
         // update both server and client
 
-        void update()
-        {
+        void update() {
             parse();
             post();
         }
-
     };
 
-} // osc
-} // arduino
-
+}  // namespace osc
+}  // namespace arduino
 
 namespace ArduinoOSC = arduino::osc;
 
 #ifdef ARDUINOOSC_ENABLE_WIFI
-    using OscWiFiManager = ArduinoOSC::Manager<WiFiUDP>;
-    #define OscWiFi OscWiFiManager::getInstance()
-    using OscWiFiServer = OscServer<WiFiUDP>;
-#endif // ARDUINOOSC_ENABLE_WIFI
+using OscWiFiManager = ArduinoOSC::Manager<WiFiUDP>;
+#define OscWiFi OscWiFiManager::getInstance()
+using OscWiFiServer = OscServer<WiFiUDP>;
+#endif  // ARDUINOOSC_ENABLE_WIFI
 
 #ifdef ARDUINOOSC_ENABLE_ETHER
-    using OscEtherManager = ArduinoOSC::Manager<EthernetUDP>;
-    #define OscEther OscEtherManager::getInstance()
-    using OscEtherServer = OscServer<EthernetUDP>;
-#endif // ARDUINOOSC_ENABLE_ETHER
+using OscEtherManager = ArduinoOSC::Manager<EthernetUDP>;
+#define OscEther OscEtherManager::getInstance()
+using OscEtherServer = OscServer<EthernetUDP>;
+#endif  // ARDUINOOSC_ENABLE_ETHER
 
-
-#endif // ARDUINOOSC_H
+#endif  // ARDUINOOSC_H
