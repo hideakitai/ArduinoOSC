@@ -1,14 +1,16 @@
 #ifndef ARDUINOOSC_H
 #define ARDUINOOSC_H
 
-#ifndef ARDUINOOSC_DEBUGLOG_ENABLE
-#define NDEBUG  // disable conversion warning
-#endif
-
 #include "ArduinoOSC/util/ArxTypeTraits/ArxTypeTraits.h"
 #include "ArduinoOSC/util/ArxSmartPtr/ArxSmartPtr.h"
 #include "ArduinoOSC/util/ArxContainer/ArxContainer.h"
 #include "ArduinoOSC/util/DebugLog/DebugLog.h"
+
+#ifndef ARDUINOOSC_DEBUGLOG_ENABLE
+#include "ArduinoOSC/util/DebugLog/DebugLogEnable.h"
+#else
+#include "ArduinoOSC/util/DebugLog/DebugLogDisable.h"
+#endif
 
 #if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L  // Have libstdc++11
 // all features are available
@@ -174,5 +176,7 @@ using OscEtherManager = ArduinoOSC::Manager<EthernetUDP>;
 #define OscEther OscEtherManager::getInstance()
 using OscEtherServer = OscServer<EthernetUDP>;
 #endif  // ARDUINOOSC_ENABLE_ETHER
+
+#include "ArduinoOSC/util/DebugLog/DebugLogRestoreState.h"
 
 #endif  // ARDUINOOSC_H
