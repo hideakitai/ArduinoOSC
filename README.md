@@ -226,7 +226,7 @@ If you want to use that, please use this macro and handle packets manually.
 You can see the debug log when you insert following line before include `ArduinoOSC`.
 
 ``` C++
-#define ARDUINOOSC_ENABLE_DEBUG_LOG
+#define ARDUINOOSC_DEBUGLOG_ENABLE
 #include <ArduinoOSC.h>
 ```
 

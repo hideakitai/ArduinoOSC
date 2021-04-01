@@ -1,7 +1,7 @@
 #ifndef ARDUINOOSC_H
 #define ARDUINOOSC_H
 
-#ifndef ARDUINOOSC_ENABLE_DEBUG_LOG
+#ifndef ARDUINOOSC_DEBUGLOG_ENABLE
 #define NDEBUG  // disable conversion warning
 #endif
 
