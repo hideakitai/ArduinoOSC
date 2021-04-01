@@ -1,3 +1,4 @@
+// #define ARDUINOOSC_DEBUGLOG_ENABLE
 #include <ArduinoOSC.h>
 
 // Ethernet stuff

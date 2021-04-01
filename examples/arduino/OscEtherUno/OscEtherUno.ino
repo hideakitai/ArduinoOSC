@@ -13,6 +13,7 @@
 // #define ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT 4
 // #define ARDUINOOSC_MAX_SUBSCRIBE_PORTS 2
 
+// #define ARDUINOOSC_DEBUGLOG_ENABLE
 #include <ArduinoOSC.h>
 
 // Ethernet stuff
