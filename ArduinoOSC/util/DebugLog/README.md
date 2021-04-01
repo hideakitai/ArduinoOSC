@@ -6,7 +6,7 @@ Serial based assertion and log library for Arduino
 ## Feature
 
 - print variadic arguments in one line
-- release mode (`#define NDEBUG`) can disables print/log debug info
+- release mode (`#define DEBUGLOG_RELEASE_MODE`) can disables debug info (`LOG_XXXX`)
 - log level control
 - control automatically/manually saving to SD card
 - [SdFat](https://github.com/greiman/SdFat) support
@@ -14,21 +14,22 @@ Serial based assertion and log library for Arduino
 
 ## Usage
 
-These macros can be used in standard C++ apps.
-
 ```C++
-// uncommend NDEBUG disables ASSERT and all debug serial (Release Mode)
-//#define NDEBUG
+// uncommend DEBUGLOG_RELEASE_MODE disables ASSERT and all debug serial (Release Mode)
+//#define DEBUGLOG_RELEASE_MODE
+
+// you can also set default log level by defining macro
+// #define DEBUGLOG_DEFAULT_LOGLEVEL LogLevel::WARNINGS
 
 #include <DebugLog.h>
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
 
     // you can change target stream (default: Serial, only for Arduino)
     // LOG_ATTACH_SERIAL(Serial2);
 
+    // PRINT and PRINTLN are always enabled regardless of debug mode or release mode
     PRINT("this is for debug");
     PRINTLN(1, 2.2, "you can", "print variable args")
 
@@ -56,12 +57,43 @@ void setup()
     ASSERT(x != 1); // if assertion failed, Serial endlessly prints message
 }
 ```
+Available macros are listed below.
+`PRINT` and  `PRINTLN` are available in both release and debug mode.
+
+```C++
+#define PRINT(...)
+#define PRINTLN(...)
+```
+
+These APIs are enabled only in debug mode.
+
+```C++
+#define LOG_ERROR(...)
+#define LOG_WARNING(...)
+#define LOG_VERBOSE(...)
+#define ASSERT(b)
+```
+Several options can be used.
+
+```C++
+#define LOG_GET_LEVEL()
+#define LOG_SET_LEVEL(l)
+#define LOG_SET_OPTION(file, line, func)
+#define LOG_SET_DELIMITER(d)
+// Arduino Only
+#define LOG_SD_FLUSH()
+#define LOG_SD_CLOSE()
+#define LOG_ATTACH_SERIAL(s)
+#define LOG_ATTACH_SD(s, p, b, ...)
+```
+
+These macros can be used in standard C++ apps.
+
 
 ### Log Level
 
 ```C++
-enum class LogLevel
-{
+enum class LogLevel {
     NONE     = 0,
     ERRORS   = 1,
     WARNINGS = 2,
@@ -83,10 +115,8 @@ enum class LogLevel
 // after that, include DebugLog.h
 #include <DebugLog.h>
 
-void setup()
-{
-  if (SD.begin())
-  {
+void setup() {
+  if (SD.begin()) {
     String filename = "test.txt";
     LOG_ATTACH_SD(SD, filename, false, true);
     // 3rd arg => true: auto save every logging, false: manually save
@@ -108,6 +138,35 @@ Please see `examples/sdcard` , `examples/sdcard_manual_save` for more details. A
 - one log function call can takes 3-20 ms if you log to SD (depending on environment)
 - if you disable auto save, you should call `LOG_SD_FLUSH()` or `LOG_SD_CLOSE()` to save logs
 
+
+### Control Scope
+
+You can control the scope of `DebugLog` by including following header files.
+
+- `DebugLogEnable.h`
+- `DebugLogDisable.h`
+- `DebugLogRestoreState.h`
+
+After including `DebugLogEnable.h` or `DebugLogDisable.h`, macros are enabled/disabled.
+Finally you should include `DebugLogRestoreState.h` to restore the previous state.
+Please see practical example  `examples/control_scope` for details.
+
+
+
+```C++
+#define DEBUGLOG_RELEASE_MODE
+#include <DebugLog.h>
+
+// here is release mode (disable DebugLog)
+
+#include <DebugLogEnable.h>
+
+// here is debug mode (enable DebugLog)
+
+#include <DebugLogRestoreState.h>
+
+// here is release mode (restored)
+```
 
 ## Used Inside of
 
