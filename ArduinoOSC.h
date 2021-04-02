@@ -6,7 +6,7 @@
 #include "ArduinoOSC/util/ArxContainer/ArxContainer.h"
 #include "ArduinoOSC/util/DebugLog/DebugLog.h"
 
-#ifndef ARDUINOOSC_DEBUGLOG_ENABLE
+#ifdef ARDUINOOSC_DEBUGLOG_ENABLE
 #include "ArduinoOSC/util/DebugLog/DebugLogEnable.h"
 #else
 #include "ArduinoOSC/util/DebugLog/DebugLogDisable.h"
