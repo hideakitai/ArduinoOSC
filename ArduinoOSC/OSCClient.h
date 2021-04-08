@@ -156,7 +156,9 @@ namespace osc {
             static constexpr uint16_t PORT_DISCARD {9};
 
         public:
-            Client() { stream.begin(PORT_DISCARD); }
+            Client(const uint16_t port = PORT_DISCARD) {
+                stream.begin(port);
+            }
 
             template <typename... Rest>
             void send(const String& ip, const uint16_t port, const String& addr, Rest&&... rest) {

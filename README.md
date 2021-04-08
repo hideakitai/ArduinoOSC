@@ -164,6 +164,9 @@ The example is shown in `examples/arduino/OscEtherUno`, so please consider to us
 
 // required to use manual packet parsing
 OscEtherServer server;
+OscEtherClient client;
+// OscEtherClient client(1234);  // set the local port of client manually (default: 9)
+
 
 void setup() {
     Ethernet.begin(mac, ip);
@@ -174,7 +177,7 @@ void loop() {
     // manual sending instead of publishers
     static uint32_t prev_func_ms = millis();
     if (millis() > prev_func_ms + 500) {
-        OscEther.send(host, publish_port, "/publish/func", millis(), micros());
+        client.send(host, publish_port, "/publish/func", millis(), micros());
         prev_func_ms = millis();
     }
 
@@ -187,7 +190,7 @@ void loop() {
             int i = millis();
             float f = (float)micros() / 1000.f;
             String s = F("hello");
-            OscEther.send(host, send_port, "/reply", i, f, s);
+            client.send(host, send_port, "/reply", i, f, s);
         }
     }
 }

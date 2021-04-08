@@ -37,6 +37,8 @@ String s;
 
 // required to use manual packet parsing
 OscEtherServer server;
+OscEtherClient client;
+// OscEtherClient client(1234);  // you can set the local port of client manually (default: 9)
 
 void setup() {
     Serial.begin(115200);
@@ -62,13 +64,13 @@ void loop() {
         i = millis();
         f = 1000000.f / (float)(micros() - prev_value_ms * 1000);
         s = String("testing");
-        OscEther.send(host, publish_port, F("/publish/value"), i, f, s);
+        client.send(host, publish_port, F("/publish/value"), i, f, s);
         prev_value_ms = millis();
     }
 
     static uint32_t prev_func_ms = millis();
     if (millis() > prev_func_ms + 500) {
-        OscEther.send(host, publish_port, F("/publish/func"), millis(), micros());
+        client.send(host, publish_port, F("/publish/func"), millis(), micros());
         prev_func_ms = millis();
     }
 
@@ -108,7 +110,7 @@ void loop() {
             int i = millis();
             float f = (float)micros() / 1000.f;
             String s = F("hello");
-            OscEther.send(host, send_port, F("/reply"), i, f, s);
+            client.send(host, send_port, F("/reply"), i, f, s);
         } else if (msg->address() == F("/callback")) {
             Serial.print(msg->remoteIP());
             Serial.print(" ");
