@@ -202,7 +202,7 @@ But these default values are optimized for such boards, please be careful not to
 
 ``` C++
 #define ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE 8
-#define ARDUINOOSC_MAX_MSG_BYTE_SIZE 64
+#define ARDUINOOSC_MAX_MSG_BYTE_SIZE 128
 #define ARDUINOOSC_MAX_MSG_QUEUE_SIZE 1
 #define ARDUINOOSC_MAX_PUBLISH_DESTINATION 4
 #define ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT 4
@@ -217,7 +217,7 @@ If you want to use that, please use this macro and handle packets manually.
 
 ``` C++
 #define ARDUINOOSC_ENABLE_BUNDLE
-#define ARDUINOOSC_MAX_MSG_BUNDLE_SIZE 32
+#define ARDUINOOSC_MAX_MSG_BUNDLE_SIZE 128
 ```
 
 
