@@ -41,7 +41,8 @@ namespace osc {
                 T& t;
 
             public:
-                Value(T& t) : t(t) {}
+                Value(T& t)
+                : t(t) {}
                 virtual ~Value() {}
                 virtual void decodeFrom(Message& m, const size_t offset = 0) override {
                     decode_from_msg(m, offset, t);
@@ -89,7 +90,8 @@ namespace osc {
                 Func func;
 
             public:
-                Function(Func func) : func(func) {};
+                Function(Func func)
+                : func(func) {};
                 virtual ~Function() {}
                 virtual void decodeFrom(Message& m, size_t offset = 0) override {
                     if (m.size() == sizeof...(Ts)) {
@@ -110,7 +112,8 @@ namespace osc {
                 Func func;
 
             public:
-                Function(Func func) : func(func) {};
+                Function(Func func)
+                : func(func) {};
                 virtual ~Function() {}
                 virtual void decodeFrom(Message& m, size_t offset = 0) override {
                     func(m);
@@ -125,7 +128,8 @@ namespace osc {
                 Func func;
 
             public:
-                Function(Func func) : func(func) {};
+                Function(Func func)
+                : func(func) {};
                 virtual ~Function() {}
                 virtual void decodeFrom(Message& m, size_t offset = 0) override {
                     func(m);

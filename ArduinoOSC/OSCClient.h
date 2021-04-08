@@ -40,7 +40,8 @@ namespace osc {
                 T& t;
 
             public:
-                Value(T& t) : t(t) {}
+                Value(T& t)
+                : t(t) {}
                 virtual ~Value() {}
                 virtual void encodeTo(Message& m) override { m.push(t); }
             };
@@ -50,7 +51,8 @@ namespace osc {
                 const T t;
 
             public:
-                Const(const T& t) : t(t) {}
+                Const(const T& t)
+                : t(t) {}
                 virtual ~Const() {}
                 virtual void encodeTo(Message& m) override { m.push(t); }
             };
@@ -60,7 +62,8 @@ namespace osc {
                 std::function<T()> getter;
 
             public:
-                Function(const std::function<T()>& getter) : getter(getter) {}
+                Function(const std::function<T()>& getter)
+                : getter(getter) {}
                 virtual ~Function() {}
                 virtual void encodeTo(Message& m) override { m.push(getter()); }
             };
@@ -69,7 +72,8 @@ namespace osc {
                 TupleRef ts;
 
             public:
-                Tuple(TupleRef&& ts) : ts(std::move(ts)) {}
+                Tuple(TupleRef&& ts)
+                : ts(std::move(ts)) {}
                 virtual ~Tuple() {}
                 virtual void encodeTo(Message& m) override {
                     for (auto& t : ts) t->encodeTo(m);
