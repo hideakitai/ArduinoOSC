@@ -18,9 +18,11 @@ namespace osc {
             MessageIterator it_messages;
 
         public:
-            Decoder() {}
+            Decoder()
+            : messages(), it_messages(messages.begin()) {}
 
-            Decoder(const void* ptr, const size_t sz) {
+            Decoder(const void* ptr, const size_t sz)
+            : messages(), it_messages(messages.begin()) {
                 init(ptr, sz);
             }
 
