@@ -6,7 +6,7 @@
 // If you really want to use subscriber and publisher,
 // please adjust sizes depending on your applications.
 //
-// #define ARDUINOOSC_MAX_ARGUMENT_SIZE 8
+// #define ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE 8
 // #define ARDUINOOSC_MAX_BLOB_BYTE_SIZE 64
 // #define ARDUINOOSC_MAX_MSG_QUEUE_SIZE 1
 // #define ARDUINOOSC_MAX_PUBLISH_DESTINATION 4

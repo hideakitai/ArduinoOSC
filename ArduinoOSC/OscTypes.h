@@ -60,8 +60,8 @@ namespace osc {
 namespace arduino {
 namespace osc {
 
-#ifndef ARDUINOOSC_MAX_ARGUMENT_SIZE
-#define ARDUINOOSC_MAX_ARGUMENT_SIZE 8
+#ifndef ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE
+#define ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE 8
 #endif
 #ifndef ARDUINOOSC_MAX_BLOB_BYTE_SIZE
 #define ARDUINOOSC_MAX_BLOB_BYTE_SIZE 64
@@ -84,7 +84,7 @@ namespace osc {
 
     namespace message {
         using ArgumentType = arx::pair<size_t, size_t>;
-        using ArgumentQueue = arx::vector<ArgumentType, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
+        using ArgumentQueue = arx::vector<ArgumentType, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
         class Message;
         using MessageQueue = arx::vector<Message, ARDUINOOSC_MAX_MSG_QUEUE_SIZE>;
     }  // namespace message
@@ -97,7 +97,7 @@ namespace osc {
         namespace element {
             class Base;
             using Ref = std::shared_ptr<Base>;
-            using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
+            using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
         }  // namespace element
         class Destination;
         using ElementRef = element::Ref;
@@ -109,8 +109,8 @@ namespace osc {
         namespace element {
             class Base;
             using Ref = std::shared_ptr<Base>;
-            using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
-            using dummy_vector_t = arx::vector<size_t, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
+            using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
+            using dummy_vector_t = arx::vector<size_t, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
         }  // namespace element
         using ElementRef = element::Ref;
         using ElementTupleRef = element::TupleRef;

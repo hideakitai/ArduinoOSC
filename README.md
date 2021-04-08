@@ -201,7 +201,7 @@ And of course you can manage them by defining following macros.
 But these default values are optimized for such boards, please be careful not to excess your boards storage/memory.
 
 ``` C++
-#define ARDUINOOSC_MAX_ARGUMENT_SIZE 8
+#define ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE 8
 #define ARDUINOOSC_MAX_BLOB_BYTE_SIZE 64
 #define ARDUINOOSC_MAX_MSG_QUEUE_SIZE 1
 #define ARDUINOOSC_MAX_PUBLISH_DESTINATION 4
