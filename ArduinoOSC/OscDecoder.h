@@ -13,6 +13,7 @@ namespace osc {
     namespace message {
 
         class Decoder {
+            using MessageIterator = MessageQueue::iterator;
             MessageQueue messages;
             MessageIterator it_messages;
 

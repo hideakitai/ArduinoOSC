@@ -18,7 +18,6 @@ namespace osc {
         using ArgumentQueue = std::vector<ArgumentType>;
         class Message;
         using MessageQueue = std::vector<Message>;
-        using MessageIterator = std::vector<Message>::iterator;
     }  // namespace message
     using BundleData = std::vector<uint32_t>;
     using Blob = std::vector<char>;
@@ -88,7 +87,6 @@ namespace osc {
         using ArgumentQueue = arx::vector<ArgumentType, ARDUINOOSC_MAX_ARGUMENT_SIZE>;
         class Message;
         using MessageQueue = arx::vector<Message, ARDUINOOSC_MAX_MSG_QUEUE_SIZE>;
-        using MessageIterator = Message*;
     }  // namespace message
 #ifndef ARDUINOOSC_DISABLE_BUNDLE
     using BundleData = arx::vector<uint32_t, ARDUINOOSC_MAX_MSG_BUNDLE_SIZE>;
@@ -150,8 +148,10 @@ namespace osc {
         uint64_t v;
 
     public:
-        TimeTag() : v(1) {}
-        explicit TimeTag(const uint64_t w) : v(w) {}
+        TimeTag()
+        : v(1) {}
+        explicit TimeTag(const uint64_t w)
+        : v(w) {}
         operator uint64_t() const { return v; }
         static TimeTag immediate() { return TimeTag(1); }
     };
