@@ -63,8 +63,8 @@ namespace osc {
 #ifndef ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE
 #define ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE 8
 #endif
-#ifndef ARDUINOOSC_MAX_BLOB_BYTE_SIZE
-#define ARDUINOOSC_MAX_BLOB_BYTE_SIZE 64
+#ifndef ARDUINOOSC_MAX_MSG_BYTE_SIZE
+#define ARDUINOOSC_MAX_MSG_BYTE_SIZE 64
 #endif
 #ifndef ARDUINOOSC_MAX_MSG_QUEUE_SIZE
 #define ARDUINOOSC_MAX_MSG_QUEUE_SIZE 1
@@ -91,7 +91,7 @@ namespace osc {
 #ifndef ARDUINOOSC_DISABLE_BUNDLE
     using BundleData = arx::vector<uint32_t, ARDUINOOSC_MAX_MSG_BUNDLE_SIZE>;
 #endif
-    using Blob = arx::vector<char, ARDUINOOSC_MAX_BLOB_BYTE_SIZE>;
+    using Blob = arx::vector<char, ARDUINOOSC_MAX_MSG_BYTE_SIZE>;
 
     namespace client {
         namespace element {
