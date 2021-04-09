@@ -31,7 +31,7 @@ namespace osc {
         class Destination;
         using ElementRef = element::Ref;
         using ElementTupleRef = element::TupleRef;
-        using AddressMap = std::map<Destination, ElementRef>;
+        using DestinationMap = std::map<Destination, ElementRef>;
     }  // namespace client
 
     namespace server {
@@ -102,7 +102,7 @@ namespace osc {
         class Destination;
         using ElementRef = element::Ref;
         using ElementTupleRef = element::TupleRef;
-        using AddressMap = arx::map<Destination, ElementRef, ARDUINOOSC_MAX_PUBLISH_DESTINATION>;
+        using DestinationMap = arx::map<Destination, ElementRef, ARDUINOOSC_MAX_PUBLISH_DESTINATION>;
     }  // namespace client
 
     namespace server {

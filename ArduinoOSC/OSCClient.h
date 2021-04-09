@@ -187,7 +187,7 @@ namespace osc {
         template <typename S>
         class Manager {
             Client<S> client;
-            AddressMap addr_map;
+            DestinationMap dest_map;
 
         public:
             static Manager<S>& getInstance() {
@@ -205,7 +205,7 @@ namespace osc {
             }
 
             void post() {
-                for (auto& mp : addr_map) {
+                for (auto& mp : dest_map) {
                     if (mp.second->next()) {
                         mp.second->last_publish_us = micros();
                         client.send(mp.first, mp.second);
@@ -248,13 +248,13 @@ namespace osc {
 
             ElementRef getPublishElementRef(const String& ip, const uint16_t port, const String& addr) {
                 Destination dest {ip, port, addr};
-                return addr_map[dest];
+                return dest_map[dest];
             }
 
         private:
             ElementRef publish_impl(const String& ip, const uint16_t port, const String& addr, ElementRef ref) {
                 Destination dest {ip, port, addr};
-                addr_map.insert(make_pair(dest, ref));
+                dest_map.insert(make_pair(dest, ref));
                 return ref;
             }
         };
