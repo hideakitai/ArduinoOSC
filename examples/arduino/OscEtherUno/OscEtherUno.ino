@@ -36,7 +36,7 @@ float f;
 String s;
 
 // required to use manual packet parsing
-OscEtherServer server;
+OscEtherServer server(recv_port);
 OscEtherClient client;
 // OscEtherClient client(1234);  // you can set the local port of client manually (default: 9)
 
@@ -46,7 +46,6 @@ void setup() {
 
     // Ethernet stuff
     Ethernet.begin(mac, ip);
-    server.begin(recv_port);
 
     // Ethernet with useful options
     // Ethernet.begin(mac, ip, dns, gateway, subnet); // full
