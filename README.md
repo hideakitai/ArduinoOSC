@@ -139,6 +139,7 @@ Please feel free to send PR or request for more board support!
 
 #### Ethernet
 
+- ESP32
 - ESP8266
 - Almost all platforms without WiFi
 
@@ -163,14 +164,13 @@ The example is shown in `examples/arduino/OscEtherUno`, so please consider to us
 #include <ArduinoOSC.h>
 
 // required to use manual packet parsing
-OscEtherServer server;
+OscEtherServer server(recv_port);
 OscEtherClient client;
-// OscEtherClient client(1234);  // set the local port of client manually (default: 9)
+// OscEtherClient client(local_port);  // set the local port of client manually (default: 9)
 
 
 void setup() {
     Ethernet.begin(mac, ip);
-    server.begin(recv_port); // need to begin with receive port
 }
 
 void loop() {
