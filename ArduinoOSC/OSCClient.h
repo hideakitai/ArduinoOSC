@@ -11,6 +11,7 @@
 
 #include "OscMessage.h"
 #include "OscEncoder.h"
+#include "OscUdpMap.h"
 
 namespace arduino {
 namespace osc {
@@ -152,12 +153,19 @@ namespace osc {
         class Client {
             Encoder writer;
             Message msg;
-            S stream;
-            static constexpr uint16_t PORT_DISCARD {9};
+            uint16_t local_port;
+            // UdpRef<S> stream;
 
         public:
-            Client(const uint16_t port = PORT_DISCARD) {
-                stream.begin(port);
+            Client(const uint16_t local_port = PORT_DISCARD)
+            : local_port(local_port) {
+            }
+
+            void localPort(const uint16_t port) {
+                local_port = port;
+            }
+            uint16_t localPort() const {
+                return UdpMapManager<S>::getInstance().getUdp(local_port)->localPort();
             }
 
             template <typename... Rest>
@@ -171,10 +179,11 @@ namespace osc {
                 send(ip, port, m, std::forward<Rest>(rest)...);
             }
             void send(const String& ip, const uint16_t port, Message& m) {
+                auto stream = UdpMapManager<S>::getInstance().getUdp(local_port);
                 this->writer.init().encode(m);
-                this->stream.beginPacket(ip.c_str(), port);
-                this->stream.write(this->writer.data(), this->writer.size());
-                this->stream.endPacket();
+                stream->beginPacket(ip.c_str(), port);
+                stream->write(this->writer.data(), this->writer.size());
+                stream->endPacket();
             }
 
             void send(const Destination& dest, ElementRef elem) {
@@ -197,6 +206,13 @@ namespace osc {
 
             Client<S>& getClient() {
                 return client;
+            }
+
+            void localPort(const uint16_t port) {
+                client.localPort(port);
+            }
+            uint16_t localPort() const {
+                return client.localPort();
             }
 
             template <typename... Ts>

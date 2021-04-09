@@ -12,6 +12,7 @@
 
 #include "OscMessage.h"
 #include "OscDecoder.h"
+#include "OscUdpMap.h"
 
 namespace arduino {
 namespace osc {
@@ -184,19 +185,18 @@ namespace osc {
         class Server {
             Decoder decoder;
             CallbackMap callbacks;
-            S stream;
+            const uint16_t port;
             OscMessage* msg_ptr {nullptr};
 
         public:
-            explicit Server(const uint16_t port) {
-                this->begin(port);
+            explicit Server(const uint16_t port)
+            : port(port) {
+                while (port == PORT_DISCARD) {
+                    LOG_ERROR(F("Port #9 is not valid. Please change the server port."));
+                    delay(1000);
+                }
             }
-
             Server() {}
-
-            void begin(const uint16_t port) {
-                stream.begin(port);
-            }
 
             template <typename... Ts>
             void subscribe(const String& addr, Ts&&... ts) {
@@ -205,17 +205,18 @@ namespace osc {
             }
 
             bool parse() {
-                const size_t size = stream.parsePacket();
+                auto stream = UdpMapManager<S>::getInstance().getUdp(port);
+                const size_t size = stream->parsePacket();
                 if (size == 0) return false;
 
                 uint8_t data[size];
-                stream.read(data, size);
+                stream->read(data, size);
 
                 decoder.init(data, size);
                 if (Message* msg = decoder.decode()) {
                     if (msg->available()) {
-                        msg->remoteIP(stream.S::remoteIP());
-                        msg->remotePort((uint16_t)stream.S::remotePort());
+                        msg->remoteIP(stream->S::remoteIP());
+                        msg->remotePort((uint16_t)stream->S::remotePort());
                         for (auto& c : this->callbacks)
                             if (msg->match(c.first))
                                 c.second->decodeFrom(*msg);

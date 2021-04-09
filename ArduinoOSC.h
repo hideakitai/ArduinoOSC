@@ -56,6 +56,7 @@
 #include "ArduinoOSC/util/TeensyDirtySTLErrorSolution/TeensyDirtySTLErrorSolution.h"
 #endif  // ARDUINOOSC_ENABLE_ETHER
 
+#include "ArduinoOSC/OscUdpMap.h"
 #include "ArduinoOSC/OSCServer.h"
 #include "ArduinoOSC/OSCClient.h"
 
@@ -69,6 +70,10 @@ namespace osc {
         static Manager<S>& getInstance() {
             static Manager<S> m;
             return m;
+        }
+
+        const OscUdpMap<S>& getUdpMap() const {
+            return OscUdpMapManager<S>::getInstance().getUdpMap();
         }
 
         const OscServerMap<S>& getServerMap() const {

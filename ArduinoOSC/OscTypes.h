@@ -13,6 +13,12 @@
 namespace arduino {
 namespace osc {
 
+    static constexpr uint16_t PORT_DISCARD {9};
+    template <typename S>
+    using UdpRef = std::shared_ptr<S>;
+    template <typename S>
+    using UdpMap = std::map<uint16_t, UdpRef<S>>;
+
     namespace message {
         using ArgumentType = std::pair<size_t, size_t>;
         using ArgumentQueue = std::vector<ArgumentType>;
@@ -81,6 +87,12 @@ namespace osc {
 #ifndef ARDUINOOSC_MAX_MSG_BUNDLE_SIZE
 #define ARDUINOOSC_MAX_MSG_BUNDLE_SIZE 128
 #endif
+
+    static constexpr uint16_t PORT_DISCARD {9};
+    template <typename S>
+    using UdpRef = std::shared_ptr<S>;
+    template <typename S>
+    using UdpMap = arx::map<uint16_t, UdpRef<S>, ARDUINOOSC_MAX_SUBSCRIBE_PORTS>;
 
     namespace message {
         using ArgumentType = arx::pair<size_t, size_t>;
