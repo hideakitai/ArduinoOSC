@@ -235,6 +235,10 @@ namespace osc {
 
         template <typename S>
         class Manager {
+            Manager() {}
+            Manager(const Manager&) = delete;
+            Manager& operator=(const Manager&) = delete;
+
             ServerMap<S> server_map;
 
         public:

@@ -154,7 +154,6 @@ namespace osc {
             Encoder writer;
             Message msg;
             uint16_t local_port;
-            // UdpRef<S> stream;
 
         public:
             Client(const uint16_t local_port = PORT_DISCARD)
@@ -195,6 +194,10 @@ namespace osc {
 
         template <typename S>
         class Manager {
+            Manager() {}
+            Manager(const Manager&) = delete;
+            Manager& operator=(const Manager&) = delete;
+
             Client<S> client;
             DestinationMap dest_map;
 

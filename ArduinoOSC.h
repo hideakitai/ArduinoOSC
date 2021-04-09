@@ -64,7 +64,12 @@ namespace arduino {
 namespace osc {
 
     template <typename S>
-    struct Manager {
+    class Manager {
+        Manager() {}
+        Manager(const Manager&) = delete;
+        Manager& operator=(const Manager&) = delete;
+
+    public:
         // server
 
         static Manager<S>& getInstance() {

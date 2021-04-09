@@ -15,6 +15,10 @@ namespace osc {
 
     template <typename S>
     class UdpMapManager {
+        UdpMapManager() {}
+        UdpMapManager(const UdpMapManager&) = delete;
+        UdpMapManager& operator=(const UdpMapManager&) = delete;
+
         UdpMap<S> udp_map;
 
     public:
