@@ -48,9 +48,10 @@ namespace osc {
 
             if (udp_map.find(port) == udp_map.end()) {
                 // if there is udp listening to port 9, erase it to this port
-                if (udp_map.find(PORT_DISCARD) != udp_map.end()) {
-                    udp_map[PORT_DISCARD]->stop();
-                    udp_map.erase(PORT_DISCARD);
+                auto udp_discard_ref = udp_map.find(PORT_DISCARD);
+                if (udp_discard_ref != udp_map.end()) {
+                    udp_discard_ref->second->stop();
+                    udp_map.erase(udp_discard_ref);
                 }
                 udp_map.insert(make_pair(port, UdpRef<S>(new S())));
                 udp_map[port]->begin(port);
