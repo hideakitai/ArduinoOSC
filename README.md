@@ -30,13 +30,29 @@ OSC subscriber / publisher for Arduino
 
 ## Usage
 
+### Include ArduinoOSC
+
+Please include `#include "ArduinoOSC.h` first.
+
+If you use the board which has both `WiFi` and `Ethernet`, you can't use `#include <ArduinoOSC.h>`. Please replace it with `#include <ArduinoOSCWiFi.h>` or `#include <ArduinoOSCEther.h>` depending on the interface you want to use.
+
+```C++
+// For the boards which can use ether WiFi or Ethernet
+#include <ArduinoOSC.h>
+// OR use WiFi on the board which can use both WiFi and Ethernet
+#include <ArduinoOSCWiFi.h>
+// OR use Ethenet on the board which can use both WiFi and Ethernet
+#include <ArduinoOSCEther.h>
+```
+
 Following examples use `OscWiFi`.
 To use with `Ethernet`, please change `OscWiFi` to `OscEther`.
 
 ### One-Line Subscriber / Publisher
 
 ```C++
-#include <ArduinoOSC.h>
+#include <ArduinoOSCWiFi.h>
+// #include <ArduinoOSC.h> // you can use this if your borad supports only WiFi or Ethernet
 
 int i; float f; String s;
 
@@ -139,9 +155,7 @@ Please feel free to send PR or request for more board support!
 
 #### Ethernet
 
-- ESP32
-- ESP8266
-- Almost all platforms without WiFi
+- Almost all platforms which has `Ethernet` library
 
 
 ## Limitation and Options for NO-STL Boards
@@ -161,7 +175,8 @@ The reccomended way is to use `send` and `parse` manually.
 The example is shown in `examples/arduino/OscEtherUno`, so please consider to use it.
 
 ``` C++
-#include <ArduinoOSC.h>
+#include <ArduinoOSCEther.h>
+// #include <ArduinoOSC.h> // you can use this because Uno supports only Ethernet
 
 // required to use manual packet parsing
 OscEtherServer server(recv_port);
