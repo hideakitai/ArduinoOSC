@@ -1,5 +1,10 @@
 // #define ARDUINOOSC_DEBUGLOG_ENABLE
-#include <ArduinoOSC.h>
+
+// Please include ArduinoOSCEther.h to use ArduinoOSC on the platform
+// which can use both WiFi and Ethernet
+#include <ArduinoOSCEther.h>
+// this is also valid for other platforms which can use only Ethernet
+// #include <ArduinoOSC.h>
 
 // Ethernet stuff
 uint8_t mac[] = {0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45};

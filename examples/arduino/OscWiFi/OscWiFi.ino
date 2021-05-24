@@ -1,5 +1,10 @@
 // #define ARDUINOOSC_DEBUGLOG_ENABLE
-#include <ArduinoOSC.h>
+
+// Please include ArduinoOSCWiFi.h to use ArduinoOSC on the platform
+// which can use both WiFi and Ethernet
+#include <ArduinoOSCWiFi.h>
+// this is also valid for other platforms which can use only WiFi
+// #include <ArduinoOSC.h>
 
 // WiFi stuff
 const char* ssid = "your-ssid";
