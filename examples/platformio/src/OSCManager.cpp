@@ -4,7 +4,7 @@ OSCManager::OSCManager()
 {
 }
 
-void onOscReceived(OscMessage &m)
+void OSCManager::onOscReceived(OscMessage &m)
 {
     Serial.println("onOscReceived : Size ");
     Serial.print(m.size());
