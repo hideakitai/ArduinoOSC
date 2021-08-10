@@ -315,70 +315,70 @@ namespace osc {
         };
 
         template <>
-        bool Message::arg<bool>(const uint8_t i) const { return getArgAsBool(i); }
+        inline bool Message::arg<bool>(const uint8_t i) const { return getArgAsBool(i); }
         template <>
-        char Message::arg<char>(const uint8_t i) const { return (char)getPod<int32_t>(i); }
+        inline char Message::arg<char>(const uint8_t i) const { return (char)getPod<int32_t>(i); }
         template <>
-        signed char Message::arg<signed char>(const uint8_t i) const { return (signed char)getPod<int32_t>(i); }
+        inline signed char Message::arg<signed char>(const uint8_t i) const { return (signed char)getPod<int32_t>(i); }
         template <>
-        unsigned char Message::arg<unsigned char>(const uint8_t i) const { return (unsigned char)getPod<int32_t>(i); }
+        inline unsigned char Message::arg<unsigned char>(const uint8_t i) const { return (unsigned char)getPod<int32_t>(i); }
         template <>
-        short Message::arg<short>(const uint8_t i) const { return (short)getPod<int32_t>(i); }
+        inline short Message::arg<short>(const uint8_t i) const { return (short)getPod<int32_t>(i); }
         template <>
-        unsigned short Message::arg<unsigned short>(const uint8_t i) const { return (unsigned short)getPod<int32_t>(i); }
+        inline unsigned short Message::arg<unsigned short>(const uint8_t i) const { return (unsigned short)getPod<int32_t>(i); }
         template <>
-        int Message::arg<int>(const uint8_t i) const { return (int)getPod<int32_t>(i); }
+        inline int Message::arg<int>(const uint8_t i) const { return (int)getPod<int32_t>(i); }
         template <>
-        unsigned Message::arg<unsigned>(const uint8_t i) const { return (unsigned)getPod<int32_t>(i); }
+        inline unsigned Message::arg<unsigned>(const uint8_t i) const { return (unsigned)getPod<int32_t>(i); }
         template <>
-        long Message::arg<long>(const uint8_t i) const { return (long)getPod<int32_t>(i); }
+        inline long Message::arg<long>(const uint8_t i) const { return (long)getPod<int32_t>(i); }
         template <>
-        unsigned long Message::arg<unsigned long>(const uint8_t i) const { return (unsigned long)getPod<int32_t>(i); }
+        inline unsigned long Message::arg<unsigned long>(const uint8_t i) const { return (unsigned long)getPod<int32_t>(i); }
         template <>
-        long long Message::arg<long long>(const uint8_t i) const { return (long long)getPod<int64_t>(i); }
+        inline long long Message::arg<long long>(const uint8_t i) const { return (long long)getPod<int64_t>(i); }
         template <>
-        unsigned long long Message::arg<unsigned long long>(const uint8_t i) const { return (unsigned long long)getPod<int64_t>(i); }
+        inline unsigned long long Message::arg<unsigned long long>(const uint8_t i) const { return (unsigned long long)getPod<int64_t>(i); }
         template <>
-        float Message::arg<float>(const uint8_t i) const { return getPod<float>(i); }
+        inline float Message::arg<float>(const uint8_t i) const { return getPod<float>(i); }
         template <>
-        double Message::arg<double>(const uint8_t i) const { return getPod<double>(i); }
+        inline double Message::arg<double>(const uint8_t i) const { return getPod<double>(i); }
         template <>
-        String Message::arg<String>(const uint8_t i) const { return getArgAsString(i); }
+        inline String Message::arg<String>(const uint8_t i) const { return getArgAsString(i); }
         template <>
-        Blob Message::arg<Blob>(const uint8_t i) const { return getArgAsBlob(i); }
+        inline Blob Message::arg<Blob>(const uint8_t i) const { return getArgAsBlob(i); }
 
         template <>
-        Message& Message::push<bool>(const bool& t) { return pushBool(t); }
+        inline Message& Message::push<bool>(const bool& t) { return pushBool(t); }
         template <>
-        Message& Message::push<char>(const char& t) { return pushInt32(t); }
+        inline Message& Message::push<char>(const char& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<signed char>(const signed char& t) { return pushInt32(t); }
+        inline Message& Message::push<signed char>(const signed char& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<unsigned char>(const unsigned char& t) { return pushInt32(t); }
+        inline Message& Message::push<unsigned char>(const unsigned char& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<short>(const short& t) { return pushInt32(t); }
+        inline Message& Message::push<short>(const short& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<unsigned short>(const unsigned short& t) { return pushInt32(t); }
+        inline Message& Message::push<unsigned short>(const unsigned short& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<int>(const int& t) { return pushInt32(t); }
+        inline Message& Message::push<int>(const int& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<unsigned>(const unsigned& t) { return pushInt32(t); }
+        inline Message& Message::push<unsigned>(const unsigned& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<long>(const long& t) { return pushInt32(t); }
+        inline Message& Message::push<long>(const long& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<unsigned long>(const unsigned long& t) { return pushInt32(t); }
+        inline Message& Message::push<unsigned long>(const unsigned long& t) { return pushInt32(t); }
         template <>
-        Message& Message::push<long long>(const long long& t) { return pushInt64(t); }
+        inline Message& Message::push<long long>(const long long& t) { return pushInt64(t); }
         template <>
-        Message& Message::push<unsigned long long>(const unsigned long long& t) { return pushInt64(t); }
+        inline Message& Message::push<unsigned long long>(const unsigned long long& t) { return pushInt64(t); }
         template <>
-        Message& Message::push<float>(const float& t) { return pushFloat(t); }
+        inline Message& Message::push<float>(const float& t) { return pushFloat(t); }
         template <>
-        Message& Message::push<double>(const double& t) { return pushDouble(t); }
+        inline Message& Message::push<double>(const double& t) { return pushDouble(t); }
         template <>
-        Message& Message::push<String>(const String& t) { return pushString(t); }
+        inline Message& Message::push<String>(const String& t) { return pushString(t); }
         template <>
-        Message& Message::push<Blob>(const Blob& t) { return pushBlob(t); }
+        inline Message& Message::push<Blob>(const Blob& t) { return pushBlob(t); }
 
     }  // namespace message
 }  // namespace osc
