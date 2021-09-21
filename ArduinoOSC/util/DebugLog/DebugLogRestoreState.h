@@ -1,4 +1,4 @@
-#ifdef DEBUGLOG_RELEASE_MODE
+#ifdef DEBUGLOG_DISABLE_LOG
 #include "DebugLogDisable.h"
 #else
 #include "DebugLogEnable.h"
