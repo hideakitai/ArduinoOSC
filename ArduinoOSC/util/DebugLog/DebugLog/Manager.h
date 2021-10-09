@@ -2,6 +2,7 @@
 #ifndef DEBUGLOG_MANAGER_H
 #define DEBUGLOG_MANAGER_H
 
+#include "Types.h"
 #include "FileLogger.h"
 
 namespace arx {
@@ -117,11 +118,11 @@ namespace debug {
 
         template <typename... Args>
         void log(const LogLevel level, const char* file, const int line, const char* func, Args&&... args) {
-            bool b_ignore = (log_lvl == LogLevel::NONE);
+            bool b_ignore = (log_lvl == LogLevel::LVL_NONE);
 #ifdef ARDUINO
-            b_ignore &= (file_lvl == LogLevel::NONE);
+            b_ignore &= (file_lvl == LogLevel::LVL_NONE);
 #endif
-            b_ignore |= (level == LogLevel::NONE);
+            b_ignore |= (level == LogLevel::LVL_NONE);
             if (b_ignore) return;
 
             string_t header = generate_header(level, file, line, func);
@@ -376,11 +377,11 @@ namespace debug {
         string_t generate_header(const LogLevel lvl, const char* file, const int line, const char* func) const {
             string_t header;
             switch (lvl) {
-                case LogLevel::ERROR: header = "[ERROR] "; break;
-                case LogLevel::WARN: header = "[WARN] "; break;
-                case LogLevel::INFO: header = "[INFO] "; break;
-                case LogLevel::DEBUG: header = "[DEBUG] "; break;
-                case LogLevel::TRACE: header = "[TRACE] "; break;
+                case LogLevel::LVL_ERROR: header = "[ERROR] "; break;
+                case LogLevel::LVL_WARN: header = "[WARN] "; break;
+                case LogLevel::LVL_INFO: header = "[INFO] "; break;
+                case LogLevel::LVL_DEBUG: header = "[DEBUG] "; break;
+                case LogLevel::LVL_TRACE: header = "[TRACE] "; break;
                 default: header = ""; break;
             }
 #ifdef ARDUINO

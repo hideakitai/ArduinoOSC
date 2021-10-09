@@ -48,12 +48,12 @@ namespace debug {
 #endif
 
     enum class LogLevel {
-        NONE,
-        ERROR,
-        WARN,
-        INFO,
-        DEBUG,
-        TRACE
+        LVL_NONE,
+        LVL_ERROR,
+        LVL_WARN,
+        LVL_INFO,
+        LVL_DEBUG,
+        LVL_TRACE
     };
 
     enum class LogBase {
@@ -87,10 +87,10 @@ namespace debug {
 }  // namespace arx
 
 #ifndef DEBUGLOG_DEFAULT_LOG_LEVEL
-#define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::INFO
+#define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::LVL_INFO
 #endif
 #ifndef DEBUGLOG_DEFAULT_FILE_LEVEL
-#define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::ERROR
+#define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::LVL_ERROR
 #endif
 
 #endif  // DEBUGLOG_TYPES_H

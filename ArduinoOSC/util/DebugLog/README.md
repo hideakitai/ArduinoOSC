@@ -29,12 +29,12 @@ Logging library for Arduino that can output to both Serial and File with one lin
 
 ### Simple Log Example
 
-`LOG_XXXX` output is controlled by log level. Default log level is `DebugLogLevel::INFO`
+`LOG_XXXX` output is controlled by log level. Default log level is `DebugLogLevel::LVL_INFO`
 
 ```C++
 #include <DebugLog.h>
 
-// The default log_leval is DebugLogLevel::INFO
+// The default log_leval is DebugLogLevel::LVL_INFO
 LOG_ERROR("this is error: log level", 1);
 LOG_WARN("this is warn: log level", 2);
 LOG_INFO("this is info: log level", 3);
@@ -56,7 +56,7 @@ By defining `DEBUGLOG_DEFAULT_LOG_LEVEL`, you can change default log level
 
 ```C++
 // You can also set default log level by defining macro (default: INFO)
-#define DEBUGLOG_DEFAULT_LOG_LEVEL DebugLogLevel::TRACE
+#define DEBUGLOG_DEFAULT_LOG_LEVEL DebugLogLevel::LVL_TRACE
 
 // Include DebugLog after that
 #include <DebugLog.h>
@@ -66,10 +66,10 @@ Or you can change log level dynamically by
 
 ```C++
 // You can change log_leval by following macro
-LOG_SET_LEVEL(DebugLogLevel::TRACE);
+LOG_SET_LEVEL(DebugLogLevel::LVL_TRACE);
 ```
 
-After setting log level to `DebugLogLevel::TRACE`
+After setting log level to `DebugLogLevel::LVL_TRACE`
 
 ```C++
 LOG_ERROR("this is error log");
@@ -132,11 +132,11 @@ LOG_ATTACH_FS_AUTO(SD, "/log.txt", FILE_WRITE);
 
 ### Log Leval Control for File Output
 
-By defining `DEBUGLOG_DEFAULT_FILE_LEVEL`, you can change default log level. Default level is `DebugLogLevel::ERROR`.
+By defining `DEBUGLOG_DEFAULT_FILE_LEVEL`, you can change default log level. Default level is `DebugLogLevel::LVL_ERROR`.
 
 ```C++
 // You can also set default file level by defining macro (default: ERROR)
-#define DEBUGLOG_DEFAULT_FILE_LEVEL DebugLogLevel::INFO
+#define DEBUGLOG_DEFAULT_FILE_LEVEL DebugLogLevel::LVL_INFO
 
 // Include DebugLog after that
 #include <DebugLog.h>
@@ -146,7 +146,7 @@ Or you can change log level dynamically by
 
 ```C++
 // You can change log_leval by following macro
-LOG_FILE_SET_LEVEL(DebugLogLevel::INFO);
+LOG_FILE_SET_LEVEL(DebugLogLevel::LVL_INFO);
 ```
 
 ### Notes for Auto Logging to `File`
@@ -199,7 +199,7 @@ You can disable `LOG_XXXX` and `ASSERT` macro completely by defining following m
 // #define DEBUGLOG_DISABLE_LOG
 
 // You can also set default log level by defining macro (default: INFO)
-// #define DEBUGLOG_DEFAULT_LOG_LEVEL DebugLogLevel::TRACE
+// #define DEBUGLOG_DEFAULT_LOG_LEVEL DebugLogLevel::LVL_TRACE
 
 #include <DebugLog.h>
 
@@ -212,13 +212,13 @@ void setup() {
     PRINTLN(1, 2.2, "three", "=> like this");
 
     // You can change log_leval by following macro
-    // LOG_SET_LEVEL(DebugLogLevel::TRACE);
+    // LOG_SET_LEVEL(DebugLogLevel::LVL_TRACE);
 
-    // The default log_leval is DebugLogLevel::INFO
+    // The default log_leval is DebugLogLevel::LVL_INFO
     // 0: NONE, 1: ERROR, 2: WARN, 3: INFO, 4: DEBUG, 5: TRACE
     PRINTLN("current log level is", (int)LOG_GET_LEVEL());
 
-    // The default log_leval is DebugLogLevel::INFO
+    // The default log_leval is DebugLogLevel::LVL_INFO
     LOG_ERROR("this is error log");
     LOG_WARN("this is warn log");
     LOG_INFO("this is info log");
@@ -265,7 +265,7 @@ Containers can also be printed like [1, 2, 3] [1.10, 2.20, 3.30] {one:1, three:3
 
 ```C++
 // You can also set default file level by defining macro (default: ERROR)
-// #define DEBUGLOG_DEFAULT_FILE_LEVEL DebugLogLevel::WARN
+// #define DEBUGLOG_DEFAULT_FILE_LEVEL DebugLogLevel::LVL_WARN
 
 // if you want to use standard SD library
 #include <SD.h>
@@ -295,8 +295,8 @@ void setup() {
     }
 
     // Apart from the log level to be displayed,
-    // you can set the log level to be saved to a file (Default is DebugLogLevel::ERROR)
-    // LOG_FILE_SET_LEVEL(DebugLogLevel::INFO);
+    // you can set the log level to be saved to a file (Default is DebugLogLevel::LVL_ERROR)
+    // LOG_FILE_SET_LEVEL(DebugLogLevel::LVL_INFO);
 
     // If LOG_ATTACH_FS_AUTO is used, logs will be automatically saved to SD
     LOG_ERROR("error!");
@@ -307,16 +307,16 @@ void setup() {
     PRINTLN_FILE(1, 2.2, "three", "=> like this");
 
     // Apart from the log level to be displayed,
-    // you can set the log level to be saved to a file (Default is DebugLogLevel::ERROR)
-    // LOG_FILE_SET_LEVEL(DebugLogLevel::INFO);
+    // you can set the log level to be saved to a file (Default is DebugLogLevel::LVL_ERROR)
+    // LOG_FILE_SET_LEVEL(DebugLogLevel::LVL_INFO);
 
-    // The default log_leval is DebugLogLevel::INFO
+    // The default log_leval is DebugLogLevel::LVL_INFO
     // 0: NONE, 1: ERROR, 2: WARN, 3: INFO, 4: DEBUG, 5: TRACE
     PRINTLN_FILE("current log level is", (int)LOG_FILE_GET_LEVEL());
 
     // LOG_XXXX outpus both Serial and File based on log_level and file_level
-    // The default log_leval is DebugLogLevel::INFO
-    // The default file_leval is DebugLogLevel::ERROR
+    // The default log_leval is DebugLogLevel::LVL_INFO
+    // The default file_leval is DebugLogLevel::LVL_ERROR
     LOG_ERROR("this is error log");  // printed to both Serial and File
     LOG_WARN("this is warn log");    // won't be saved but printed
     LOG_INFO("this is info log");    // won't be saved but printed
