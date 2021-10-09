@@ -7,10 +7,6 @@
     #include <Arduino.h>
 #endif
 
-#if __cplusplus < 201103L
-    #error "C++11 must be enabled in the compiler for this library to work, please check your compiler flags"
-#endif
-
 #include "ArxSmartPtr/detail/has_include.h"
 #include "ArxSmartPtr/detail/has_libstdcplusplus.h"
 
