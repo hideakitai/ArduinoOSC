@@ -251,7 +251,7 @@ You can see the debug log when you insert following line before include `Arduino
 
 ## Embedded Libraries
 
-- [ArxTypeTraits v0.2.1](https://github.com/hideakitai/ArxTypeTraits)
+- [ArxTypeTraits v0.2.3](https://github.com/hideakitai/ArxTypeTraits)
 - [ArxContainer v0.4.0](https://github.com/hideakitai/ArxContainer)
 - [ArxSmartPtr v0.2.3](https://github.com/hideakitai/ArxSmartPtr)
 - [DebugLog v0.6.1](https://github.com/hideakitai/DebugLog)
