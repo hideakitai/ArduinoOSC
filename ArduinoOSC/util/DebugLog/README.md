@@ -52,11 +52,11 @@ LOG_TRACE("this is trace: log level", 5);  // won't be printed
 
 ### Log Level control
 
-By defining `DEBUGLOG_DEFAULT_LOG_LEVEL`, you can change default log level
+By defining `DEBUGLOG_DEFAULT_LOG_LEVEL_XXXX`, you can change default log level
 
 ```C++
 // You can also set default log level by defining macro (default: INFO)
-#define DEBUGLOG_DEFAULT_LOG_LEVEL DebugLogLevel::LVL_TRACE
+#define DEBUGLOG_DEFAULT_LOG_LEVEL_TRACE
 
 // Include DebugLog after that
 #include <DebugLog.h>
@@ -132,11 +132,11 @@ LOG_ATTACH_FS_AUTO(SD, "/log.txt", FILE_WRITE);
 
 ### Log Leval Control for File Output
 
-By defining `DEBUGLOG_DEFAULT_FILE_LEVEL`, you can change default log level. Default level is `DebugLogLevel::LVL_ERROR`.
+By defining `DEBUGLOG_DEFAULT_FILE_LEVEL_XXXX`, you can change default log level. Default level is `DebugLogLevel::LVL_ERROR`.
 
 ```C++
 // You can also set default file level by defining macro (default: ERROR)
-#define DEBUGLOG_DEFAULT_FILE_LEVEL DebugLogLevel::LVL_INFO
+#define DEBUGLOG_DEFAULT_FILE_LEVEL_INFO
 
 // Include DebugLog after that
 #include <DebugLog.h>
@@ -199,7 +199,7 @@ You can disable `LOG_XXXX` and `ASSERT` macro completely by defining following m
 // #define DEBUGLOG_DISABLE_LOG
 
 // You can also set default log level by defining macro (default: INFO)
-// #define DEBUGLOG_DEFAULT_LOG_LEVEL DebugLogLevel::LVL_TRACE
+// #define DEBUGLOG_DEFAULT_LOG_LEVEL_TRACE
 
 #include <DebugLog.h>
 
@@ -265,7 +265,7 @@ Containers can also be printed like [1, 2, 3] [1.10, 2.20, 3.30] {one:1, three:3
 
 ```C++
 // You can also set default file level by defining macro (default: ERROR)
-// #define DEBUGLOG_DEFAULT_FILE_LEVEL DebugLogLevel::LVL_WARN
+// #define DEBUGLOG_DEFAULT_FILE_LEVEL_WARN
 
 // if you want to use standard SD library
 #include <SD.h>
@@ -486,6 +486,22 @@ enum class DebugLogBase {
     HEX = 16,
     OCT = 8,
     BIN = 2,  // only for Arduino
+};
+```
+
+### Log Precision
+
+```C++
+enum class LogPrecision {
+    ZERO,
+    ONE,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE,
+    SIX,
+    SEVEN,
+    EIGHT,
 };
 ```
 

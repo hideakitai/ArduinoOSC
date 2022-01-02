@@ -22,6 +22,7 @@ namespace debug {
         FileLogger* logger {nullptr};
         LogLevel file_lvl {DEBUGLOG_DEFAULT_FILE_LEVEL};
         bool b_auto_save {false};
+        LogPrecision log_precision {LogPrecision::TWO};
 #endif
 
         // singleton
@@ -216,7 +217,7 @@ namespace debug {
     private:
 #ifdef ARDUINO
 
-        // print without base
+        // print without base and precision
         template <typename Head, typename S>
         void print_one(const Head& head, S* s) { s->print(head); }
 
@@ -237,10 +238,19 @@ namespace debug {
         void print_one(const long head, S* s) { s->print(head, (int)log_base); }
         template <typename S>
         void print_one(const unsigned long head, S* s) { s->print(head, (int)log_base); }
-
         template <typename S>
         void print_one(const LogBase& head, S*) {
             log_base = head;
+        }
+
+        // print with precision
+        template <typename S>
+        void print_one(const float head, S* s) { s->print(head, (int)log_precision); }
+        template <typename S>
+        void print_one(const double head, S* s) { s->print(head, (int)log_precision); }
+        template <typename S>
+        void print_one(const LogPrecision& head, S*) {
+            log_precision = head;
         }
 
         template <typename S, typename T>
@@ -287,6 +297,8 @@ namespace debug {
         // print one helper
         template <typename S, typename T>
         void print_array(const T& head, S* s) {
+            bool b_base_reset_restore = b_base_reset;
+            b_base_reset = false;
             print_one("[", s);
             for (size_t i = 0; i < head.size(); ++i) {
                 print_one(head[i], s);
@@ -294,10 +306,13 @@ namespace debug {
                     print_one(", ", s);
             }
             print_one("]", s);
+            b_base_reset = b_base_reset_restore;
+            if (b_base_reset) log_base = LogBase::DEC;
         }
 
         template <typename S, typename T>
         void print_map(const T& head, S* s) {
+            bool b_base_reset_restore = b_base_reset;
             print_one("{", s);
             const size_t size = head.size();
             size_t i = 0;
@@ -309,6 +324,8 @@ namespace debug {
                     print_one(", ", s);
             }
             print_one("}", s);
+            b_base_reset = b_base_reset_restore;
+            if (b_base_reset) log_base = LogBase::DEC;
         }
 
 #else

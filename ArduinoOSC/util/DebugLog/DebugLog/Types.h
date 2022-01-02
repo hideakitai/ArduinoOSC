@@ -65,6 +65,20 @@ namespace debug {
 #endif
     };
 
+#ifdef ARDUINO
+    enum class LogPrecision {
+        ZERO,
+        ONE,
+        TWO,
+        THREE,
+        FOUR,
+        FIVE,
+        SIX,
+        SEVEN,
+        EIGHT,
+    };
+#endif
+
     template <typename T>
     struct Array {
         T* ptr;
@@ -86,10 +100,35 @@ namespace debug {
 }  // namespace debug
 }  // namespace arx
 
-#ifndef DEBUGLOG_DEFAULT_LOG_LEVEL
+#if defined(DEBUGLOG_DEFAULT_LOG_LEVEL_NONE)
+#define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::LVL_NONE
+#elif defined(DEBUGLOG_DEFAULT_LOG_LEVEL_ERROR)
+#define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::LVL_ERROR
+#elif defined(DEBUGLOG_DEFAULT_LOG_LEVEL_WARN)
+#define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::LVL_WARN
+#elif defined(DEBUGLOG_DEFAULT_LOG_LEVEL_INFO)
+#define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::LVL_INFO
+#elif defined(DEBUGLOG_DEFAULT_LOG_LEVEL_DEBUG)
+#define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::LVL_DEBUG
+#elif defined(DEBUGLOG_DEFAULT_LOG_LEVEL_TRACE)
+#define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::LVL_TRACE
+#else
 #define DEBUGLOG_DEFAULT_LOG_LEVEL LogLevel::LVL_INFO
 #endif
-#ifndef DEBUGLOG_DEFAULT_FILE_LEVEL
+
+#if defined(DEBUGLOG_DEFAULT_FILE_LEVEL_NONE)
+#define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::LVL_NONE
+#elif defined(DEBUGLOG_DEFAULT_FILE_LEVEL_ERROR)
+#define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::LVL_ERROR
+#elif defined(DEBUGLOG_DEFAULT_FILE_LEVEL_WARN)
+#define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::LVL_WARN
+#elif defined(DEBUGLOG_DEFAULT_FILE_LEVEL_INFO)
+#define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::LVL_INFO
+#elif defined(DEBUGLOG_DEFAULT_FILE_LEVEL_DEBUG)
+#define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::LVL_DEBUG
+#elif defined(DEBUGLOG_DEFAULT_FILE_LEVEL_TRACE)
+#define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::LVL_TRACE
+#else
 #define DEBUGLOG_DEFAULT_FILE_LEVEL LogLevel::LVL_ERROR
 #endif
 

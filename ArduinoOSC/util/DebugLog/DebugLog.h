@@ -19,6 +19,7 @@
 namespace DebugLog = arx::debug;
 using DebugLogLevel = arx::debug::LogLevel;
 using DebugLogBase = arx::debug::LogBase;
+using DebugLogPrecision = arx::debug::LogPrecision;
 
 // PRINT and PRINTLN are always enabled regardless of log_level
 // PRINT and PRINTLN do NOT print to files
