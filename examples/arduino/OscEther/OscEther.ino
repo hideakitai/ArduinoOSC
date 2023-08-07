@@ -1,5 +1,8 @@
 // #define ARDUINOOSC_DEBUGLOG_ENABLE
 
+// Please comment out to use NativeEthernet library for Teensy 4.1
+// #define ARDUINOOSC_USE_T41_NATIVEETHERNET
+
 // Please include ArduinoOSCEther.h to use ArduinoOSC on the platform
 // which can use both WiFi and Ethernet
 #include <ArduinoOSCEther.h>
