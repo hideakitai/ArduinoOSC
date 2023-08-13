@@ -155,7 +155,7 @@ Please feel free to send PR or request for more board support!
 
 #### Ethernet
 
-- Almost all platforms which has `Ethernet` library
+- Almost all platforms which has `Ethernet` (and `ETH`) library
 
 
 ## Limitation and Options for NO-STL Boards
