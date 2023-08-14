@@ -56,7 +56,7 @@ namespace osc {
 
         template <typename... Ts>
         void subscribe(const uint16_t port, const String& addr, Ts&&... ts) {
-#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
+#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040)
             if (WiFi.getMode() != WIFI_OFF)
                 OscServerManager<S>::getInstance().getServer(port).subscribe(addr, std::forward<Ts>(ts)...);
             else
@@ -67,7 +67,7 @@ namespace osc {
         }
 
         void parse() {
-#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
+#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040)
             if ((WiFi.status() == WL_CONNECTED) || (WiFi.getMode() != WIFI_STA)) {
                 OscServerManager<S>::getInstance().parse();
             } else {
@@ -86,7 +86,7 @@ namespace osc {
 
         template <typename... Ts>
         void send(const String& ip, const uint16_t port, const String& addr, Ts&&... ts) {
-#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
+#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040)
             if ((WiFi.status() == WL_CONNECTED) || (WiFi.getMode() != WIFI_STA)) {
                 OscClientManager<S>::getInstance().send(ip, port, addr, std::forward<Ts>(ts)...);
             } else {
@@ -98,7 +98,7 @@ namespace osc {
         }
 
         void post() {
-#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
+#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040)
             if ((WiFi.status() == WL_CONNECTED) || (WiFi.getMode() != WIFI_STA)) {
                 OscClientManager<S>::getInstance().post();
             } else {
@@ -111,7 +111,7 @@ namespace osc {
 
         template <typename... Ts>
         OscPublishElementRef publish(const String& ip, const uint16_t port, const String& addr, Ts&&... ts) {
-#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM)
+#if defined(ARDUINOOSC_ENABLE_WIFI) && defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040)
             if (WiFi.getMode() != WIFI_OFF)
                 return OscClientManager<S>::getInstance().publish(ip, port, addr, std::forward<Ts>(ts)...);
             else {

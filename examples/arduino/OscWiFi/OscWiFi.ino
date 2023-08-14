@@ -46,8 +46,12 @@ void setup() {
     delay(2000);
 
     // WiFi stuff (no timeout setting for WiFi)
+#if defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040)
 #ifdef ESP_PLATFORM
     WiFi.disconnect(true, true);  // disable wifi, erase ap info
+#else
+    WiFi.disconnect(true);  // disable wifi
+#endif
     delay(1000);
     WiFi.mode(WIFI_STA);
 #endif
