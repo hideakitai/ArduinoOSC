@@ -14,5 +14,12 @@
     "version": "0.3.29",
     "license": "MIT",
     "frameworks": "arduino",
-    "platforms": "*"
+    "platforms": "*",
+    "dependencies":
+    {
+        "hideakitai/ArxContainer": "*",
+        "hideakitai/ArxSmartPtr": "*",
+        "hideakitai/ArxTypeTraits": "*",
+        "hideakitai/DebugLog": "*"
+    }
 }

@@ -64,6 +64,10 @@ jobs:
             - examples/arduino/OscWiFiAP
           libraries: |
             - source-path: ./
+            - name: ArxContainer
+            - name: ArxSmartPtr
+            - name: ArxTypeTraits
+            - name: DebugLog
             - name: WiFi
           verbose: true
 
@@ -104,6 +108,10 @@ jobs:
             - examples/arduino/OscWiFi
           libraries: |
             - source-path: ./
+            - name: ArxContainer
+            - name: ArxSmartPtr
+            - name: ArxTypeTraits
+            - name: DebugLog
             - name: WiFiNINA
             - name: VidorPeripherals
           verbose: true
@@ -187,6 +195,10 @@ jobs:
             - examples/arduino/OscEther
           libraries: |
             - source-path: ./
+            - name: ArxContainer
+            - name: ArxSmartPtr
+            - name: ArxTypeTraits
+            - name: DebugLog
             - name: Ethernet
           verbose: true
 
@@ -204,6 +216,10 @@ jobs:
             - examples/arduino/OscEtherUno
           libraries: |
             - source-path: ./
+            - name: ArxContainer
+            - name: ArxSmartPtr
+            - name: ArxTypeTraits
+            - name: DebugLog
             - name: Ethernet
           verbose: true
 
@@ -241,4 +257,8 @@ jobs:
             - examples/arduino/OscETH
           libraries: |
             - source-path: ./
+            - name: ArxContainer
+            - name: ArxSmartPtr
+            - name: ArxTypeTraits
+            - name: DebugLog
           verbose: true
