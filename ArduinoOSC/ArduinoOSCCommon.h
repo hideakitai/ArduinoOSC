@@ -2,15 +2,15 @@
 #ifndef ARDUINOOSCCOMMON_H
 #define ARDUINOOSCCOMMON_H
 
-#include "ArduinoOSC/util/ArxTypeTraits/ArxTypeTraits.h"
-#include "ArduinoOSC/util/ArxSmartPtr/ArxSmartPtr.h"
-#include "ArduinoOSC/util/ArxContainer/ArxContainer.h"
-#include "ArduinoOSC/util/DebugLog/DebugLog.h"
+#include <ArxTypeTraits.h>
+#include <ArxSmartPtr.h>
+#include <ArxContainer.h>
+#include <DebugLog.h>
 
 #ifdef ARDUINOOSC_DEBUGLOG_ENABLE
-#include "ArduinoOSC/util/DebugLog/DebugLogEnable.h"
+#include <DebugLogEnable.h>
 #else
-#include "ArduinoOSC/util/DebugLog/DebugLogDisable.h"
+#include <DebugLogDisable.h>
 #endif
 
 #if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L  // Have libstdc++11
@@ -140,6 +140,6 @@ namespace osc {
 
 namespace ArduinoOSC = arduino::osc;
 
-#include "ArduinoOSC/util/DebugLog/DebugLogRestoreState.h"
+#include <DebugLogRestoreState.h>
 
 #endif  // ARDUINOOSCCOMMON_H

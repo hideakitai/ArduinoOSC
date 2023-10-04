@@ -4,9 +4,9 @@
 #define ARDUINOOSC_OSCTYPES_H
 
 #include <Arduino.h>
-#include "util/ArxTypeTraits/ArxTypeTraits.h"
-#include "util/ArxContainer/ArxContainer.h"
-#include "util/DebugLog/DebugLog.h"
+#include <ArxTypeTraits.h>
+#include <ArxContainer.h>
+#include <DebugLog.h>
 
 #if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L  // Have libstdc++11
 

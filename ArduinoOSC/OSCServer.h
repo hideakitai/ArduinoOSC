@@ -2,10 +2,10 @@
 #ifndef ARDUINOOSC_OSCSERVER_H
 #define ARDUINOOSC_OSCSERVER_H
 
-#include "util/ArxTypeTraits/ArxTypeTraits.h"
-#include "util/ArxSmartPtr/ArxSmartPtr.h"
-#include "util/ArxContainer/ArxContainer.h"
-#include "util/DebugLog/DebugLog.h"
+#include <ArxTypeTraits.h>
+#include <ArxSmartPtr.h>
+#include <ArxContainer.h>
+#include <DebugLog.h>
 #if ARX_HAVE_LIBSTDCPLUSPLUS >= 201103L  // Have libstdc++11
 #include <cassert>
 #endif

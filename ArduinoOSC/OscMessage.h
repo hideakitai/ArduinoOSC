@@ -4,7 +4,7 @@
 #define ARDUINOOSC_OSCMESSAGE_H
 
 #include <Arduino.h>
-#include "util/DebugLog/DebugLog.h"
+#include <DebugLog.h>
 #include "OscTypes.h"
 #include "OscUtil.h"
 

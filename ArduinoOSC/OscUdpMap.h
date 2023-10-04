@@ -3,9 +3,9 @@
 #define ARDUINOOSC_OSCUDPMAP_H
 
 #include <Arduino.h>
-#include "util/ArxTypeTraits/ArxTypeTraits.h"
-#include "util/ArxSmartPtr/ArxSmartPtr.h"
-#include "util/ArxContainer/ArxContainer.h"
+#include <ArxTypeTraits.h>
+#include <ArxSmartPtr.h>
+#include <ArxContainer.h>
 
 #include "OscMessage.h"
 #include "OscEncoder.h"
