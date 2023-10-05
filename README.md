@@ -3,11 +3,18 @@
 OSC subscriber / publisher for Arduino
 
 
-#### NOTE : BREAKING API CHANGES (v0.3.x or later)
+#### NOTE (>= v0.3.x) : BREAKING API CHANGES
 
 - almost all apis has have changed and got much simpler
 - dropped support for `OscSerial` (recommend to use [MsgPacketizer](https://github.com/hideakitai/MsgPacketizer) for much smaller packet size)
 
+#### NOTE (>= v0.4.0) : DEPENDENT LIBRARIES REMOVED
+
+If you have already installed this library, please follow:
+
+- Cloned from GitHub (manually): Please install dependent libraries manually
+- Installed from library manager: re-install this library from library manager
+  - Dependent libraries will be installed automatically
 
 ## Feature
 
