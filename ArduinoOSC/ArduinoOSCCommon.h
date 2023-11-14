@@ -68,7 +68,7 @@ namespace osc {
 
         void parse() {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
-            if ((WiFi.status() == WL_CONNECTED) || (WiFi.getMode() != WIFI_STA)) {
+            if (this->isWiFiConnected() || this->isWiFiModeAP()) {
                 OscServerManager<S>::getInstance().parse();
             } else {
                 LOG_ERROR(F("WiFi is not connected. Please connected to WiFi"));
@@ -87,7 +87,7 @@ namespace osc {
         template <typename... Ts>
         void send(const String& ip, const uint16_t port, const String& addr, Ts&&... ts) {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
-            if ((WiFi.status() == WL_CONNECTED) || (WiFi.getMode() != WIFI_STA)) {
+            if (this->isWiFiConnected() || this->isWiFiModeAP()) {
                 OscClientManager<S>::getInstance().send(ip, port, addr, std::forward<Ts>(ts)...);
             } else {
                 LOG_ERROR(F("WiFi is not connected. Please connected to WiFi"));
@@ -99,7 +99,7 @@ namespace osc {
 
         void post() {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
-            if ((WiFi.status() == WL_CONNECTED) || (WiFi.getMode() != WIFI_STA)) {
+            if (this->isWiFiConnected() || this->isWiFiModeAP()) {
                 OscClientManager<S>::getInstance().post();
             } else {
                 LOG_ERROR(F("WiFi is not connected. Please connected to WiFi"));
@@ -133,6 +133,18 @@ namespace osc {
             parse();
             post();
         }
+
+    private:
+#if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
+        bool isWiFiConnected() {
+            return WiFi.status() == WL_CONNECTED;
+        }
+
+        bool isWiFiModeAP() {
+            auto mode = WiFi.getMode();
+            return (mode == WIFI_STA) || (mode == WIFI_AP_STA);
+        }
+#endif
     };
 
 }  // namespace osc
