@@ -92,47 +92,47 @@ namespace osc {
     template <typename S>
     using UdpRef = std::shared_ptr<S>;
     template <typename S>
-    using UdpMap = arx::map<uint16_t, UdpRef<S>, ARDUINOOSC_MAX_SUBSCRIBE_PORTS>;
+    using UdpMap = arx::stdx::map<uint16_t, UdpRef<S>, ARDUINOOSC_MAX_SUBSCRIBE_PORTS>;
 
     namespace message {
-        using ArgumentType = arx::pair<size_t, size_t>;
-        using ArgumentQueue = arx::vector<ArgumentType, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
+        using ArgumentType = arx::stdx::pair<size_t, size_t>;
+        using ArgumentQueue = arx::stdx::vector<ArgumentType, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
         class Message;
-        using MessageQueue = arx::vector<Message, ARDUINOOSC_MAX_MSG_QUEUE_SIZE>;
+        using MessageQueue = arx::stdx::vector<Message, ARDUINOOSC_MAX_MSG_QUEUE_SIZE>;
     }  // namespace message
 #ifndef ARDUINOOSC_DISABLE_BUNDLE
-    using BundleData = arx::vector<uint32_t, ARDUINOOSC_MAX_MSG_BUNDLE_SIZE>;
+    using BundleData = arx::stdx::vector<uint32_t, ARDUINOOSC_MAX_MSG_BUNDLE_SIZE>;
 #endif
-    using Blob = arx::vector<char, ARDUINOOSC_MAX_MSG_BYTE_SIZE>;
+    using Blob = arx::stdx::vector<char, ARDUINOOSC_MAX_MSG_BYTE_SIZE>;
 
     namespace client {
         namespace element {
             class Base;
             using Ref = std::shared_ptr<Base>;
-            using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
+            using TupleRef = arx::stdx::vector<Ref, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
         }  // namespace element
         class Destination;
         using ElementRef = element::Ref;
         using ElementTupleRef = element::TupleRef;
-        using DestinationMap = arx::map<Destination, ElementRef, ARDUINOOSC_MAX_PUBLISH_DESTINATION>;
+        using DestinationMap = arx::stdx::map<Destination, ElementRef, ARDUINOOSC_MAX_PUBLISH_DESTINATION>;
     }  // namespace client
 
     namespace server {
         namespace element {
             class Base;
             using Ref = std::shared_ptr<Base>;
-            using TupleRef = arx::vector<Ref, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
-            using dummy_vector_t = arx::vector<size_t, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
+            using TupleRef = arx::stdx::vector<Ref, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
+            using dummy_vector_t = arx::stdx::vector<size_t, ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE>;
         }  // namespace element
         using ElementRef = element::Ref;
         using ElementTupleRef = element::TupleRef;
-        using CallbackMap = arx::map<String, ElementRef, ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT>;
+        using CallbackMap = arx::stdx::map<String, ElementRef, ARDUINOOSC_MAX_SUBSCRIBE_ADDRESS_PER_PORT>;
         template <typename S>
         class Server;
         template <typename S>
         using ServerRef = std::shared_ptr<Server<S>>;
         template <typename S>
-        using ServerMap = arx::map<uint16_t, ServerRef<S>, ARDUINOOSC_MAX_SUBSCRIBE_PORTS>;
+        using ServerMap = arx::stdx::map<uint16_t, ServerRef<S>, ARDUINOOSC_MAX_SUBSCRIBE_PORTS>;
     }  // namespace server
 
 }  // namespace osc
@@ -171,7 +171,7 @@ namespace osc {
     struct Storage {
         Blob data;
 
-        // reserve() makes no sense on arx::vector because capacity is fixed
+        // reserve() makes no sense on arx::stdx::vector because capacity is fixed
         Storage() { data.reserve(200); }
 
         char* getBytes(const size_t sz) {

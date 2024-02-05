@@ -40,7 +40,7 @@ namespace osc {
             // use first port for PORT_DISCARD if some udp instances exist
             if (port == PORT_DISCARD) {
                 if (udp_map.empty()) {
-                    udp_map.insert(make_pair(port, UdpRef<S>(new S())));
+                    udp_map.insert(std::make_pair(port, UdpRef<S>(new S())));
                     udp_map[port]->begin(port);
                 }
                 return udp_map.begin()->second;
@@ -53,7 +53,7 @@ namespace osc {
                     udp_discard_ref->second->stop();
                     udp_map.erase(udp_discard_ref);
                 }
-                udp_map.insert(make_pair(port, UdpRef<S>(new S())));
+                udp_map.insert(std::make_pair(port, UdpRef<S>(new S())));
                 udp_map[port]->begin(port);
             }
             return udp_map[port];
