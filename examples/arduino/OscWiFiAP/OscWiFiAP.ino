@@ -46,8 +46,13 @@ void setup() {
     delay(2000);
 
     // WiFi AP Mode
+#ifdef ARDUINO_UNOR4_WIFI
+    WiFi.config(ip);
+    WiFi.beginAP(ssid, pwd);
+#else
     WiFi.softAPConfig(ip, gateway, subnet);
     WiFi.softAP(ssid, pwd);
+#endif
 
     Serial.print("WiFi AP IP = ");
     Serial.println(WiFi.softAPIP());

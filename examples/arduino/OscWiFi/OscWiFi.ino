@@ -55,11 +55,26 @@ void setup() {
     delay(1000);
     WiFi.mode(WIFI_STA);
 #endif
+
     WiFi.begin(ssid, pwd);
+
+#ifdef ARDUINO_UNOR4_WIFI
+    WiFi.config(ip);
+#else
     WiFi.config(ip, gateway, subnet);
+#endif
+
     while (WiFi.status() != WL_CONNECTED) {
         Serial.print(".");
         delay(500);
+#ifdef ARDUINO_UNOR4_WIFI
+        static int count = 0;
+        if (count++ > 20) {
+            Serial.println("WiFi connection timeout, retry");
+            WiFi.begin(ssid, pwd);
+            count = 0;
+        }
+#endif
     }
     Serial.print("WiFi connected, IP = ");
     Serial.println(WiFi.localIP());
