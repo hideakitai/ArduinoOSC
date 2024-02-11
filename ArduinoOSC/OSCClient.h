@@ -273,7 +273,7 @@ namespace osc {
         private:
             ElementRef publish_impl(const String& ip, const uint16_t port, const String& addr, ElementRef ref) {
                 Destination dest {ip, port, addr};
-                dest_map.insert(make_pair(dest, ref));
+                dest_map.insert(std::make_pair(dest, ref));
                 return ref;
             }
         };

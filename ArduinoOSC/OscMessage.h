@@ -98,7 +98,7 @@ namespace osc {
 
             Message& pushBool(const bool b) {
                 type_tags += (char)(b ? TYPE_TAG_TRUE : TYPE_TAG_FALSE);
-                arguments.push_back(make_pair(storage.size(), storage.size()));
+                arguments.push_back(std::make_pair(storage.size(), storage.size()));
                 return *this;
             }
             Message& pushInt32(const int32_t i) { return pushPod(TYPE_TAG_INT32, i); }
@@ -107,14 +107,14 @@ namespace osc {
             Message& pushDouble(const double d) { return pushPod(TYPE_TAG_DOUBLE, d); }
             Message& pushString(const String& s) {
                 type_tags += (char)TYPE_TAG_STRING;
-                arguments.push_back(make_pair(storage.size(), s.length() + 1));
+                arguments.push_back(std::make_pair(storage.size(), s.length() + 1));
                 strcpy(storage.getBytes(s.length() + 1), s.c_str());
                 return *this;
             }
             Message& pushBlob(const Blob& b) { return pushBlob(b.data(), b.size()); }
             Message& pushBlob(const void* ptr, const size_t num_bytes) {
                 type_tags += (char)TYPE_TAG_BLOB;
-                arguments.push_back(make_pair(storage.size(), num_bytes + 4));
+                arguments.push_back(std::make_pair(storage.size(), num_bytes + 4));
                 pod2bytes<int32_t>((int32_t)num_bytes, storage.getBytes(4));
                 if (num_bytes) memcpy(storage.getBytes(num_bytes), ptr, num_bytes);
                 return *this;
@@ -222,7 +222,7 @@ namespace osc {
                 size_t iarg = 0;
                 while (iarg < type_tags.length()) {
                     size_t len = getArgSize(type_tags[iarg], arg);
-                    arguments.push_back(make_pair((size_t)(arg - storage.begin()), len));
+                    arguments.push_back(std::make_pair((size_t)(arg - storage.begin()), len));
                     arg += ceil4(len);
                     ++iarg;
                 }
@@ -308,7 +308,7 @@ namespace osc {
             template <typename POD>
             Message& pushPod(const int tag, const POD& v) {
                 type_tags += (char)tag;
-                arguments.push_back(make_pair(storage.size(), sizeof(POD)));
+                arguments.push_back(std::make_pair(storage.size(), sizeof(POD)));
                 pod2bytes(v, storage.getBytes(sizeof(POD)));
                 return *this;
             }

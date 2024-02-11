@@ -253,7 +253,7 @@ namespace osc {
 
             Server<S>& getServer(const uint16_t port) {
                 if (server_map.find(port) == server_map.end())
-                    server_map.insert(make_pair(port, ServerRef<S>(new Server<S>(port))));
+                    server_map.insert(std::make_pair(port, ServerRef<S>(new Server<S>(port))));
                 return *(server_map[port].get());
             }
 

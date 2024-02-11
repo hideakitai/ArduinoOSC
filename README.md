@@ -2,7 +2,6 @@
 
 OSC subscriber / publisher for Arduino
 
-
 #### NOTE (>= v0.3.x) : BREAKING API CHANGES
 
 - almost all apis has have changed and got much simpler
@@ -19,21 +18,20 @@ If you have already installed this library, please follow:
 ## Feature
 
 - simple usage
-    - flexible callback registration with lambda
-    - directly binding osc packet to values
-    - osc packet sending in one-line
-    - publishing osc packet in one-line
+  - flexible callback registration with lambda
+  - directly binding osc packet to values
+  - osc packet sending in one-line
+  - publishing osc packet in one-line
 - support basic OSC types based on [oscpkt](http://gruntthepeon.free.fr/oscpkt/html/)
-    - TF (`bool`: true, false)
-    - i (`int32_t`)
-    - h (`int64_t`)
-    - f (`float`)
-    - d (`double`)
-    - s (`string`)
-    - b (`bundle`)
+  - TF (`bool`: true, false)
+  - i (`int32_t`)
+  - h (`int64_t`)
+  - f (`float`)
+  - d (`double`)
+  - s (`string`)
+  - b (`bundle`)
 - support pattern-matching (wildcards)
 - does NOT support timestamp values.
-
 
 ## Usage
 
@@ -85,7 +83,7 @@ void loop() {
 
 ### Bind OSC to Lambda Arguments and One-Line Send
 
-``` C++
+```C++
 void setup() {
     // WiFi stuff
     // ...
@@ -110,7 +108,7 @@ void loop() {
 
 ### Other Way to Subscribe
 
-``` C++
+```C++
 // OscMessage as lambda argument
 OscWiFi.subscribe(recv_port, "/lambda/msg",
     [](const OscMessage& m) {
@@ -144,7 +142,6 @@ OscWiFi.subscribe(recv_port, "/need/reply", []() {
 OscWiFi.subscribe(recv_port, "/callback", onOscReceived);
 ```
 
-
 ## Supported Platform
 
 This library currently supports following platforms and interfaces.
@@ -155,6 +152,7 @@ Please feel free to send PR or request for more board support!
 - ESP32
 - ESP8266
 - Raspberry Pi Pico W
+- Arduino Uno R4 WiFi
 - Arduino Uno WiFi Rev2
 - Arduino MKR VIDOR 4000
 - Arduino MKR WiFi 1010
@@ -165,7 +163,6 @@ Please feel free to send PR or request for more board support!
 
 - Almost all platforms which has `Ethernet` (and `ETH`) library
 
-
 ## Limitation and Options for NO-STL Boards
 
 STL is used to handle packet data by default, but for following boards/architectures, [ArxContainer](https://github.com/hideakitai/ArxContainer) is used to store the packet data because STL can not be used for such boards.
@@ -174,7 +171,6 @@ The storage size of such boards for packets, queue of packets, max packet binary
 - AVR
 - megaAVR
 
-
 ### Usage Recommendation for Arduino Uno (and other boards with tiny memory size)
 
 For the boards which has tiny memory size (e.g. Arduino Uno), I reccomend not to use publisher and subscriber.
@@ -182,7 +178,7 @@ Though you can use them on such boards, such rich functions requires more memory
 The reccomended way is to use `send` and `parse` manually.
 The example is shown in `examples/arduino/OscEtherUno`, so please consider to use it.
 
-``` C++
+```C++
 #include <ArduinoOSCEther.h>
 // #include <ArduinoOSC.h> // you can use this because Uno supports only Ethernet
 
@@ -219,14 +215,13 @@ void loop() {
 }
 ```
 
-
 ### Memory Management (only for NO-STL Boards)
 
 As mentioned above, for such boards like Arduino Uno, the storage sizes are limited.
 And of course you can manage them by defining following macros.
 But these default values are optimized for such boards, please be careful not to excess your boards storage/memory.
 
-``` C++
+```C++
 #define ARDUINOOSC_MAX_MSG_ARGUMENT_SIZE 8
 #define ARDUINOOSC_MAX_MSG_BYTE_SIZE 128
 #define ARDUINOOSC_MAX_MSG_QUEUE_SIZE 1
@@ -241,21 +236,19 @@ OSC bundle option is disabled for such boards.
 If you want to use that, please use this macro and handle packets manually.
 `ArduinoOSC` does not use bundle by default.
 
-``` C++
+```C++
 #define ARDUINOOSC_ENABLE_BUNDLE
 #define ARDUINOOSC_MAX_MSG_BUNDLE_SIZE 128
 ```
-
 
 ### Enable Debug Logger
 
 You can see the debug log when you insert following line before include `ArduinoOSC`.
 
-``` C++
+```C++
 #define ARDUINOOSC_DEBUGLOG_ENABLE
 #include <ArduinoOSC.h>
 ```
-
 
 ## Dependent Libraries
 
@@ -268,11 +261,9 @@ You can see the debug log when you insert following line before include `Arduino
 
 - [TeensyDirtySTLErrorSolution v0.1.0](https://github.com/hideakitai/TeensyDirtySTLErrorSolution)
 
-
 ## Special Thanks
 
 - [ofxPubSubOsc](https://github.com/2bbb/ofxPubSubOsc)
-
 
 ## License
 
