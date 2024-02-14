@@ -11,7 +11,7 @@
         "url": "https://github.com/hideakitai",
         "maintainer": true
     },
-    "version": "0.4.1",
+    "version": "0.4.2",
     "license": "MIT",
     "frameworks": "arduino",
     "platforms": "*",
@@ -20,6 +20,6 @@
         "hideakitai/ArxContainer": ">=0.6.0",
         "hideakitai/ArxSmartPtr": "*",
         "hideakitai/ArxTypeTraits": "*",
-        "hideakitai/DebugLog": "*"
+        "hideakitai/DebugLog": ">=0.8.1"
     }
 }
