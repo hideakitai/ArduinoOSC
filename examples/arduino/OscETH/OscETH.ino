@@ -41,7 +41,7 @@ void setup() {
 
     // Ethernet stuff
     ETH.begin();
-    ETH.begin(ip, gateway, subnet);
+    ETH.config(ip, gateway, subnet);
 
     // publish osc messages (default publish rate = 30 [Hz])
 
