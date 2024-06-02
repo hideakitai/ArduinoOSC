@@ -142,7 +142,7 @@ namespace osc {
 
         bool isWiFiModeAP() {
             auto mode = WiFi.getMode();
-            return (mode == WIFI_STA) || (mode == WIFI_AP_STA);
+            return (mode == WIFI_AP) || (mode == WIFI_AP_STA);
         }
 #endif
     };
