@@ -19,7 +19,7 @@ namespace osc {
 #endif
 
         class Message {
-            TimeTag time_tag;
+            TimeTag time_tag; // Used only for the received msg in the bundle
             String address_str;
             String type_tags;
             Storage storage;

@@ -165,6 +165,7 @@ namespace osc {
         explicit TimeTag(const uint64_t w)
         : v(w) {}
         operator uint64_t() const { return v; }
+        uint64_t value() const { return v; }
         static TimeTag immediate() { return TimeTag(1); }
     };
 
