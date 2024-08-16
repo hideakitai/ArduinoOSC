@@ -172,23 +172,49 @@ namespace osc {
                 msg.init(addr);
                 send(ip, port, msg, std::forward<Rest>(rest)...);
             }
-            template <typename... Rest>
-            void send(const String& ip, const uint16_t port, const TimeTag& tt, const String& addr, Rest&&... rest) {
-                msg.init(addr, tt);
-                send(ip, port, msg, std::forward<Rest>(rest)...);
-            }
             template <typename First, typename... Rest>
             void send(const String& ip, const uint16_t port, Message& m, First&& first, Rest&&... rest) {
                 m.push(first);
                 send(ip, port, m, std::forward<Rest>(rest)...);
             }
             void send(const String& ip, const uint16_t port, Message& m) {
-                auto stream = UdpMapManager<S>::getInstance().getUdp(local_port);
                 this->writer.init().encode(m);
+                this->send(ip, port);
+            }
+            void send(const String &ip, const uint16_t port)
+            {
+                auto stream = UdpMapManager<S>::getInstance().getUdp(local_port);
                 stream->beginPacket(ip.c_str(), port);
                 stream->write(this->writer.data(), this->writer.size());
                 stream->endPacket();
             }
+
+#ifndef ARDUINOOSC_DISABLE_BUNDLE
+
+            void begin_bundle(const TimeTag &tt) {
+                this->writer.init().begin_bundle(tt);
+            }
+            template <typename... Rest>
+            void add_bundle(const String& addr, Rest&&... rest) {
+                this->msg.init(addr);
+                this->add_bundle(this->msg, std::forward<Rest>(rest)...);
+            }
+            template <typename First, typename... Rest>
+            void add_bundle(Message& m, First&& first, Rest&&... rest)
+            {
+                m.push(first);
+                add_bundle(m, std::forward<Rest>(rest)...);
+            }
+            void add_bundle(Message& m)
+            {
+                this->writer.encode(m);
+            }
+            void end_bundle()
+            {
+                this->writer.end_bundle();
+            }
+
+#endif // ARDUINOOSC_DISABLE_BUNDLE
 
             void send(const Destination& dest, ElementRef elem) {
                 elem->init(msg, dest.addr);
@@ -227,9 +253,19 @@ namespace osc {
             void send(const String& ip, const uint16_t port, const String& addr, Ts&&... ts) {
                 client.send(ip, port, addr, std::forward<Ts>(ts)...);
             }
+
+            void begin_bundle(const TimeTag &tt) {
+                client.begin_bundle(tt);
+            }
             template <typename... Ts>
-            void send(const String& ip, const uint16_t port, const TimeTag& tt, const String& addr, Ts&&... ts) {
-                client.send(ip, port, tt, addr, std::forward<Ts>(ts)...);
+            void add_bundle(const String& addr, Ts&&... ts) {
+                client.add_bundle(addr, std::forward<Ts>(ts)...);
+            }
+            void end_bundle() {
+                client.end_bundle();
+            }
+            void send_bundle(const String& ip, const uint16_t port) {
+                client.send(ip, port);
             }
 
             void post() {

@@ -96,18 +96,32 @@ namespace osc {
             OscClientManager<S>::getInstance().send(ip, port, addr, std::forward<Ts>(ts)...);
 #endif
         }
+
+#ifndef ARDUINOOSC_DISABLE_BUNDLE
+
+        void begin_bundle(const TimeTag &tt) {
+            OscClientManager<S>::getInstance().begin_bundle(tt);
+        }
         template <typename... Ts>
-        void send(const String& ip, const uint16_t port, const TimeTag& tt, const String& addr, Ts&&... ts) {
+        void add_bundle(const String &addr, Ts&&... ts) {
+            OscClientManager<S>::getInstance().add_bundle(addr, std::forward<Ts>(ts)...);
+        }
+        void end_bundle() {
+            OscClientManager<S>::getInstance().end_bundle();
+        }
+        void send_bundle(const String& ip, const uint16_t port) {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
             if (this->isWiFiConnected() || this->isWiFiModeAP()) {
-                OscClientManager<S>::getInstance().send(ip, port, tt, addr, std::forward<Ts>(ts)...);
+                OscClientManager<S>::getInstance().send_bundle(ip, port);
             } else {
                 LOG_ERROR(F("WiFi is not connected. Please connected to WiFi"));
             }
 #else
-            OscClientManager<S>::getInstance().send(ip, port, tt, addr, std::forward<Ts>(ts)...);
+            OscClientManager<S>::getInstance().send_bundle(ip, port);
 #endif
         }
+
+#endif // ARDUINOOSC_DISABLE_BUNDLE
 
         void post() {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
