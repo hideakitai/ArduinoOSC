@@ -172,6 +172,11 @@ namespace osc {
                 msg.init(addr);
                 send(ip, port, msg, std::forward<Rest>(rest)...);
             }
+            template <typename... Rest>
+            void send(const String& ip, const uint16_t port, const TimeTag& tt, const String& addr, Rest&&... rest) {
+                msg.init(addr, tt);
+                send(ip, port, msg, std::forward<Rest>(rest)...);
+            }
             template <typename First, typename... Rest>
             void send(const String& ip, const uint16_t port, Message& m, First&& first, Rest&&... rest) {
                 m.push(first);
@@ -221,6 +226,10 @@ namespace osc {
             template <typename... Ts>
             void send(const String& ip, const uint16_t port, const String& addr, Ts&&... ts) {
                 client.send(ip, port, addr, std::forward<Ts>(ts)...);
+            }
+            template <typename... Ts>
+            void send(const String& ip, const uint16_t port, const TimeTag& tt, const String& addr, Ts&&... ts) {
+                client.send(ip, port, tt, addr, std::forward<Ts>(ts)...);
             }
 
             void post() {
