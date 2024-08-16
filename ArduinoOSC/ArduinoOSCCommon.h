@@ -96,6 +96,18 @@ namespace osc {
             OscClientManager<S>::getInstance().send(ip, port, addr, std::forward<Ts>(ts)...);
 #endif
         }
+        template <typename... Ts>
+        void send(const String& ip, const uint16_t port, const TimeTag& tt, const String& addr, Ts&&... ts) {
+#if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
+            if (this->isWiFiConnected() || this->isWiFiModeAP()) {
+                OscClientManager<S>::getInstance().send(ip, port, tt, addr, std::forward<Ts>(ts)...);
+            } else {
+                LOG_ERROR(F("WiFi is not connected. Please connected to WiFi"));
+            }
+#else
+            OscClientManager<S>::getInstance().send(ip, port, tt, addr, std::forward<Ts>(ts)...);
+#endif
+        }
 
         void post() {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
