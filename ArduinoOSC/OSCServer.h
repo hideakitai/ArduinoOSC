@@ -213,21 +213,22 @@ namespace osc {
                 stream->read(data, size);
 
                 decoder.init(data, size);
-                if (Message* msg = decoder.decode()) {
+                while (Message* msg = decoder.decode()) {
                     if (msg->available()) {
                         msg->remoteIP(stream->S::remoteIP());
                         msg->remotePort((uint16_t)stream->S::remotePort());
-                        for (auto& c : this->callbacks)
-                            if (msg->match(c.first))
+                        for (auto& c : this->callbacks) {
+                            if (msg->match(c.first)) {
                                 c.second->decodeFrom(*msg);
-
+                            }
+                        }
                         msg_ptr = msg;
-                        return true;
+                    } else {
+                        LOG_ERROR(F("osc message parsing failed"));
+                        msg_ptr = nullptr;
                     }
                 }
-                LOG_ERROR(F("osc message parsing failed"));
-                msg_ptr = nullptr;
-                return false;
+                return msg_ptr != nullptr;
             }
 
             const OscMessage* message() const { return msg_ptr; }

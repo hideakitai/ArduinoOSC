@@ -76,8 +76,9 @@ namespace osc {
                         LOG_ERROR(F("bundle header was corrupted"));
                         return false;
                     }
-                } else
+                } else {
                     messages.push_back(Message(beg, end - beg, time_tag));
+                }
 
                 return true;
             }
