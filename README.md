@@ -31,7 +31,6 @@ If you have already installed this library, please follow:
   - s (`string`)
   - b (`bundle`)
 - support pattern-matching (wildcards)
-- does NOT support timestamp values.
 
 ## Usage
 
