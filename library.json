@@ -1,25 +1,24 @@
 {
-    "name": "ArduinoOSC",
-    "keywords": "osc,wifi,ethernet,udp",
-    "description": "OSC subscriber / publisher for Arduino",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/hideakitai/ArduinoOSC.git"
-    },
-    "authors": {
-        "name": "Hideaki Tai",
-        "url": "https://github.com/hideakitai",
-        "maintainer": true
-    },
-    "version": "0.5.0",
-    "license": "MIT",
-    "frameworks": "arduino",
-    "platforms": "*",
-    "dependencies":
-    {
-        "hideakitai/ArxContainer": ">=0.6.0",
-        "hideakitai/ArxSmartPtr": "*",
-        "hideakitai/ArxTypeTraits": "*",
-        "hideakitai/DebugLog": ">=0.8.1"
-    }
+	"name": "ArduinoOSC",
+	"keywords": "osc,wifi,ethernet,udp",
+	"description": "OSC subscriber / publisher for Arduino",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hideakitai/ArduinoOSC.git"
+	},
+	"authors": {
+		"name": "Hideaki Tai",
+		"url": "https://github.com/hideakitai",
+		"maintainer": true
+	},
+	"version": "0.5.1",
+	"license": "MIT",
+	"frameworks": "arduino",
+	"platforms": "*",
+	"dependencies": {
+		"hideakitai/ArxContainer": ">=0.6.0",
+		"hideakitai/ArxSmartPtr": "*",
+		"hideakitai/ArxTypeTraits": "*",
+		"hideakitai/DebugLog": ">=0.8.1"
+	}
 }

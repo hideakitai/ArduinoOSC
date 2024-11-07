@@ -4,12 +4,13 @@
 
 #if defined(ESP_PLATFORM) || defined(ESP8266) || defined(ARDUINO_AVR_UNO_WIFI_REV2)                             \
     || defined(ARDUINO_SAMD_MKRWIFI1010) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(ARDUINO_SAMD_MKR1000) \
-    || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_RASPBERRY_PI_PICO_W) || defined(ARDUINO_UNOR4_WIFI)
+    || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_RASPBERRY_PI_PICO_W) || defined(ARDUINO_UNOR4_WIFI) \
+    || defined(ARDUINO_GIGA)
 #define ARDUINOOSC_ENABLE_WIFI
 #endif
 
 #ifdef ARDUINOOSC_ENABLE_WIFI
-#if defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040)
+#if defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_GIGA)
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #elif defined(ESP8266)
