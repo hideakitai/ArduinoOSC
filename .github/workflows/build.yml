@@ -5,22 +5,22 @@ on:
       - develop
     paths-ignore:
       - .git*
-      - '**.md'
-      - 'library.properties'
-      - 'library.json'
+      - "**.md"
+      - "library.properties"
+      - "library.json"
   pull_request:
     branches:
       - main
       - develop
     paths-ignore:
       - .git*
-      - '**.md'
-      - 'library.properties'
-      - 'library.json'
+      - "**.md"
+      - "library.properties"
+      - "library.json"
 
 jobs:
   build-wifi:
-    name: 'Build Test (WiFi): ${{matrix.board.arch}}:${{matrix.board.name}}'
+    name: "Build Test (WiFi): ${{matrix.board.arch}}:${{matrix.board.name}}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -41,6 +41,9 @@ jobs:
           - vendor: rp2040
             arch: rp2040
             name: rpipicow
+          - vendor: rp2040
+            arch: rp2040
+            name: rpipico2w
         include:
           - index: https://arduino.esp8266.com/stable/package_esp8266com_index.json
             board:
@@ -114,7 +117,7 @@ jobs:
           verbose: true
 
   build-wifinina:
-    name: 'Build Test (WiFiNINA): ${{matrix.board.arch}}:${{matrix.board.name}}'
+    name: "Build Test (WiFiNINA): ${{matrix.board.arch}}:${{matrix.board.name}}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -162,7 +165,7 @@ jobs:
           verbose: true
 
   build-ethernet:
-    name: 'Build Test (Ethernet): ${{matrix.board.arch}}:${{matrix.board.name}}'
+    name: "Build Test (Ethernet): ${{matrix.board.arch}}:${{matrix.board.name}}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -201,6 +204,9 @@ jobs:
           - vendor: rp2040
             arch: rp2040
             name: rpipicow
+          - vendor: rp2040
+            arch: rp2040
+            name: rpipico2w
           - vendor: teensy
             arch: avr
             name: teensy35
@@ -251,7 +257,7 @@ jobs:
           verbose: true
 
   build-ethernet-uno:
-    name: 'Build Test (Ethernet): avr:uno'
+    name: "Build Test (Ethernet): avr:uno"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -275,7 +281,7 @@ jobs:
           verbose: true
 
   build-eth:
-    name: 'Build Test (ETH): ${{matrix.board.arch}}:${{matrix.board.name}}'
+    name: "Build Test (ETH): ${{matrix.board.arch}}:${{matrix.board.name}}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
