@@ -204,6 +204,23 @@ namespace osc {
                 callbacks.insert({addr, ref});
             }
 
+            bool unsubscribe(const String& addr) {
+                auto it = callbacks.find(addr);
+                if (it != callbacks.end()) {
+                    callbacks.erase(it);
+                    return true;
+                }
+                return false;
+            }
+
+            bool unsubscribeAll() {
+                if (!callbacks.empty()) {
+                    callbacks.clear();
+                    return true;
+                }
+                return false;
+            }
+
             bool parse() {
                 auto stream = UdpMapManager<S>::getInstance().getUdp(port);
                 const size_t size = stream->parsePacket();
@@ -261,6 +278,32 @@ namespace osc {
             template <typename... Ts>
             void subscribe(const uint16_t port, const String& addr, Ts&&... ts) {
                 getServer(port).subscribe(addr, std::forward<Ts>(ts)...);
+            }
+
+            bool unsubscribe(const uint16_t port, const String& addr) {
+                auto it = server_map.find(port);
+                if (it != server_map.end()) {
+                    return it->second->unsubscribe(addr);
+                }
+                return false;
+            }
+
+            bool unsubscribe(const uint16_t port) {
+                auto it = server_map.find(port);
+                if (it != server_map.end()) {
+                    return it->second->unsubscribeAll();
+                }
+                return false;
+            }
+
+            bool unsubscribeAll() {
+                if (!server_map.empty()) {
+                    for (auto& m : server_map) {
+                        m.second->unsubscribeAll();
+                    }
+                    return true;
+                }
+                return false;
             }
 
             void parse() {
