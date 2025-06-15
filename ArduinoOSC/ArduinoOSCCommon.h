@@ -66,6 +66,45 @@ namespace osc {
 #endif
         }
 
+        bool unsubscribe(const uint16_t port, const String& addr) {
+#if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
+            if (WiFi.getMode() != WIFI_OFF)
+                return OscServerManager<S>::getInstance().unsubscribe(port, addr);
+            else {
+                LOG_ERROR(F("WiFi is not enabled. Unsubscribing OSC failed."));
+                return false;
+            }
+#else
+            return OscServerManager<S>::getInstance().unsubscribe(port, addr);
+#endif
+        }
+
+        bool unsubscribe(const uint16_t port) {
+#if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
+            if (WiFi.getMode() != WIFI_OFF)
+                return OscServerManager<S>::getInstance().unsubscribe(port);
+            else {
+                LOG_ERROR(F("WiFi is not enabled. Unsubscribing OSC failed."));
+                return false;
+            }
+#else
+            return OscServerManager<S>::getInstance().unsubscribe(port);
+#endif
+        }
+
+        bool unsubscribe() {
+#if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
+            if (WiFi.getMode() != WIFI_OFF)
+                return OscServerManager<S>::getInstance().unsubscribeAll();
+            else {
+                LOG_ERROR(F("WiFi is not enabled. Unsubscribing OSC failed."));
+                return false;
+            }
+#else
+            return OscServerManager<S>::getInstance().unsubscribeAll();
+#endif
+        }
+
         void parse() {
 #if defined(ARDUINOOSC_ENABLE_WIFI) && (defined(ESP_PLATFORM) || defined(ARDUINO_ARCH_RP2040))
             if (this->isWiFiConnected() || this->isWiFiModeAP()) {

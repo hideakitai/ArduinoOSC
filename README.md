@@ -249,6 +249,131 @@ You can see the debug log when you insert following line before include `Arduino
 #include <ArduinoOSC.h>
 ```
 
+## APIs
+
+### Main Class (`OscWiFi` / `OscEther`)
+
+#### Subscribing to OSC Messages
+
+```cpp
+// Subscribe a value to an OSC message
+OscWiFi.subscribe(const uint16_t port, const String& addr, T& value);
+// Subscribe multiple values to an OSC message
+OscWiFi.subscribe(const uint16_t port, const String& addr, T1& v1, T2& v2, ...);
+// Subscribe a lambda to an OSC message with arguments
+OscWiFi.subscribe(const uint16_t port, const String& addr, [](T1 arg1, T2 arg2, ...) { ... });
+// Subscribe a lambda to an OSC message with OscMessage argument
+OscWiFi.subscribe(const uint16_t port, const String& addr, [](const OscMessage& msg) { ... });
+// Subscribe a function to an OSC message
+OscWiFi.subscribe(const uint16_t port, const String& addr, onOscReceived);
+```
+
+#### Unsubscribing from OSC Messages
+
+```cpp
+// Unsubscribe from a specific address on a port
+OscWiFi.unsubscribe(const uint16_t port, const String& addr);
+// Unsubscribe from all addresses on a port
+OscWiFi.unsubscribe(const uint16_t port);
+// Unsubscribe from all addresses on all ports
+OscWiFi.unsubscribe();
+```
+
+#### Sending OSC Messages
+
+```cpp
+// Send an OSC message with arguments
+OscWiFi.send(const String& ip, const uint16_t port, const String& addr, T1 arg1, T2 arg2, ...);
+```
+
+#### Publishing OSC Messages
+
+```cpp
+// Publish a value periodically
+OscWiFi.publish(const String& ip, const uint16_t port, const String& addr, T& value)
+    ->setFrameRate(float fps);
+// Publish multiple values periodically
+OscWiFi.publish(const String& ip, const uint16_t port, const String& addr, T1& v1, T2& v2, ...)
+    ->setIntervalMsec(float ms);
+// Publish function results periodically
+OscWiFi.publish(const String& ip, const uint16_t port, const String& addr, &func1, &func2)
+    ->setIntervalSec(float sec);
+```
+
+#### OSC Bundle Support
+
+```cpp
+// Create and send OSC bundles
+OscWiFi.begin_bundle(const TimeTag& tt = TimeTag::immediate());
+OscWiFi.add_bundle(const String& addr, T1 arg1, T2 arg2, ...);
+OscWiFi.end_bundle();
+OscWiFi.send_bundle(const String& ip, const uint16_t port);
+```
+
+#### Update Functions
+
+```cpp
+// Parse incoming OSC messages (server)
+OscWiFi.parse();
+// Parse incoming OSC messages and publish outgoing messages (server + client)
+OscWiFi.update();
+// Send published OSC messages (client)
+OscWiFi.post();
+```
+
+### OscMessage
+
+#### Argument Getters
+
+```cpp
+msg.arg<T>(const uint8_t index);          // Get argument as type T
+msg.getArgAsInt32(const size_t i);
+msg.getArgAsInt64(const size_t i);
+msg.getArgAsFloat(const size_t i);
+msg.getArgAsDouble(const size_t i);
+msg.getArgAsString(const size_t i);
+msg.getArgAsBlob(const size_t i);
+msg.getArgAsBool(const size_t i);
+```
+
+#### Type Checkers
+
+```cpp
+msg.isBool(const size_t i);
+msg.isInt32(const size_t i);
+msg.isInt64(const size_t i);
+msg.isFloat(const size_t i);
+msg.isDouble(const size_t i);
+msg.isStr(const size_t i);
+msg.isBlob(const size_t i);
+```
+
+#### Message Information
+
+```cpp
+msg.address();              // Get OSC address
+msg.size();                 // Get number of arguments
+msg.typeTags();            // Get type tag string
+msg.remoteIP();            // Get sender's IP address
+msg.remotePort();          // Get sender's port
+msg.match(const String& pattern);  // Check if address matches pattern
+```
+
+### Manual Packet Handling (for boards with limited memory)
+
+```cpp
+// Server for receiving
+OscEtherServer server(recv_port);
+if (server.parse()) {
+    const OscMessage* msg = server.message();
+    // Process message...
+}
+
+// Client for sending
+OscEtherClient client;
+client.send(host, send_port, "/addr", arg1, arg2);
+```
+
 ## Dependent Libraries
 
 - [ArxTypeTraits](https://github.com/hideakitai/ArxTypeTraits)
